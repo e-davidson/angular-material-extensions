@@ -17,6 +17,16 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "table-builder": [
+        "dist/table-builder",
+        "../dist/table-builder"
+      ],
+      "table-builder/*": [
+        "dist/table-builder/*",
+        "../dist/table-builder/*"
+      ]
+    }
   }
 }

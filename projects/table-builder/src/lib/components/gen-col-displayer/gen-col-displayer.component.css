@@ -1,0 +1,34 @@
+.show-hide {
+    margin-left: 15px;
+}
+
+.label {
+    color: cornflowerblue;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: left;
+    padding: 18px 0 0 0;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    display: inline-block;
+    width: 66%;
+}
+
+.row {
+    margin: 0;
+    padding: 0;
+}
+
+.isHidden {
+    background-color: lightgrey;
+    color: darkgray;
+    font-weight: 700;
+    font-size: 17px;
+    white-space: nowrap;
+}
+
+.filter-button {
+    margin-top: 10px;
+}

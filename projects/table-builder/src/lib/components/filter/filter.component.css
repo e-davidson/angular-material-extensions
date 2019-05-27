@@ -1,0 +1,31 @@
+.filter-name {
+    color: cornflowerblue;
+    margin-right: 30px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.switch {
+    display: inline-block;
+}
+
+.my-filter {
+    margin-right: 15px;
+}
+
+.cancel-button {
+    float: right;
+}
+
+.row {
+    margin: 0;
+}
+
+.cancel-button  {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+mat-radio-button {
+    margin: 5px;
+  }
