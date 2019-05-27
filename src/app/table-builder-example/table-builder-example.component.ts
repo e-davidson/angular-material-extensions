@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TableBuilder } from 'table-builder';
+import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
 import { scheduled } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
 
