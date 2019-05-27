@@ -5,3 +5,8 @@
 .array-val {
     margin-top: 10px;
 }
+
+.negative-currency {
+    color: red;
+    font-weight: 500;
+}
