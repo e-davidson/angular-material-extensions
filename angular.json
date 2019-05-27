@@ -132,7 +132,7 @@
         }
       }
     },
-    "table-builder": {
+    "mx-table-builder": {
       "root": "projects/table-builder",
       "sourceRoot": "projects/table-builder/src",
       "projectType": "library",

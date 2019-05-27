@@ -1,5 +1,5 @@
 {
-  "name": "table-builder",
+  "name": "mx-table-builder",
   "version": "0.0.1",
   "peerDependencies": {
     "@angular/cdk": "~7.3.7",

@@ -2,7 +2,7 @@
  * Public API Surface of generic-table
  */
 
-export * from './lib/generic-table.module';
+export * from './lib/table-builder.module';
 
 export * from './lib/interfaces/report-def';
 
