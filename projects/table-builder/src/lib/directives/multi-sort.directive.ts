@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, Output, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatSort, Sort, MatSortable } from '@angular/material';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, Observable } from 'rxjs';
 
 @Directive({
   selector: '[multiSort]',
@@ -13,7 +13,7 @@ import { Subject, Subscription } from 'rxjs';
 export class MultiSortDirective extends MatSort implements OnInit, OnDestroy{
   @Output('multiSortChange') readonly rulesChange: EventEmitter<Sort[]> = new EventEmitter<Sort[]>();
 
-  @Input() rules$: Subject<Sort[]> = new Subject();
+  @Input() rules$: Observable<Sort[]> = new Subject();
   rules: Sort[] = [];
 
   private SubRef: Subscription;

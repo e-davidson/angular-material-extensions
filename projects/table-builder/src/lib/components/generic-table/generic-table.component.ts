@@ -7,6 +7,7 @@ import {
   Output,
   SimpleChanges,
   OnInit,
+  QueryList,
 } from '@angular/core';
 import { MatPaginator, MatRowDef, MatTable, Sort } from '@angular/material';
 import { Observable, combineLatest, scheduled, } from 'rxjs';
@@ -32,7 +33,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
   @Input() columns$: Observable<string[]>;
-  @Input() rows: MatRowDef<any>[];
+  @Input() rows: QueryList<MatRowDef<any>>;
   @Input() columnTemplates$: Observable<ColumnTemplates[]>;
 
   @Output() selection$: Observable<any>;

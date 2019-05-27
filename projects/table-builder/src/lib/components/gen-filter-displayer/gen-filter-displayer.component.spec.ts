@@ -12,6 +12,7 @@ import {By} from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DataFilter } from '../../classes/data-filter';
 import { DateFilterComponent } from '../date-filter/date-filter.component';
+import { FilterType } from '../../enums/filterTypes';
 
 
 function getMetaData() {
@@ -89,7 +90,7 @@ describe('generic filter displayer', () => {
       const filter = fixture.debugElement.queryAll(By.directive(FilterComponent))[0].componentInstance as FilterComponent;
 
       filter.info.filterValue = 'a';
-      filter.info.filterType = 'Equals';
+      filter.info.filterType = FilterType.StringEquals;
       filter.change$.emit();
 
       return;
@@ -125,7 +126,7 @@ describe('generic filter displayer', () => {
     const filter = fixture.debugElement.queryAll(By.directive(FilterComponent))[0].componentInstance as FilterComponent;
 
     filter.info.filterValue = 'bob';
-    filter.info.filterType = 'Equals';
+    filter.info.filterType = FilterType.StringEquals;
     filter.change$.emit();
 
     return;

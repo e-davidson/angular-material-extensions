@@ -1,5 +1,5 @@
 import { MetaData, FieldType } from '../interfaces/report-def';
-import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap } from '../enums/filterTypes';
+import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, FilterType } from '../enums/filterTypes';
 import { StringFilterFuncs } from '../functions/string-filter-function';
 import { NumberFilterFuncs } from '../functions/number-filter-function';
 import { DateFilterFuncs } from '../functions/date-filter-function';
@@ -27,7 +27,7 @@ const filterTypeFuncMap = {
   [FieldType.Unknown] : StringFilterFuncs,
 };
 export class FilterInfo {
-    filterType?: string;
+    filterType?: FilterType;
     filterValue?: any;
     types: any;
 
