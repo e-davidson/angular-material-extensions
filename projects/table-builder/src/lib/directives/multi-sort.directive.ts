@@ -36,12 +36,12 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy{
   }
 
   sort(sortable: MatSortable): void {
+    this.rules = this.rules.filter(r => r.active != sortable.id);
 
     if (this.active !== sortable.id) {
       this.rules.unshift({ active: sortable.id, direction: sortable.start ? sortable.start : this.start });
     } else {
       const newDirection = this.getNextSortDirection(sortable);
-      this.rules = this.rules.filter(r => r.active != this.active);
       if (newDirection) {
         this.rules.unshift({ active: this.active, direction: newDirection });
       }
