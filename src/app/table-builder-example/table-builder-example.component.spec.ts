@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TableBuilderExampleComponent } from './table-builder-example.component';
+import { TableBuilder, TableBuilderModule } from 'projects/table-builder/src';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('TableBuilderExampleComponent', () => {
   let component: TableBuilderExampleComponent;
@@ -8,7 +10,8 @@ describe('TableBuilderExampleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TableBuilderExampleComponent ]
+      declarations:[TableBuilderExampleComponent],
+      imports:[TableBuilderModule, NoopAnimationsModule]
     })
     .compileComponents();
   }));
