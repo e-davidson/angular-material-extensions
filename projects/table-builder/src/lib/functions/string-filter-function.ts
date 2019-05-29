@@ -1,7 +1,7 @@
 import { FilterType } from '../enums/filterTypes';
 
 
-function stringEqualFunc (filterVal: string, val: any): boolean  {
+function stringEqualFunc(filterVal: string, val: any): boolean  {
     const equelsVal = filterVal.toString().trim().toLowerCase();
     return val.toString().trim().toLowerCase() === equelsVal ;
 }

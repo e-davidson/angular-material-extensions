@@ -10,8 +10,8 @@ describe('TableBuilderExampleComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations:[TableBuilderExampleComponent],
-      imports:[TableBuilderModule, NoopAnimationsModule]
+      declarations: [TableBuilderExampleComponent],
+      imports: [TableBuilderModule, NoopAnimationsModule]
     })
     .compileComponents();
   }));

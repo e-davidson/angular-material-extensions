@@ -6,4 +6,4 @@ function booleanEqualsFunc(filterVal: string, val: any): boolean {
 
 export const BooleanFilterFuncs = {
      [FilterType.BooleanEquals]: booleanEqualsFunc,
-}
+};

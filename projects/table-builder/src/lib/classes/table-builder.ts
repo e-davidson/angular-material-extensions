@@ -21,7 +21,7 @@ export class TableBuilder {
   createMetaData(obj): MetaData [] {
     return Object.keys(obj)
     .map( key => ({
-      key: key,
+      key,
       fieldType: FieldType.Unknown,
       order: -1
     }) );
