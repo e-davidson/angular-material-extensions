@@ -85,7 +85,8 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
 
   createDataSource() {
     this.dataSource = new MatTableObservableDataSource(
-      this.data$.pipe(tap((d) => { this.selection.clear(); console.log('data', d);  }))
+      this.data$.pipe(tap((d) => { this.selection.clear();
+      }))
     );
     this.dataSource.sort = this._sort;
     this.dataSource.sortData = (data: {}[], sort: MultiSortDirective) =>
@@ -134,7 +135,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
           })
         .map(({ metaData: md, metaData: { preSort: ps } }) =>
           ({ active: md.key, direction: ps.direction }));
-    }), tap( out => console.log(out)));
+    }));
   }
 
   isAllSelected() {
