@@ -1,5 +1,5 @@
 import { MultiSortDirective } from './multi-sort.directive';
-import { Sort, MatSortable } from '@angular/material';
+import { Sort, MatSortable } from '@angular/material/sort';
 import { BehaviorSubject } from 'rxjs';
 
 describe('MultiSortDirective', () => {
@@ -20,20 +20,20 @@ describe('MultiSortDirective', () => {
         rules$ = new BehaviorSubject(rules);
         directive.rules$ = rules$;
         directive.ngOnInit();
-    })
+    });
 
     describe('Initializing Rules', () => {
 
         it('should inititialize the rules', () => {
             expect(directive.rules).toEqual(rules);
 
-            directive.rulesChange.subscribe(rules => expect(directive.rules).toEqual(rules));
+            directive.multiSortChange.subscribe( rls => expect(directive.rules).toEqual(rls));
         });
-    })
+    });
 
     describe('Updating the rules', () => {
         it('should add new rule to begining of rules array', () => {
-            var originalLength = directive.rules.length;
+            const originalLength = directive.rules.length;
             const sort: MatSortable = { id: 'd', start: 'asc', disableClear: false };
             directive.sort(sort);
 
@@ -42,7 +42,7 @@ describe('MultiSortDirective', () => {
         });
 
         it('should remove old rule for the column of new rule and replace it with new rule', () => {
-            var originalLength = directive.rules.length;
+            const originalLength = directive.rules.length;
             const sort: MatSortable = { id: 'a', start: 'asc', disableClear: false };
             directive.sort(sort);
 
@@ -51,14 +51,16 @@ describe('MultiSortDirective', () => {
         });
 
         it('should remove old rule without replacing it if new rule for that column has no direction', () => {
-            var originalLength = directive.rules.length;
+            const originalLength = directive.rules.length;
             const sort: MatSortable = { id: 'a', start: 'asc', disableClear: false };
             directive.sort({...sort});
+            console.log(directive.rules);
 
             directive.sort({...sort});
+            console.log(directive.rules);
             expect(directive.rules.length).toBe(originalLength - 1, 'updated rules length should be one smaller than original');
-        })
-    })
+        });
+    });
 
 
 

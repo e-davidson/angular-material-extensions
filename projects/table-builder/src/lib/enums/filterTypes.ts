@@ -37,4 +37,4 @@ export const DateFilterMap = {
 
 export const BooleanFilterMap = {
     [FilterType.BooleanEquals]: [FilterType.BooleanEquals]
-}
+};

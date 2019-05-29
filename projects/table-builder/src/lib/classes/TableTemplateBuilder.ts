@@ -23,7 +23,7 @@ export class TableTemplateBuilder {
         header: this.headerTemplate,
         footer: this.footerTemplate,
         body: this.bodyTemplate,
-        metaData: metaData
+        metaData
       };
     }
 

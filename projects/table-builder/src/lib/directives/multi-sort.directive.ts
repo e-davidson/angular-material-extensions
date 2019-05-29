@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, Output, Input, OnInit, OnDestroy } from '@angular/core';
-import { MatSort, Sort, MatSortable } from '@angular/material';
+import { MatSort, Sort, MatSortable } from '@angular/material/sort';
 import { Subject, Subscription, Observable } from 'rxjs';
 
 @Directive({
@@ -10,8 +10,8 @@ import { Subject, Subscription, Observable } from 'rxjs';
     { provide: MatSort, useExisting: MultiSortDirective }
   ]
 })
-export class MultiSortDirective extends MatSort implements OnInit, OnDestroy{
-  @Output('multiSortChange') readonly rulesChange: EventEmitter<Sort[]> = new EventEmitter<Sort[]>();
+export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
+  @Output() readonly multiSortChange: EventEmitter<Sort[]> = new EventEmitter<Sort[]>();
 
   @Input() rules$: Observable<Sort[]> = new Subject();
   rules: Sort[] = [];
@@ -21,7 +21,7 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy{
   ngOnInit() {
     this.SubRef = this.rules$.subscribe( rules => {
       if (rules.length) {
-        var initRules = [...rules];
+        const initRules = [...rules];
         const firstRule = initRules.shift();
         this.rules = initRules;
         this.sort({id: firstRule.active, start: firstRule.direction || 'asc', disableClear: false});
@@ -36,7 +36,7 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy{
   }
 
   sort(sortable: MatSortable): void {
-    this.rules = this.rules.filter(r => r.active != sortable.id);
+    this.rules = this.rules.filter(r => r.active !== sortable.id);
 
     if (this.active !== sortable.id) {
       this.rules.unshift({ active: sortable.id, direction: sortable.start ? sortable.start : this.start });
@@ -48,6 +48,6 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy{
     }
 
     super.sort(sortable);
-    this.rulesChange.emit(this.rules);
+    this.multiSortChange.emit(this.rules);
   }
 }

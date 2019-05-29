@@ -3,7 +3,7 @@ import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, Filt
 import { StringFilterFuncs } from '../functions/string-filter-function';
 import { NumberFilterFuncs } from '../functions/number-filter-function';
 import { DateFilterFuncs } from '../functions/date-filter-function';
-import { BooleanFilterFuncs } from '../functions/boolean-filter-function'
+import { BooleanFilterFuncs } from '../functions/boolean-filter-function';
 
 
 
