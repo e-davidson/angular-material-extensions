@@ -31,18 +31,18 @@ export const GenerateMetaData = (data: any[], metaData: MetaData[]): MetaData []
   const missingMetaData = Object.keys( data[0] )
     .filter( key =>  metaData.findIndex( md => md.key === key) === -1)
     .map( key => ({
-      key: key,
+      key,
       displayName: key,
       fieldType: FieldType.Unknown,
       additional: null,
       order: ++maxOrd
     }) );
-    return  _.orderBy([...missingMetaData, ...metaData], ['order']);
+  return  _.orderBy([...missingMetaData, ...metaData], ['order']);
 };
 
 export const GenerateReportDef = (data: any[], metaData: MetaData[] ): ReportDef =>  {
   const md = GenerateMetaData(data, metaData);
-    return {
+  return {
       data: data = data.map( d => cleanRecord(d, md)),
       metaData: md,
       count: data.length

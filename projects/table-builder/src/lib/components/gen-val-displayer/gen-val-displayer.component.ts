@@ -9,7 +9,7 @@ import { MetaData, FieldType } from '../../interfaces/report-def';
 })
 export class GenValDisplayerComponent {
     @Input() col: MetaData;
-    @Input() element: Object;
+    @Input() element: object;
     FieldType = FieldType;
     constructor() { }
 }

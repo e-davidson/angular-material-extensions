@@ -20,14 +20,14 @@ import { MultiSortDirective } from '../../directives/multi-sort.directive';
 
 const data = [
   {
-    'name': 'Joe',
-    'age': 10,
-    'balance': 25
+    name: 'Joe',
+    age: 10,
+    balance: 25
   },
   {
-    'name': 'Jane',
-    'age': 20,
-    'balance': 35
+    name: 'Jane',
+    age: 20,
+    balance: 35
   }
 ];
 

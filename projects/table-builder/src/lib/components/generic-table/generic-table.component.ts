@@ -9,14 +9,16 @@ import {
   OnInit,
   QueryList,
 } from '@angular/core';
-import { MatPaginator, MatRowDef, MatTable, Sort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { Sort } from '@angular/material/sort';
+import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable, combineLatest, scheduled, } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ColumnTemplates } from '../../interfaces/column-template';
-import { MultiSortDirective } from '../../directives/multi-sort.directive'
+import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { orderBy } from 'lodash';
 
@@ -38,9 +40,9 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
 
   @Output() selection$: Observable<any>;
 
-  @ViewChild(MultiSortDirective) _sort: MultiSortDirective;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatTable) table: MatTable<any>;
+  @ViewChild(MultiSortDirective, { static: true }) _sort: MultiSortDirective;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatTable, { static: true }) table: MatTable<any>;
 
   currentColumns: string[];
   selection: SelectionModel<any>;
@@ -89,7 +91,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
     );
     this.dataSource.sort = this._sort;
     this.dataSource.sortData = (data: {}[], sort: MultiSortDirective) =>
-      orderBy(data, sort.rules.map(r=>r.active),sort.rules.map(r => r.direction as direc));
+      orderBy(data, sort.rules.map(r => r.active), sort.rules.map(r => r.direction as direc));
     this.dataSource.paginator = this.paginator;
   }
 
@@ -130,7 +132,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
       return templates.filter(({ metaData }) => metaData.preSort)
         .sort(
           ({ metaData: { preSort: ps1 } }, { metaData: { preSort: ps2 } }) => {
-           return (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
+           return (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE);
           })
         .map(({ metaData: md, metaData: { preSort: ps } }) =>
           ({ active: md.key, direction: ps.direction }));

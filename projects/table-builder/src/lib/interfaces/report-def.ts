@@ -12,9 +12,9 @@ export enum FieldType {
     Boolean = 9,
 }
 
-export enum SortDirection{
-    asc='asc',
-    desc='desc'
+export enum SortDirection {
+    asc= 'asc',
+    desc= 'desc'
 }
 
 export interface MetaData {
@@ -23,7 +23,7 @@ export interface MetaData {
     fieldType: FieldType;
     additional?: any;
     order?: number;
-    preSort?: PreSortDef
+    preSort?: PreSortDef;
 }
 
 export interface  ReportDef {
@@ -35,5 +35,5 @@ export interface  ReportDef {
 
 export interface PreSortDef {
     direction: SortDirection;
-    precedence?: number
+    precedence?: number;
 }
