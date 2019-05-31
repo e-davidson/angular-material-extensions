@@ -5,7 +5,7 @@ import { ColumnTemplates } from '../interfaces/column-template';
 import { MetaData, FieldType } from '../interfaces/report-def';
 import { Observable } from 'rxjs';
 import { filterArray, mapArray } from '../functions/rxjs-operators';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { CustomCellDirective } from '../directives/custom-cell-directive';
 import * as _ from 'lodash';
 
@@ -36,6 +36,13 @@ export class TableTemplateBuilder {
 
     getColumnTemplates(): Observable<ColumnTemplates[]> {
       return  this.tableBuilder.metaData$.pipe(
+        tap((metaData) => metaData.forEach(md => {
+          const cc = this.customCells.find(cc => cc.customCell === md.key);
+          if (cc) {
+            cc.customCellOrder = cc.customCellOrder || md.order;
+          }
+        })),
+        filterArray(metaData => !this.customCells.map(cc => cc.customCell.toLowerCase()).includes(metaData.key.toLowerCase())),
         mapArray(metaData => this.createTemplatesFromMetaData(metaData)),
         map( ct => [
           ...ct,
@@ -62,8 +69,8 @@ export class TableTemplateBuilder {
 
     createTemplatesFromCustomCell(cc: CustomCellDirective): ColumnTemplates {
       return {
-        header: this.headerTemplate,
-        footer: this.footerTemplate,
+        header: cc.columnDef && cc.columnDef.headerCell ? cc.columnDef.headerCell.template : this.headerTemplate,
+        footer: cc.columnDef && cc.columnDef.footerCell ? cc.columnDef.footerCell.template : this.footerTemplate,
         body: cc.TemplateRef,
         metaData: {
           key: cc.customCell,

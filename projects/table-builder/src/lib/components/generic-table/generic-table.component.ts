@@ -37,6 +37,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() columns$: Observable<string[]>;
   @Input() rows: QueryList<MatRowDef<any>>;
   @Input() columnTemplates$: Observable<ColumnTemplates[]>;
+  @Input() isSticky: boolean;
 
   @Output() selection$: Observable<any>;
 
