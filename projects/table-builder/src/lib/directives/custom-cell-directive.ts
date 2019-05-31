@@ -1,4 +1,4 @@
-import { Directive, TemplateRef, Input, OnInit, Optional } from '@angular/core';
+import { Directive, TemplateRef, Input, AfterContentInit, Optional } from '@angular/core';
 import { CdkColumnDef } from '@angular/cdk/table';
 
 // here is how to use it
@@ -9,17 +9,17 @@ import { CdkColumnDef } from '@angular/cdk/table';
 @Directive({
     selector: '[customCell]'
 })
-export class CustomCellDirective implements OnInit {
+export class CustomCellDirective implements AfterContentInit {
     @Input() customCell: string;
     @Input() TemplateRef: TemplateRef<any>;
     @Input() customCellOrder: number;
     constructor(
       @Optional()  private templateRef: TemplateRef<any>,
-      @Optional() private columnDef: CdkColumnDef
+      @Optional() public columnDef: CdkColumnDef
       ) {
       this.TemplateRef = this.templateRef;
      }
-    ngOnInit() {
+     ngAfterContentInit() {
       if (this.columnDef) {
         this.TemplateRef = this.columnDef.cell.template;
       } else if (this.TemplateRef === null) {

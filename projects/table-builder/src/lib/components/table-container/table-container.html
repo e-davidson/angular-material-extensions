@@ -1,6 +1,6 @@
 
   <div class="row">
-    <tb-filter-displayer class="filter-row col-md-11" [filterCols$]="tableBuilder.metaData$" (filters$)="filters$.emit($event)">
+    <tb-filter-displayer class="filter-row col-md-11" [filterCols$]="filterCols$" (filters$)="filters$.emit($event)">
     </tb-filter-displayer>
 
     <tb-col-displayer class="menu pull-right" [cols]="columnNames$" (update)="columnsSelected$.next($event)">
@@ -16,6 +16,7 @@
     [columnTemplates$]='columnTemplates$'
     [columns$]='displayedColumns$'
     [trackBy]='trackBy'
+    [isSticky]='isSticky'
     >
   </tb-generic-table>
 

@@ -10,8 +10,8 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { Observable, Subject, concat } from 'rxjs';
-import { FieldType } from '../../interfaces/report-def';
-import { first } from 'rxjs/operators';
+import { FieldType, MetaData } from '../../interfaces/report-def';
+import { first, map } from 'rxjs/operators';
 import { FilterInfo } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { mapArray } from '../../functions/rxjs-operators';
@@ -32,6 +32,7 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
+  @Input() isSticky: boolean = true;
   @Output() filters$ = new EventEmitter();
   @Output() selection$ = new EventEmitter();
   @ViewChild('header', { static: true }) header: TemplateRef<any>;
@@ -47,6 +48,7 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
   columnNames$: Observable<string[]>;
   filteredData: DataFilter;
   columnTemplates$: Observable<ColumnTemplates[]>;
+  filterCols$: Observable<MetaData[]>;
 
   ngAfterContentInit() {
     this.InitializeData();
@@ -59,6 +61,10 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
         mapArray((fltr: FilterInfo) => fltr.getFunc())
       ),
       this.tableBuilder.getData$()
+    );
+
+    this.filterCols$ = this.tableBuilder.metaData$.pipe(
+      map(md => md.filter(m => m.fieldType !== FieldType.Hidden))
     );
   }
 
