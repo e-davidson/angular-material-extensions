@@ -26,8 +26,8 @@ export interface MetaData {
     preSort?: PreSortDef;
 }
 
-export interface  ReportDef {
-    data: any[];
+export interface  ReportDef<DataType = any> {
+    data: DataType[];
     metaData: MetaData [];
     totalRecords?: number;
     count: number;
