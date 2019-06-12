@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
-import { scheduled } from 'rxjs';
+import { scheduled, Subject, combineLatest, BehaviorSubject } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
+import { scan, startWith, map } from 'rxjs/operators';
+import { MetaData, SortDirection, FieldType } from '../../../projects/table-builder/src/lib/interfaces/report-def';
+
 
 export interface PeriodicElement {
   name: string;
@@ -23,6 +26,12 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
 
+const META_DATA: MetaData[] = [
+  {key: 'position', fieldType: FieldType.Number },
+  {key: 'symbol', fieldType: FieldType.String, preSort: {direction: SortDirection.asc, precedence: 1 }},
+  {key: 'name', fieldType: FieldType.String }
+];
+
 
 
 @Component({
@@ -32,11 +41,28 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class TableBuilderExampleComponent implements OnInit {
   public tableBuiler: TableBuilder;
+  newElement$ = new Subject<PeriodicElement>();
+  metaData$ = new BehaviorSubject(META_DATA);
   constructor() {
-    this.tableBuiler = new TableBuilder( scheduled([ELEMENT_DATA], asap ));
+    const addedElements = this.newElement$.pipe(
+      scan((acc, value ) => {acc.push(value); return acc; }, []),
+      startWith([]),
+    );
+    const all = combineLatest([scheduled([ELEMENT_DATA], asap ), addedElements]).pipe(
+      map( ([a, b]) => [...a, ...b])
+    );
+    this.tableBuiler = new TableBuilder( all, this.metaData$ );
   }
 
   ngOnInit() {
+  }
+
+  addItem() {
+    this.newElement$.next({
+      position: 11, name: 'Gold', weight: 196.96657 , symbol: 'Au'
+    });
+
+    this.metaData$.next(META_DATA);
   }
 
 }

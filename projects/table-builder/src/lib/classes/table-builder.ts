@@ -5,9 +5,9 @@ import { mapArray } from '../functions/rxjs-operators';
 
 export class TableBuilder {
   constructor(private data$: Observable<any[]>, public metaData$?: Observable<MetaData[]> ) {
-    if (!this.metaData$) {
-      this.metaData$ = data$.pipe(first(), map( data => this.createMetaData(data[0]) ) );
-    }
+    this.metaData$ = this.metaData$ ?
+      this.metaData$.pipe(first()) :
+      data$.pipe(first(), map( data => this.createMetaData(data[0]) ) );
   }
 
   getData$(): Observable<any[]> {
