@@ -33,6 +33,7 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
   @Input() isSticky: boolean = true;
+  @Input() pageSize: number = 20;
   @Output() filters$ = new EventEmitter();
   @Output() selection$ = new EventEmitter();
   @ViewChild('header', { static: true }) header: TemplateRef<any>;
