@@ -131,7 +131,8 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   }
 
   preSort() {
-    this.rules$ = this.columnTemplates$.pipe(map(templates => {
+    this.rules$ = this.columnTemplates$.pipe(
+      map(templates => {
       return templates.filter(({ metaData }) => metaData.preSort)
         .sort(
           ({ metaData: { preSort: ps1 } }, { metaData: { preSort: ps2 } }) => {
