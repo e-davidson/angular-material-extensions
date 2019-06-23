@@ -6,7 +6,7 @@
 </p>
 <mat-menu #menu="matMenu">
   <button class="filter-labels" *ngFor="let filter of filterCols$ | async" (click)="addFilter(filter)" mat-menu-item>
-    {{filter.key | spaceCase}}
+    {{filter.displayName || (filter.key | spaceCase)}}
   </button>
 </mat-menu>
 
