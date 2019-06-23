@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from 
 import { DisplayCol } from '../../classes/display-col';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { MetaData } from '../../interfaces/report-def';
 
 @Component({
   selector: 'tb-col-displayer',
@@ -13,10 +14,10 @@ export class GenColDisplayerComponent {
 
   displayCols$: Observable<DisplayCol[]>;
   @Output() update: EventEmitter<string[]> = new EventEmitter();
-  @Input() set cols(c: Observable<string[]>) {
+  @Input() set cols(c: Observable<MetaData[]>) {
     this.displayCols$ = c.pipe(
       map(cols => cols.map(col => {
-        return { name: col, isVisible: true };
+        return { key: col.key, displayName: col.displayName, isVisible: true };
       }))
     );
   }
@@ -37,6 +38,6 @@ export class GenColDisplayerComponent {
   }
 
   emit(displayCols: DisplayCol[]) {
-    this.update.emit(displayCols.filter(col => col.isVisible).map(col => col.name));
+    this.update.emit(displayCols.filter(col => col.isVisible).map(col => col.key));
   }
 }

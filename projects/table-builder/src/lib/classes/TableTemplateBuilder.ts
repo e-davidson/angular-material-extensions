@@ -27,10 +27,10 @@ export class TableTemplateBuilder {
       };
     }
 
-    getColumnNames(): Observable<string[]> {
+    getColumnNames(): Observable<MetaData[]> {
       return this.getColumnTemplates().pipe(
         filterArray(tmplt => tmplt.metaData.fieldType !== FieldType.Hidden),
-        map(templates  =>  _.orderBy(templates, 'metaData.order' ).map( t => t.metaData.key )   ),
+        map(templates  =>  _.orderBy(templates, 'metaData.order' ).map( t => t.metaData )   ),
       );
     }
 

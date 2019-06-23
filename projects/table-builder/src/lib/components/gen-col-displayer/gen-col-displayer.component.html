@@ -36,7 +36,7 @@
             <div (click)="col.isVisible = !col.isVisible; emit(displayCols)">
 
                 <p class="label">
-                    {{col.name | spaceCase }}
+                    {{col.displayName || (col.key | spaceCase) }}
                 </p>
                 <span matTooltip="Hide Column" class="show-hide pull-right" *ngIf="col.isVisible; else hidden">
                     <button mat-icon-button>
