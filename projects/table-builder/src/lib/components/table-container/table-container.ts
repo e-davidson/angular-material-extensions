@@ -78,7 +78,7 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
       this.columnDefs.toArray(),
       this.customCells.toArray()
     );
-    this.columnNames$ = t.getColumnNames();
+    this.columnNames$ = t.getColumns();
     this.displayedColumns$ = concat(
       this.columnNames$.pipe(first(), map(cols => cols.map(c => c.key))),
       this.columnsSelected$
