@@ -40,6 +40,7 @@ export class TableTemplateBuilder {
           const cc = this.customCells.find(cc => cc.customCell === md.key);
           if (cc) {
             cc.customCellOrder = cc.customCellOrder || md.order;
+            cc.displayName = cc.displayName || md.displayName;
           }
         })),
         filterArray(metaData => !this.customCells.map(cc => cc.customCell.toLowerCase()).includes(metaData.key.toLowerCase())),
@@ -74,6 +75,7 @@ export class TableTemplateBuilder {
         body: cc.TemplateRef,
         metaData: {
           key: cc.customCell,
+          displayName: cc.displayName,
           fieldType: FieldType.Unknown,
           order: cc.customCellOrder
         }
