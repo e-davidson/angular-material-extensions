@@ -46,7 +46,7 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
   FieldType = FieldType;
   displayedColumns$: Observable<string[]>;
   columnsSelected$ = new Subject<string[]>();
-  columnNames$: Observable<string[]>;
+  columnNames$: Observable<MetaData[]>;
   filteredData: DataFilter;
   columnTemplates$: Observable<ColumnTemplates[]>;
   filterCols$: Observable<MetaData[]>;
@@ -78,9 +78,9 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
       this.columnDefs.toArray(),
       this.customCells.toArray()
     );
-    this.columnNames$ = t.getColumnNames();
+    this.columnNames$ = t.getColumns();
     this.displayedColumns$ = concat(
-      this.columnNames$.pipe(first()),
+      this.columnNames$.pipe(first(), map(cols => cols.map(c => c.key))),
       this.columnsSelected$
     );
 
