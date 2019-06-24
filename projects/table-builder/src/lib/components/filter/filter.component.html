@@ -1,6 +1,6 @@
 <mat-card class="mat-elevation-z5">
     <div class="row">
-        <h4 class="filter-name">{{info.field.key | spaceCase}} Filter</h4>
+        <h4 class="filter-name">{{info.field.displayName || (info.field.key | spaceCase)}} Filter</h4>
         <button class="cancel-button" color="primary" mat-icon-button (click)="delete$.emit()"
             matTooltip="Cancel Filter">
             <mat-icon class="cancel-button" color="primary">close</mat-icon>
