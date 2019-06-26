@@ -11,6 +11,7 @@ import { CdkColumnDef } from '@angular/cdk/table';
 })
 export class CustomCellDirective implements AfterContentInit {
     @Input() customCell: string;
+    @Input() displayName: string;
     @Input() TemplateRef: TemplateRef<any>;
     @Input() customCellOrder: number;
     constructor(

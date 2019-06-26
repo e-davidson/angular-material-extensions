@@ -1,4 +1,5 @@
 export class DisplayCol {
-    name: string;
+    key: string;
+    displayName?: string;
     isVisible: boolean;
 }

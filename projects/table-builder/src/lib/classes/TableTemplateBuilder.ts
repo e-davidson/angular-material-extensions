@@ -27,10 +27,10 @@ export class TableTemplateBuilder {
       };
     }
 
-    getColumnNames(): Observable<string[]> {
-      return this.getColumnTemplates().pipe(
-        filterArray(tmplt => tmplt.metaData.fieldType !== FieldType.Hidden),
-        map(templates  =>  _.orderBy(templates, 'metaData.order' ).map( t => t.metaData.key )   ),
+    getColumns(): Observable<MetaData[]> {
+      return this.tableBuilder.metaData$.pipe(
+        filterArray(meta => meta.fieldType !== FieldType.Hidden),
+        map(meta => _.orderBy(meta, 'order'))
       );
     }
 
@@ -40,6 +40,7 @@ export class TableTemplateBuilder {
           const cc = this.customCells.find(cc => cc.customCell === md.key);
           if (cc) {
             cc.customCellOrder = cc.customCellOrder || md.order;
+            cc.displayName = cc.displayName || md.displayName;
           }
         })),
         filterArray(metaData => !this.customCells.map(cc => cc.customCell.toLowerCase()).includes(metaData.key.toLowerCase())),
@@ -74,6 +75,7 @@ export class TableTemplateBuilder {
         body: cc.TemplateRef,
         metaData: {
           key: cc.customCell,
+          displayName: cc.displayName,
           fieldType: FieldType.Unknown,
           order: cc.customCellOrder
         }
