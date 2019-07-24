@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject, concat } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { first, map } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { FilterInfo } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { mapArray } from '../../functions/rxjs-operators';
@@ -36,6 +36,7 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
   @Input() pageSize: number = 20;
   @Output() filters$ = new EventEmitter();
   @Output() selection$ = new EventEmitter();
+  @Output() get data() { return this._data$.pipe(switchMap(d => d)); }
   @ViewChild('header', { static: true }) header: TemplateRef<any>;
   @ViewChild('body', { static: true }) body: TemplateRef<any>;
   @ViewChild('footer', { static: true }) footer: TemplateRef<any>;
@@ -50,6 +51,7 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
   filteredData: DataFilter;
   columnTemplates$: Observable<ColumnTemplates[]>;
   filterCols$: Observable<MetaData[]>;
+  _data$ = new Subject<Observable<any[]>>();  
 
   ngAfterContentInit() {
     this.InitializeData();
@@ -63,6 +65,8 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
       ),
       this.tableBuilder.getData$()
     );
+
+    this._data$.next(this.filteredData.filteredData$)
 
     this.filterCols$ = this.tableBuilder.metaData$.pipe(
       map(md => md.filter(m => m.fieldType !== FieldType.Hidden))
