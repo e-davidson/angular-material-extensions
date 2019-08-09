@@ -10,6 +10,12 @@ export class TableBuilder {
       data$.pipe(first(), map( data => this.createMetaData(data[0]) ) );
   }
 
+  clear: () => void;
+
+  clearSelection(): void {
+    this.clear();
+  }
+
   getData$(): Observable<any[]> {
     return this.metaData$.pipe(
       switchMap( metaData => this.data$.pipe(

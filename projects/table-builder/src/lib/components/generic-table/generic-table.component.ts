@@ -8,6 +8,7 @@ import {
   SimpleChanges,
   OnInit,
   QueryList,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
@@ -21,6 +22,7 @@ import { ColumnTemplates } from '../../interfaces/column-template';
 import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { orderBy } from 'lodash';
+import { TableBuilder } from '../../classes/table-builder';
 
 @Component({
   selector: 'tb-generic-table',
@@ -30,6 +32,7 @@ import { orderBy } from 'lodash';
 })
 export class GenericTableComponent implements AfterContentInit, OnInit {
 
+  @Input() tableBuilder: TableBuilder;
   @Input() data$: Observable<any[]>;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
@@ -51,8 +54,9 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   dataSource: MatTableObservableDataSource<any>;
   keys$: Observable<string[]>;
   rules$: Observable<Sort[]>;
+  clearSelection$: Observable<boolean>;
 
-  constructor() {
+  constructor(private cd: ChangeDetectorRef) {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
   }
@@ -80,6 +84,10 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
 
   ngOnInit() {
     this.preSort();
+    this.tableBuilder.clear = () => {
+      this.selection.clear();
+      this.cd.detectChanges();
+    }
   }
 
   ngAfterContentInit() {

@@ -12,6 +12,7 @@
     [data$]="filteredData.filteredData$"
     [IndexColumn]='IndexColumn'
     [SelectionColumn]='SelectionColumn'
+    [tableBuilder]="tableBuilder"
     (selection$)='selection$.emit($event)'
     [columnTemplates$]='columnTemplates$'
     [columns$]='displayedColumns$'
