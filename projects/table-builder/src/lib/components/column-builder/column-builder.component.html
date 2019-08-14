@@ -1,0 +1,49 @@
+<ng-container [matColumnDef]="metaData.key" >
+
+    <ng-template matHeaderCellDef >
+        <ng-container *ngIf="customCell?.columnDef?.headerCell;else header">
+            <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template;context: {metaData: metaData }" >
+            </ng-container>
+        </ng-container>
+        <ng-template #header>
+            <mat-header-cell mat-sort-header  class="f-mat-header-cell" >
+                {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+            </mat-header-cell>
+        </ng-template>
+    </ng-template>
+
+
+    <ng-container *matCellDef="let element" >
+      <ng-container *ngIf="customCell?.columnDef?.cell;else body">
+        <ng-container
+          *ngTemplateOutlet="customCell.columnDef.cell.template; context: {metaData: metaData, element: element }">
+        </ng-container>
+      </ng-container>
+      <ng-template #body >
+        <mat-cell >
+              <ng-container *ngTemplateOutlet="customCell?.TemplateRef ? customCell.TemplateRef : body2 ;context: {metaData: metaData, element: element }">
+                </ng-container>
+                <ng-template #body2   >
+                    <tb-val-displayer [col]="metaData" [element]="element"></tb-val-displayer>
+                </ng-template>
+        </mat-cell>
+      </ng-template>
+    </ng-container>
+
+    <ng-template matFooterCellDef >
+      <ng-container *ngIf="customCell?.columnDef?.footerCell;else footer">
+          <ng-container *ngTemplateOutlet="customCell.columnDef.footerCell.template;context: {metaData: metaData, data: data$ }" >
+          </ng-container>
+      </ng-container>
+      <ng-template #footer>
+          <mat-footer-cell >
+              <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
+                <span *ngSwitchCase="FieldType.Currency">
+                  {{ data$ | async | columnTotal:metaData | async | currency }}
+                </span>
+              </span>
+            </mat-footer-cell>
+      </ng-template>
+    </ng-template>
+
+</ng-container>

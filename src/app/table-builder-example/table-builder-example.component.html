@@ -1,3 +1,19 @@
-<tb-table-container [tableBuilder]='tableBuiler' ></tb-table-container>
+<tb-table-container [tableBuilder]='tableBuiler' (data)="emitData($event)" >
+  <p *customCell="'testCell';let element = element" [class.makeMeRed]="element?.name[0] === 'H'" >Hi {{element.name}}!</p>
+
+  <ng-container customCell="blue" matColumnDef="blue" >
+      <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name[0] === 'B'">
+          Hi {{element?.name}} !
+      </mat-cell>
+    </ng-container>
+
+    <ng-container customCell="green" matColumnDef="green" >
+        <mat-header-cell *matHeaderCellDef>Custom header</mat-header-cell>
+        <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name[0] === 'H'">
+            F {{element?.name}} !
+        </mat-cell>
+      </ng-container>
+
+</tb-table-container>
 
 <button (click)='addItem()'>Add Gold</button>

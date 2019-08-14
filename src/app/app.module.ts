@@ -6,17 +6,19 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableBuilderModule } from '../../projects/table-builder/src/lib/table-builder.module';
 import { TableBuilderExampleComponent } from './table-builder-example/table-builder-example.component';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TableBuilderExampleComponent
+    TableBuilderExampleComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    TableBuilderModule
+    TableBuilderModule,
+    MatTableModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

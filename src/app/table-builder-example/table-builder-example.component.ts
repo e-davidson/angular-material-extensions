@@ -65,4 +65,8 @@ export class TableBuilderExampleComponent implements OnInit {
     this.metaData$.next(META_DATA);
   }
 
+  emitData(data) {
+    console.log(data);
+  }
+
 }
