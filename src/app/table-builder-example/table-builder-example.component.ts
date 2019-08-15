@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
-import { scheduled, Subject, combineLatest, BehaviorSubject } from 'rxjs';
+import { scheduled, Subject, BehaviorSubject } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { scan, startWith, map } from 'rxjs/operators';
+import { scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType } from '../../../projects/table-builder/src/lib/interfaces/report-def';
+import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 
 export interface PeriodicElement {
   name: string;
@@ -48,9 +49,7 @@ export class TableBuilderExampleComponent implements OnInit {
       scan((acc, value ) => {acc.push(value); return acc; }, []),
       startWith([]),
     );
-    const all = combineLatest([scheduled([ELEMENT_DATA], asap ), addedElements]).pipe(
-      map( ([a, b]) => [...a, ...b])
-    );
+    const all = combineArrays([scheduled([ELEMENT_DATA], asap ), addedElements]);
     this.tableBuiler = new TableBuilder( all, this.metaData$ );
   }
 

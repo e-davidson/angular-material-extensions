@@ -12,7 +12,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable, MatColumnDef } from '@angular/material/table';
-import { Observable, combineLatest, scheduled, } from 'rxjs';
+import { Observable, scheduled, } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
@@ -20,6 +20,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { orderBy } from 'lodash';
+import { combineArrays } from '../../functions/rxjs-operators';
 
 @Component({
   selector: 'tb-generic-table',
@@ -105,18 +106,12 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
       staticColumns.push('index');
     }
 
-    this.keys$ = combineLatest(
+    this.keys$ = combineArrays(
       [
         scheduled([staticColumns], asap),
         this.columns$,
       ]
     ).pipe(
-      map(([def, customCells]) =>
-        [
-          ...def,
-          ...customCells
-        ]
-      ),
       tap(d => {
         this.currentColumns = d;
         if (this.rows) {
