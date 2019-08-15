@@ -8,7 +8,7 @@
     </ng-container>
 
     <ng-container customCell="green" matColumnDef="green" >
-        <mat-header-cell *matHeaderCellDef>Custom header</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef style="color: green;">Custom header</mat-header-cell>
         <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name[0] === 'H'">
             F {{element?.name}} !
         </mat-cell>

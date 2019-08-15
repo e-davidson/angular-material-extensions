@@ -15,6 +15,8 @@ import { TableContainerComponent } from './components/table-container/table-cont
 import { ColumnTotalPipe } from './pipes/column-total.pipe';
 import { MultiSortDirective } from './directives/multi-sort.directive';
 import { ColumnBuilderComponent } from './components/column-builder/column-builder.component';
+import { ModuleWithProviders } from '@angular/compiler/src/core';
+import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuilderConfig';
 
 @NgModule({
   imports: [
@@ -22,32 +24,39 @@ import { ColumnBuilderComponent } from './components/column-builder/column-build
     MaterialModule,
     FormsModule,
   ],
-    exports: [
-        GenericTableComponent,
-        TableContainerComponent,
-        CustomCellDirective,
-        GenColDisplayerComponent,
-        GenValDisplayerComponent,
-        GenFilterDisplayerComponent,
-        FilterComponent,
-        MultiSortDirective
-    ],
-    declarations: [
-        ColumnBuilderComponent,
-        SpaceCasePipe,
-        ColumnTotalPipe,
-        TableContainerComponent,
-        GenericTableComponent,
-        CustomCellDirective,
-        GenColDisplayerComponent,
-        GenValDisplayerComponent,
-        GenFilterDisplayerComponent,
-        DateFilterComponent,
-        FilterComponent,
-        MultiSortDirective
-    ],
-    providers: [
-      MultiSortDirective
-    ]
+  exports: [
+    GenericTableComponent,
+    TableContainerComponent,
+    CustomCellDirective,
+    GenColDisplayerComponent,
+    GenValDisplayerComponent,
+    GenFilterDisplayerComponent,
+    FilterComponent,
+    MultiSortDirective
+  ],
+  declarations: [
+    ColumnBuilderComponent,
+    SpaceCasePipe,
+    ColumnTotalPipe,
+    TableContainerComponent,
+    GenericTableComponent,
+    CustomCellDirective,
+    GenColDisplayerComponent,
+    GenValDisplayerComponent,
+    GenFilterDisplayerComponent,
+    DateFilterComponent,
+    FilterComponent,
+    MultiSortDirective
+  ]
 })
-export class TableBuilderModule { }
+export class TableBuilderModule {
+  static forRoot(config: TableBuilderConfig): ModuleWithProviders {
+    return {
+      ngModule: TableBuilderModule,
+      providers: [
+        MultiSortDirective,
+        { provide : TableBuilderConfigToken , useValue: config}
+      ]
+    };
+  }
+}

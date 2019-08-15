@@ -17,7 +17,7 @@ import { MatTableModule } from '@angular/material/table';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    TableBuilderModule,
+    TableBuilderModule.forRoot({pageSize: 20}),
     MatTableModule,
   ],
   providers: [],

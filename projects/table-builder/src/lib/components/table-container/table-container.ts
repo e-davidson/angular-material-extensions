@@ -8,26 +8,26 @@ import {
   ChangeDetectionStrategy,
   ViewChildren,
   ChangeDetectorRef,
+  Inject,
 } from '@angular/core';
-import { Observable, Subject, concat } from 'rxjs';
+import { Observable, Subject, concat, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { first, map, switchMap } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { FilterInfo } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { mapArray } from '../../functions/rxjs-operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
-import { ColumnTemplates } from '../../interfaces/column-template';
-import { MatSort, Sort } from '@angular/material/sort';
+import { Sort } from '@angular/material/sort';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { CustomCellDirective } from '../../directives';
+import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/TableBuilderConfig';
 
 
 @Component({
   selector: 'tb-table-container',
   templateUrl: './table-container.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  viewProviders: [MatSort]
 }) export class TableContainerComponent {
 
   @Input() tableBuilder: TableBuilder;
@@ -38,7 +38,8 @@ import { CustomCellDirective } from '../../directives';
   @Input() pageSize = 20;
   @Output() filters$ = new EventEmitter();
   @Output() selection$ = new EventEmitter();
-  @Output() get data() { return this._data$.pipe(switchMap(d => d)); }
+  dataSubscription: Subscription;
+  @Output() data = new Subject<any[]>();
 
   @ContentChildren(MatRowDef) customRows: QueryList<MatRowDef<any>>;
   @ContentChildren(CustomCellDirective) customCells: QueryList<CustomCellDirective>;
@@ -54,11 +55,12 @@ import { CustomCellDirective } from '../../directives';
   columnNames$: Observable<MetaData[]>;
   filteredData: DataFilter;
   filterCols$: Observable<MetaData[]>;
-  _data$ = new Subject<Observable<any[]>>();
 
   myColumns$: Observable<{metaData: MetaData, customCell: CustomCellDirective}[]>;
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef, @Inject(TableBuilderConfigToken) config: TableBuilderConfig ) {
+    this.pageSize = config.pageSize;
+  }
 
   ngOnInit() {
     this.InitializeData();
@@ -75,7 +77,7 @@ import { CustomCellDirective } from '../../directives';
       this.tableBuilder.getData$()
     );
 
-    this._data$.next(this.filteredData.filteredData$);
+    this.dataSubscription = this.filteredData.filteredData$.subscribe(this.data);
 
     this.filterCols$ = this.tableBuilder.metaData$.pipe(
       map(md => md.filter(m => m.fieldType !== FieldType.Hidden))
@@ -122,5 +124,9 @@ import { CustomCellDirective } from '../../directives';
         .map(( {key, preSort} ) =>
           ({ active: key, direction: preSort.direction }))
     ));
+  }
+
+  ngOnDestroy() {
+    this.dataSubscription.unsubscribe();
   }
 }
