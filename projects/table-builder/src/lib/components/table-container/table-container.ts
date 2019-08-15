@@ -22,6 +22,7 @@ import { Sort } from '@angular/material/sort';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { CustomCellDirective } from '../../directives';
 import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/TableBuilderConfig';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -48,7 +49,7 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
   @ViewChildren(ColumnBuilderComponent) columnBuilders: QueryList<ColumnBuilderComponent>;
 
   columns: MatColumnDef[];
-
+  filtersExpanded = false;
   rules$: Observable<Sort[]>;
   FieldType = FieldType;
   displayedColumns$: Observable<string[]>;
@@ -135,7 +136,20 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
     ));
   }
 
+  setExpandedFilters() {
+    setTimeout(() => {
+      console.log('setting filter to ', !this.filtersExpanded);
+      this.filtersExpanded = !this.filtersExpanded;
+      this.cdr.markForCheck();
+     } , 0 );
+  }
+
   ngOnDestroy() {
     this.dataSubscription.unsubscribe();
+  }
+
+  ngAfterContentChecked()
+  {
+    console.log('after content checked in table container');
   }
 }

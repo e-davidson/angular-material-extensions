@@ -1,13 +1,21 @@
 <ng-container [matColumnDef]="metaData.key" >
 
     <ng-template matHeaderCellDef >
+
         <ng-container *ngIf="customCell?.columnDef?.headerCell;else header">
             <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template;context: {metaData: metaData }" >
             </ng-container>
         </ng-container>
         <ng-template #header>
-            <mat-header-cell mat-sort-header  class="f-mat-header-cell" >
-                {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+            <mat-header-cell   class="f-mat-header-cell"  >
+              <div style='display: flex;flex-direction: column;'>
+                  <div mat-sort-header >{{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}</div>
+                  <div *ngIf='displayFilter'>
+                    <mat-form-field appearance="outline">
+                      <input matInput (change)='emitFilter.emit({value:filter.value,metaData:metaData})' #filter >
+                    </mat-form-field>
+                  </div>
+              </div>
             </mat-header-cell>
         </ng-template>
     </ng-template>
