@@ -15,7 +15,7 @@ import { FieldType, MetaData } from '../../interfaces/report-def';
 import { first, map } from 'rxjs/operators';
 import { FilterInfo } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
-import { mapArray } from '../../functions/rxjs-operators';
+import { mapArray, combineArrays } from '../../functions/rxjs-operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
@@ -36,6 +36,7 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
   @Input() trackBy: string;
   @Input() isSticky = true;
   @Input() pageSize = 20;
+  @Input() inputFilters: Observable<Array<(val: any) => boolean>>;
   @Output() filters$ = new EventEmitter();
   @Output() selection$ = new EventEmitter();
   dataSubscription: Subscription;
@@ -70,10 +71,18 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
   }
 
   InitializeData() {
-    this.filteredData = new DataFilter(
+    const filters = [
       this.filters$.pipe(
         mapArray((fltr: FilterInfo) => fltr.getFunc())
-      ),
+      )
+    ];
+
+    if (this.inputFilters) {
+      filters.push(this.inputFilters);
+    }
+
+    this.filteredData = new DataFilter(
+      combineArrays( filters ),
       this.tableBuilder.getData$()
     );
 

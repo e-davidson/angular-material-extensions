@@ -5,7 +5,6 @@ import { asap } from 'rxjs/internal/scheduler/asap';
 import { scan, startWith, map } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 
-
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -43,6 +42,7 @@ export class TableBuilderExampleComponent implements OnInit {
   public tableBuiler: TableBuilder;
   newElement$ = new Subject<PeriodicElement>();
   metaData$ = new BehaviorSubject(META_DATA);
+  myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
   constructor() {
     const addedElements = this.newElement$.pipe(
       scan((acc, value ) => {acc.push(value); return acc; }, []),
@@ -67,6 +67,18 @@ export class TableBuilderExampleComponent implements OnInit {
 
   emitData(data) {
     console.log(data);
+  }
+
+  emitFilter() {
+    this.myFilter.next(
+      [
+        element => element.name.includes('B')
+      ]
+    );
+  }
+
+  clearFilter() {
+    this.myFilter.next([]);
   }
 
 }

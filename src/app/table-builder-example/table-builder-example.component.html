@@ -1,4 +1,4 @@
-<tb-table-container [tableBuilder]='tableBuiler' (data)="emitData($event)" >
+<tb-table-container [tableBuilder]='tableBuiler' (data)="emitData($event)" [inputFilters]='myFilter' >
   <p *customCell="'testCell';let element = element" [class.makeMeRed]="element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
   <ng-container customCell="blue" matColumnDef="blue" >
@@ -17,3 +17,5 @@
 </tb-table-container>
 
 <button (click)='addItem()'>Add Gold</button>
+<button (click)='emitFilter()'>Filter B</button>
+<button (click)='clearFilter()'>clear filter</button>
