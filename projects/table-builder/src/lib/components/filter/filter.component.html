@@ -25,10 +25,10 @@
                 <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
             </div>
             <div class="switch" *ngSwitchCase="FieldType.Number">
-                <ng-container class="switch" *ngTemplateOutlet="Number"></ng-container>
+                <tb-number-filter [info]="info" [CurrentFilterType]="info.filterType" (filter$)="change$.emit()"></tb-number-filter>
             </div>
             <div class="switch" *ngSwitchCase="FieldType.Currency">
-              <ng-container class="switch" *ngTemplateOutlet="Number"></ng-container>
+                <tb-number-filter [info]="info" [CurrentFilterType]="info.filterType" (filter$)="change$.emit()"></tb-number-filter>
             </div>
             <div class="switch" *ngSwitchCase="FieldType.Boolean">
               <ng-container class="switch" *ngTemplateOutlet="Boolean"></ng-container>
@@ -60,35 +60,6 @@
         <div class="switch" *ngSwitchCase="FilterType.StringEndsWith">
             <mat-form-field class="my-filter">
                 <input matInput [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()" >
-            </mat-form-field>
-        </div>
-    </div>
-</ng-template>
-
-<ng-template #Number>
-    <div class="switch" [ngSwitch]="info.filterType">
-        <div class="switch" *ngSwitchCase="FilterType.NumberEquals">
-            <mat-form-field class="my-filter">
-                <input matInput [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()"   type="number">
-            </mat-form-field>
-        </div>
-        <div class="switch" *ngSwitchCase="FilterType.NumberGreaterThen">
-            <mat-form-field class="my-filter">
-                <input matInput [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()"   type="number">
-            </mat-form-field>
-        </div>
-        <div class="switch" *ngSwitchCase="FilterType.NumberLessThen">
-            <mat-form-field class="my-filter">
-                <input matInput [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()"   type="number">
-            </mat-form-field>
-        </div>
-        <div class="switch" *ngSwitchCase="FilterType.NumberBetween">
-            <mat-form-field class="my-filter">
-                <input matInput [(ngModel)]="info.filterValue.From" (ngModelChange)="change$.emit()"
-                    placeholder="Start" type="number">
-            </mat-form-field>
-            <mat-form-field class="my-filter">
-                <input matInput [(ngModel)]="info.filterValue.To" (ngModelChange)="change$.emit()" placeholder="End" type="number">
             </mat-form-field>
         </div>
     </div>

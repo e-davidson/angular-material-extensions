@@ -1,0 +1,26 @@
+<div class="switch" [ngSwitch]="info.filterType">
+    <div class="switch" *ngSwitchCase="FilterType.NumberEquals">
+        <mat-form-field class="my-filter">
+            <input matInput [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()"   type="number">
+        </mat-form-field>
+    </div>
+    <div class="switch" *ngSwitchCase="FilterType.NumberGreaterThen">
+        <mat-form-field class="my-filter">
+            <input matInput [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()"   type="number">
+        </mat-form-field>
+    </div>
+    <div class="switch" *ngSwitchCase="FilterType.NumberLessThen">
+        <mat-form-field class="my-filter">
+            <input matInput [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()"   type="number">
+        </mat-form-field>
+    </div>
+    <div class="switch" *ngSwitchCase="FilterType.NumberBetween">
+        <mat-form-field class="my-filter">
+            <input matInput [(ngModel)]="info.filterValue.Start" (ngModelChange)="change$.emit()"
+                placeholder="Start" type="number">
+        </mat-form-field>
+        <mat-form-field class="my-filter">
+            <input matInput [(ngModel)]="info.filterValue.End" (ngModelChange)="change$.emit()" placeholder="End" type="number">
+        </mat-form-field>
+    </div>
+</div>
