@@ -1,5 +1,6 @@
 
-<ng-container multiSort [rules$]='rules$' >
+ <ng-container multiSort [rules$]='rules$' >
+    <tb-column-builder [displayFilter]='filtersExpanded' *ngFor="let column of myColumns$ | async" [customCell]="column.customCell" [metaData]="column.metaData"  ></tb-column-builder>
     <ng-container  *ngIf='columns' >
         <div>
             <tb-filter-displayer class="filter-row col-md-11" [filterCols$]="filterCols$" (filters$)="filters$.emit($event)">
@@ -8,7 +9,7 @@
             <tb-col-displayer class="menu pull-right" [cols]="columnNames$" (update)="columnsSelected$.next($event)">
             </tb-col-displayer>
 
-            <button (click)="setExpandedFilters()">expand filters {{filtersExpanded}}</button>
+            <button (click)="filtersExpanded = !filtersExpanded">{{filtersExpanded? 'hide' : 'show' }} filters </button>
         </div>
         <div>
           <tb-generic-table
@@ -24,14 +25,6 @@
             [columnDefs]='columns'
             >
           </tb-generic-table>
-
         </div>
-
     </ng-container>
-
-
-
-
-      <tb-column-builder [displayFilter]='filtersExpanded' *ngFor="let column of myColumns$ | async" [customCell]="column.customCell" [metaData]="column.metaData"  ></tb-column-builder>
-
 </ng-container>
