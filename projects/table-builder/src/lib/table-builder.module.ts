@@ -17,6 +17,7 @@ import { MultiSortDirective } from './directives/multi-sort.directive';
 import { ColumnBuilderComponent } from './components/column-builder/column-builder.component';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuilderConfig';
+import { NumberFilterComponent } from './components/number-filter/number-filter.component';
 
 @NgModule({
   imports: [
@@ -24,6 +25,7 @@ import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuil
     MaterialModule,
     FormsModule,
   ],
+<<<<<<< HEAD
   exports: [
     GenericTableComponent,
     TableContainerComponent,
@@ -48,6 +50,35 @@ import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuil
     FilterComponent,
     MultiSortDirective
   ]
+=======
+    exports: [
+        GenericTableComponent,
+        TableContainerComponent,
+        CustomCellDirective,
+        GenColDisplayerComponent,
+        GenValDisplayerComponent,
+        GenFilterDisplayerComponent,
+        FilterComponent,
+        MultiSortDirective
+    ],
+    declarations: [
+        SpaceCasePipe,
+        ColumnTotalPipe,
+        TableContainerComponent,
+        GenericTableComponent,
+        CustomCellDirective,
+        GenColDisplayerComponent,
+        GenValDisplayerComponent,
+        GenFilterDisplayerComponent,
+        DateFilterComponent,
+        FilterComponent,
+        MultiSortDirective,
+        NumberFilterComponent
+    ],
+    providers: [
+      MultiSortDirective
+    ]
+>>>>>>> master
 })
 export class TableBuilderModule {
   static forRoot(config: TableBuilderConfig): ModuleWithProviders {
