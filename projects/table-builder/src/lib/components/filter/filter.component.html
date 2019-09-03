@@ -14,20 +14,11 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <div class="switch" [ngSwitch]="info.field.fieldType">
-            <div class="switch" *ngSwitchCase="FieldType.String" >
+        <div class="switch" [ngSwitch]="true">
+            <div class="switch" *ngSwitchCase="info.field.fieldType === FieldType.String || info.field.fieldType === FieldType.Array || info.field.fieldType === FieldType.Unknown" >
                 <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
             </div>
-            <div class="switch" *ngSwitchCase="FieldType.Array" >
-                <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
-            </div>
-            <div class="switch" *ngSwitchCase="FieldType.Unknown" >
-                <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
-            </div>
-            <div class="switch" *ngSwitchCase="FieldType.Number">
-                <tb-number-filter [info]="info" [CurrentFilterType]="info.filterType" (filter$)="change$.emit()"></tb-number-filter>
-            </div>
-            <div class="switch" *ngSwitchCase="FieldType.Currency">
+            <div class="switch" *ngSwitchCase="info.field.fieldType === FieldType.Number || info.field.fieldType === FieldType.Currency">
                 <tb-number-filter [info]="info" [CurrentFilterType]="info.filterType" (filter$)="change$.emit()"></tb-number-filter>
             </div>
             <div class="switch" *ngSwitchCase="FieldType.Boolean">

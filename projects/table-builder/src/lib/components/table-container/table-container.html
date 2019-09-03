@@ -1,6 +1,6 @@
 
  <ng-container multiSort [rules$]='rules$' >
-    <tb-column-builder [displayFilter]='filtersExpanded' *ngFor="let column of myColumns$ | async" [customCell]="column.customCell" [metaData]="column.metaData"  ></tb-column-builder>
+    <tb-column-builder (filter$)='inlineFilters$.next()' [displayFilter]='filtersExpanded' *ngFor="let column of myColumns$ | async" [customCell]="column.customCell" [metaData]="column.metaData"  ></tb-column-builder>
     <ng-container  *ngIf='columns' >
         <div>
             <tb-filter-displayer class="filter-row col-md-11" [filterCols$]="filterCols$" (filters$)="filters$.emit($event)">

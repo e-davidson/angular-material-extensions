@@ -25,32 +25,6 @@ import { NumberFilterComponent } from './components/number-filter/number-filter.
     MaterialModule,
     FormsModule,
   ],
-<<<<<<< HEAD
-  exports: [
-    GenericTableComponent,
-    TableContainerComponent,
-    CustomCellDirective,
-    GenColDisplayerComponent,
-    GenValDisplayerComponent,
-    GenFilterDisplayerComponent,
-    FilterComponent,
-    MultiSortDirective
-  ],
-  declarations: [
-    ColumnBuilderComponent,
-    SpaceCasePipe,
-    ColumnTotalPipe,
-    TableContainerComponent,
-    GenericTableComponent,
-    CustomCellDirective,
-    GenColDisplayerComponent,
-    GenValDisplayerComponent,
-    GenFilterDisplayerComponent,
-    DateFilterComponent,
-    FilterComponent,
-    MultiSortDirective
-  ]
-=======
     exports: [
         GenericTableComponent,
         TableContainerComponent,
@@ -73,12 +47,9 @@ import { NumberFilterComponent } from './components/number-filter/number-filter.
         DateFilterComponent,
         FilterComponent,
         MultiSortDirective,
-        NumberFilterComponent
-    ],
-    providers: [
-      MultiSortDirective
+        NumberFilterComponent,
+        ColumnBuilderComponent,
     ]
->>>>>>> master
 })
 export class TableBuilderModule {
   static forRoot(config: TableBuilderConfig): ModuleWithProviders {

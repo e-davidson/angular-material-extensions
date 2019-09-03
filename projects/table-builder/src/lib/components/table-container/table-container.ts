@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject, concat, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { first, map } from 'rxjs/operators';
+import { first, map, tap, filter } from 'rxjs/operators';
 import { FilterInfo } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { mapArray, combineArrays } from '../../functions/rxjs-operators';
@@ -56,6 +56,7 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
   columnNames$: Observable<MetaData[]>;
   filteredData: DataFilter;
   filterCols$: Observable<MetaData[]>;
+  inlineFilters$ = new Subject<FilterInfo[]>();
 
   myColumns$: Observable<{metaData: MetaData, customCell: CustomCellDirective}[]>;
 
@@ -66,6 +67,7 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
   ngOnInit() {
     this.InitializeData();
   }
+
   ngAfterContentInit() {
     this.InitializeColumns();
   }
@@ -73,6 +75,7 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
   InitializeData() {
     const filters = [
       this.filters$.pipe(
+        tap( d => console.log(d)),
         mapArray((fltr: FilterInfo) => fltr.getFunc())
       )
     ];
@@ -80,6 +83,10 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../../classes/Table
     if (this.inputFilters) {
       filters.push(this.inputFilters);
     }
+
+    filters.push(
+      this.inlineFilters$.pipe(map(f => this.columnBuilders.filter( cb => cb.filter.filterValue  ).map( cb => cb.filter.getFunc() )  ))
+    );
 
     this.filteredData = new DataFilter(
       combineArrays( filters ),
