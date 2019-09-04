@@ -11,7 +11,7 @@ import { debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'tb-column-builder',
   templateUrl: './column-builder.component.html',
-  styleUrls: ['./column-builder.component.css'],
+  styleUrls: ['./column-builder.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColumnBuilderComponent {
