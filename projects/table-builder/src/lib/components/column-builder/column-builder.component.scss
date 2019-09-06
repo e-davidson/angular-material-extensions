@@ -1,0 +1,19 @@
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+ ::ng-deep .form-field .mat-form-field-wrapper{
+  padding-bottom: 4px!important;
+  padding-top: 4px!important;
+  margin-bottom: 5px!important;
+}
+::ng-deep .mat-header-cell{
+  align-items: flex-end!important;
+  padding-bottom: 10px;
+}
+::ng-deep .form-field.mat-form-field-appearance-outline .mat-form-field-infix{
+  padding: 5px 0 5px 0;
+  width: auto;
+}

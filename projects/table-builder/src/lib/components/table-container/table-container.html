@@ -9,7 +9,7 @@
             <tb-col-displayer class="menu pull-right" [cols]="columnNames$" (update)="columnsSelected$.next($event)">
             </tb-col-displayer>
 
-            <button (click)="filtersExpanded = !filtersExpanded">{{filtersExpanded? 'hide' : 'show' }} filters </button>
+            <button mat-flat-button (click)="filtersExpanded = !filtersExpanded">{{filtersExpanded? 'hide' : 'show' }} filters </button>
         </div>
         <div>
           <tb-generic-table
@@ -23,6 +23,7 @@
             [isSticky]='isSticky'
             [pageSize]='pageSize'
             [columnDefs]='columns'
+            [displayFilter]='filtersExpanded'
             >
           </tb-generic-table>
         </div>

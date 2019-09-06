@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ViewChild, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { MatColumnDef } from '@angular/material/table';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { debounceTime } from 'rxjs/operators';
 @Component({
   selector: 'tb-column-builder',
   templateUrl: './column-builder.component.html',
-  styleUrls: ['./column-builder.component.css'],
+  styleUrls: ['./column-builder.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColumnBuilderComponent {
@@ -27,7 +27,7 @@ export class ColumnBuilderComponent {
   change$  = new EventEmitter();
   @Output() filter$ = this.change$.pipe(debounceTime(250));
 
-  @ViewChild(MatColumnDef, { static: false}) columnDef: MatColumnDef;
+  @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
 
   constructor() {}
 
