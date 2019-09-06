@@ -9,36 +9,6 @@
     <ng-template #header>
       <mat-header-cell class="f-mat-header-cell">
         <div style='display: flex;flex-direction: column;'>
-          <div *ngIf='displayFilter'>
-            <div class="switch" [ngSwitch]="true">
-              <div class="switch"
-                *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
-                <ng-container>
-                  <mat-form-field class="form-field" appearance="outline">
-                    <input matInput [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()"
-                    [placeholder]="'Filter ' + (metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ))">
-                  </mat-form-field>
-                </ng-container>
-              </div>
-              <div class="switch"
-                *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
-                <mat-form-field appearance="outline" class="form-field">
-                  <input matInput type='number' [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
-                  <div matSuffix style='display: flex; flex-direction: row;'>
-                    <button mat-icon-button disableRipple (dblclick)="setFilterType(FilterType.NumberGreaterThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberGreaterThen ? 'green' : ''  }" ><mat-icon>arrow_forward_ios</mat-icon></button>
-                    <button mat-icon-button disableRipple (dblclick)="setFilterType(FilterType.NumberLessThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }"><mat-icon>arrow_back_ios</mat-icon></button>
-                  </div>
-                </mat-form-field>
-              </div>
-              <div class="switch" *ngSwitchCase="FieldType.Boolean">
-
-              </div>
-              <div class="switch" *ngSwitchCase="FieldType.Date">
-
-              </div>
-            </div>
-
-          </div>
           <div mat-sort-header>{{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}</div>
         </div>
       </mat-header-cell>
@@ -81,4 +51,41 @@
     </ng-template>
   </ng-template>
 
+</ng-container>
+<ng-container [matColumnDef]="(metaData.key + '_filter')">
+    <ng-template matHeaderCellDef>
+        <mat-header-cell class="f-mat-header-cell" >
+        <div class="switch" [ngSwitch]="true">
+          <div class="switch"
+            *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
+            <ng-container>
+              <mat-form-field class="form-field" appearance="outline">
+                <input matInput [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()"
+                [placeholder]="'Filter ' + (metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ))">
+              </mat-form-field>
+            </ng-container>
+          </div>
+          <div class="switch"
+            *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
+            <mat-form-field appearance="outline" class="form-field">
+              <input matInput type='number' [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+              <div matSuffix style='display: flex; flex-direction: row;'>
+                  <button mat-icon-button disableRipple matTooltip="Less than" (dblclick)="setFilterType(FilterType.NumberLessThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }"><mat-icon>arrow_back_ios</mat-icon></button>
+                <button mat-icon-button disableRipple matTooltip="Greater than" (dblclick)="setFilterType(FilterType.NumberGreaterThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberGreaterThen ? 'green' : ''  }" ><mat-icon>arrow_forward_ios</mat-icon></button>
+              </div>
+            </mat-form-field>
+          </div>
+          <div class="switch" *ngSwitchCase="FieldType.Boolean">
+
+          </div>
+          <div class="switch" *ngSwitchCase="FieldType.Date">
+
+          </div>
+        </div>
+
+
+        </mat-header-cell>
+      </ng-template>
+      <ng-container *matCellDef="let element">
+        </ng-container>
 </ng-container>
