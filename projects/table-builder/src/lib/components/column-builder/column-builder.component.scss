@@ -4,7 +4,7 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-::ng-deep .form-field .mat-form-field-wrapper{
+ ::ng-deep .form-field .mat-form-field-wrapper{
   padding-bottom: 4px!important;
   padding-top: 4px!important;
   margin-bottom: 5px!important;
@@ -13,7 +13,7 @@ input[type=number]::-webkit-outer-spin-button {
   align-items: flex-end!important;
   padding-bottom: 10px;
 }
-::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix{
+::ng-deep .form-field.mat-form-field-appearance-outline .mat-form-field-infix{
   padding: 5px 0 5px 0;
   width: auto;
 }
