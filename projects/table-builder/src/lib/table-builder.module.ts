@@ -14,6 +14,7 @@ import { DateFilterComponent } from './components/date-filter/date-filter.compon
 import { TableContainerComponent } from './components/table-container/table-container';
 import { ColumnTotalPipe } from './pipes/column-total.pipe';
 import { MultiSortDirective } from './directives/multi-sort.directive';
+import { NumberFilterComponent } from './components/number-filter/number-filter.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { MultiSortDirective } from './directives/multi-sort.directive';
         GenFilterDisplayerComponent,
         DateFilterComponent,
         FilterComponent,
-        MultiSortDirective
+        MultiSortDirective,
+        NumberFilterComponent
     ],
     providers: [
       MultiSortDirective

@@ -28,9 +28,9 @@ export class TableTemplateBuilder {
     }
 
     getColumns(): Observable<MetaData[]> {
-      return this.tableBuilder.metaData$.pipe(
-        filterArray(meta => meta.fieldType !== FieldType.Hidden),
-        map(meta => _.orderBy(meta, 'order'))
+      return this.getColumnTemplates().pipe(
+        filterArray(template => template.metaData.fieldType !== FieldType.Hidden),
+        map(templates => _.orderBy(templates, 'metaData.order').map(t => t.metaData))
       );
     }
 
@@ -41,6 +41,7 @@ export class TableTemplateBuilder {
           if (cc) {
             cc.customCellOrder = cc.customCellOrder || md.order;
             cc.displayName = cc.displayName || md.displayName;
+            cc.preSort = cc.preSort || md.preSort;
           }
         })),
         filterArray(metaData => !this.customCells.map(cc => cc.customCell.toLowerCase()).includes(metaData.key.toLowerCase())),
@@ -76,6 +77,7 @@ export class TableTemplateBuilder {
         metaData: {
           key: cc.customCell,
           displayName: cc.displayName,
+          preSort: cc.preSort,
           fieldType: FieldType.Unknown,
           order: cc.customCellOrder
         }

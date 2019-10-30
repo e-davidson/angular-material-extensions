@@ -12,9 +12,9 @@ function numberLessThenFunc(filterVal: number, val: number): boolean {
     return val < filterVal;
 }
 
-function numberBetweenFunc(filterVal: number[], val: number): boolean {
-    const startVal = Number(filterVal[0]);
-    const endVal = Number(filterVal[1]);
+function numberBetweenFunc(filterVal: any, val: number): boolean {
+    const startVal = Number(filterVal.Start);
+    const endVal = Number(filterVal.End);
     return  (val > startVal) && (val < endVal);
 }
 
