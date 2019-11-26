@@ -21,6 +21,7 @@ import { Sort } from '@angular/material/sort';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { CustomCellDirective } from '../../directives';
 import { TableStateManager } from '../../classes/table-state-manager';
+import * as _ from 'lodash';
 
 
 @Component({
@@ -139,7 +140,7 @@ import { TableStateManager } from '../../classes/table-state-manager';
 
   ngAfterViewInit() {
     setTimeout(() => {
-      this.columns = this.columnBuilders.map( cb => cb.columnDef );
+      this.columns = _.flatten(this.columnBuilders.map( cb => cb.columnDefs.toArray() ));
       this.cdr.markForCheck();
     }, 0);
   }

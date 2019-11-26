@@ -14,7 +14,7 @@
             </tb-filter-displayer>
 
             <tb-col-displayer class="menu pull-right"></tb-col-displayer>
-
+            <button mat-flat-button (click)="filtersExpanded = !filtersExpanded">{{filtersExpanded? 'hide' : 'show' }} filters </button>
         </div>
         <div>
           <tb-generic-table
@@ -27,6 +27,7 @@
             [isSticky]='isSticky'
             [pageSize]='pageSize'
             [columnDefs]='columns'
+            [displayFilter]='filtersExpanded'
             >
           </tb-generic-table>
         </div>

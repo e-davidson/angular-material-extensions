@@ -1,11 +1,14 @@
 <mat-table [dataSource]="dataSource" [trackBy]='trackByFunction' >
 
     <ng-container matColumnDef="select">
+
         <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" style="width:20px;" >
+
           <mat-checkbox (change)="$event ? masterToggle() : null"
                         [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
+
         </mat-header-cell>
 
         <mat-cell *matCellDef="let row" style="width:20px;">
@@ -24,9 +27,11 @@
           <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" >#</mat-header-cell>
           <mat-cell *matCellDef="let i = index;"> {{ (paginator.pageIndex * paginator.pageSize) +  i + 1 }} </mat-cell>
           <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+
       </ng-container>
 
   <mat-header-row *matHeaderRowDef="keys$ | async; sticky: isSticky"></mat-header-row>
+  <mat-header-row [ngStyle]="{'display': displayFilter? '' : 'none'}" *matHeaderRowDef="filterKeys$ | async; sticky: isSticky"></mat-header-row>
   <mat-row *matRowDef="let row; columns: keys$ | async; let i = index"></mat-row>
   <mat-footer-row *matFooterRowDef="keys$ | async"></mat-footer-row>
 
@@ -34,4 +39,3 @@
 
 <mat-paginator [pageSize]="(state.state$ | async).pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons>
 </mat-paginator>
-

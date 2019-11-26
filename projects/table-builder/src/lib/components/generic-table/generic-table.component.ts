@@ -19,7 +19,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { orderBy } from 'lodash';
-import { combineArrays } from '../../functions/rxjs-operators';
+import { combineArrays, mapArray } from '../../functions/rxjs-operators';
 import { TableStateManager } from '../../classes/table-state-manager';
 import { tap } from 'rxjs/operators';
 
@@ -39,6 +39,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() isSticky = false;
   @Input() pageSize: number;
   @Input() columnDefs: QueryList<MatColumnDef>;
+  @Input() displayFilter = false;
 
   @Output() selection$: Observable<any>;
 
@@ -49,6 +50,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   selection: SelectionModel<any>;
   dataSource: MatTableObservableDataSource<any>;
   keys$: Observable<string[]>;
+  filterKeys$: Observable<string[]>;
 
   constructor(private sort: MatSort, public state: TableStateManager) {
     this.selection = new SelectionModel<any>(true, []);
@@ -119,8 +121,9 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
             r => r.columns = d
           );
         }
-      })
+      }),
     );
+    this.filterKeys$ = this.keys$.pipe(mapArray( keys => keys + '_filter'));
   }
 
   isAllSelected() {
