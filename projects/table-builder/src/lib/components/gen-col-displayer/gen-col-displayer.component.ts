@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { DisplayCol } from '../../classes/display-col';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { MetaData } from '../../interfaces/report-def';
+import { TableStateManager } from '../../classes/table-state-manager';
 
 @Component({
   selector: 'tb-col-displayer',
@@ -11,14 +11,12 @@ import { MetaData } from '../../interfaces/report-def';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GenColDisplayerComponent {
-
-  displayCols$: Observable<DisplayCol[]>;
-  @Output() update: EventEmitter<string[]> = new EventEmitter();
-  @Input() set cols(c: Observable<MetaData[]>) {
-    this.displayCols$ = c.pipe(
-      map(cols => cols.map(col => {
-        return { key: col.key, displayName: col.displayName, isVisible: true };
-      }))
+  columns$: Observable< DisplayCol[]>;
+  constructor( private tableState: TableStateManager) {
+    this.columns$ = this.tableState.state$.pipe(
+      map( state =>
+        state.metaData.map( md =>
+          ({key: md.key, displayName: md.displayName, isVisible: !state.hiddenKeys.includes(md.key) })) ),
     );
   }
 
@@ -38,6 +36,6 @@ export class GenColDisplayerComponent {
   }
 
   emit(displayCols: DisplayCol[]) {
-    this.update.emit(displayCols.filter(col => col.isVisible).map(col => col.key));
+    this.tableState.hideColumns(displayCols.map( c => ({key: c.key, visible: c.isVisible})));
   }
 }

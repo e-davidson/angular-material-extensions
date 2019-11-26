@@ -3,13 +3,24 @@
   <ng-template matHeaderCellDef>
 
     <ng-container *ngIf="customCell?.columnDef?.headerCell;else header">
-      <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template;context: {metaData: metaData }">
+      <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData } ">
       </ng-container>
     </ng-container>
     <ng-template #header>
       <mat-header-cell class="f-mat-header-cell">
-        <div style='display: flex;flex-direction: column;'>
-          <div mat-sort-header>{{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}</div>
+        <div style='display: flex;flex-direction: row;'>
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)=hideField(metaData.key)>
+                  <mat-icon>clear</mat-icon>
+                  <span>Hide</span>
+                </button>
+              </mat-menu>
+          <div mat-sort-header>
+            {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+          </div>
           <div *ngIf='displayFilter'>
             <div class="switch" [ngSwitch]="true">
               <div class="switch"

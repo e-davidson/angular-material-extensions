@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableBuilderModule } from '../../projects/table-builder/src/lib/table-builder.module';
 import { TableBuilderExampleComponent } from './table-builder-example/table-builder-example.component';
 import { MatTableModule } from '@angular/material/table';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { MatTableModule } from '@angular/material/table';
     AppRoutingModule,
     BrowserAnimationsModule,
     TableBuilderModule.forRoot({pageSize: 20}),
+    StoreModule.forRoot({}),
     MatTableModule,
   ],
   providers: [],

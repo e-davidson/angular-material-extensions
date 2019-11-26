@@ -1,15 +1,20 @@
 
  <ng-container multiSort [rules$]='rules$' >
-    <tb-column-builder (filter$)='inlineFilters$.next()' [displayFilter]='filtersExpanded' *ngFor="let column of myColumns$ | async" [customCell]="column.customCell" [metaData]="column.metaData"  ></tb-column-builder>
+    <tb-column-builder
+      *ngFor="let column of myColumns$ | async"
+      (filter$)='inlineFilters$.next()'
+      [displayFilter]='filtersExpanded'
+      [customCell]="column.customCell"
+      [metaData]="column.metaData"
+    >
+  </tb-column-builder>
     <ng-container  *ngIf='columns' >
         <div>
             <tb-filter-displayer class="filter-row col-md-11" [filterCols$]="filterCols$" (filters$)="filters$.emit($event)">
             </tb-filter-displayer>
 
-            <tb-col-displayer class="menu pull-right" [cols]="columnNames$" (update)="columnsSelected$.next($event)">
-            </tb-col-displayer>
+            <tb-col-displayer class="menu pull-right"></tb-col-displayer>
 
-            <button (click)="filtersExpanded = !filtersExpanded">{{filtersExpanded? 'hide' : 'show' }} filters </button>
         </div>
         <div>
           <tb-generic-table
@@ -18,7 +23,6 @@
             [IndexColumn]='IndexColumn'
             [SelectionColumn]='SelectionColumn'
             (selection$)='selection$.emit($event)'
-            [columns$]='displayedColumns$'
             [trackBy]='trackBy'
             [isSticky]='isSticky'
             [pageSize]='pageSize'
