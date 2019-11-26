@@ -18,7 +18,7 @@ import { StoreModule } from '@ngrx/store';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    TableBuilderModule.forRoot({pageSize: 20}),
+    TableBuilderModule.forRoot({ defaultTableState: { pageSize: 20}}),
     StoreModule.forRoot({}),
     MatTableModule,
   ],
