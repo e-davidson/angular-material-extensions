@@ -17,6 +17,9 @@
                   <mat-icon>clear</mat-icon>
                   <span>Hide</span>
                 </button>
+                <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width">
+                  <input matInput placeholder="filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+                </mat-form-field>
               </mat-menu>
           <div mat-sort-header>
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}

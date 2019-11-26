@@ -68,4 +68,9 @@ export class ColumnBuilderComponent {
     this.change$.emit();
   }
 
+  stopClickPropagate(event: any) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
 }
