@@ -9,9 +9,18 @@ input[type=number]::-webkit-outer-spin-button {
   padding-top: 4px!important;
   margin-bottom: 5px!important;
 }
-::ng-deep .mat-header-cell{
-  align-items: flex-end!important;
-  padding-bottom: 10px;
+.menu-icon{
+  font-size: 16px;
+  line-height: 16px!important;
+  vertical-align: top!important;
+}
+.search-icon{
+  margin-right: 16px;
+  vertical-align: middle;
+  height: 24px;
+  color: rgba(0,0,0,.54);
+  font-size: 21px;
+  line-height: 1.125
 }
 ::ng-deep .form-field.mat-form-field-appearance-outline .mat-form-field-infix{
   padding: 5px 0 5px 0;
