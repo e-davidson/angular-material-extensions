@@ -3,13 +3,56 @@
   <ng-template matHeaderCellDef>
 
     <ng-container *ngIf="customCell?.columnDef?.headerCell;else header">
-      <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template;context: {metaData: metaData }">
+      <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData } ">
       </ng-container>
     </ng-container>
     <ng-template #header>
       <mat-header-cell class="f-mat-header-cell">
-        <div style='display: flex;flex-direction: column;'>
-          <div mat-sort-header>{{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}</div>
+        <div style='display: flex;flex-direction: row;'>
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)=hideField(metaData.key)>
+                  <mat-icon>clear</mat-icon>
+                  <span>Hide</span>
+                </button>
+                <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width">
+                  <input matInput placeholder="filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+                </mat-form-field>
+              </mat-menu>
+          <div mat-sort-header>
+            {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+          </div>
+          <div *ngIf='displayFilter'>
+            <div class="switch" [ngSwitch]="true">
+              <div class="switch"
+                *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
+                <ng-container>
+                  <mat-form-field appearance="outline">
+                    <input matInput [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+                  </mat-form-field>
+                </ng-container>
+              </div>
+              <div class="switch"
+                *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
+                <mat-form-field appearance="outline">
+                  <input matInput type='number' [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+                  <div matSuffix style='display: flex; flex-direction: row;'>
+                    <mat-icon (dblclick)="setFilterType(FilterType.NumberGreaterThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberGreaterThen ? 'green' : ''  }" >arrow_forward_ios</mat-icon>
+                    <mat-icon (dblclick)="setFilterType(FilterType.NumberLessThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }">arrow_back_ios</mat-icon>
+                  </div>
+                </mat-form-field>
+              </div>
+              <div class="switch" *ngSwitchCase="FieldType.Boolean">
+
+              </div>
+              <div class="switch" *ngSwitchCase="FieldType.Date">
+
+              </div>
+            </div>
+
+          </div>
         </div>
       </mat-header-cell>
     </ng-template>

@@ -1,7 +1,8 @@
 import { InjectionToken } from '@angular/core';
+import { TableState } from './TableState';
 
 export interface TableBuilderConfig {
-  pageSize?: number;
+  defaultTableState: Partial<TableState>;
 }
 
 export const TableBuilderConfigToken = new InjectionToken<TableBuilderConfig>('TableBuilderConfig');

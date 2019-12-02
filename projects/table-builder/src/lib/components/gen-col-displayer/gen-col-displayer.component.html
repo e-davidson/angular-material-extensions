@@ -1,5 +1,5 @@
-<div *ngIf="displayCols$ | async as displayCols">
-    <span matTooltip="Show/hide columns" class="pull-right">
+    <ng-container *ngIf="columns$ | async as displayCols">
+      <span matTooltip="Show/hide columns" class="pull-right">
         <button mat-icon-button [matMenuTriggerFor]="menu">
             <mat-icon color="primary">more_vert</mat-icon>
         </button>
@@ -34,7 +34,6 @@
         <button [class.isHidden]="!col.isVisible" (click)="stopClickPropagate($event)" mat-menu-item
             *ngFor="let col of displayCols">
             <div (click)="col.isVisible = !col.isVisible; emit(displayCols)">
-
                 <p class="label">
                     {{col.displayName || (col.key | spaceCase) }}
                 </p>
@@ -54,6 +53,5 @@
 
             </div>
         </button>
-
     </mat-menu>
-</div>
+  </ng-container>

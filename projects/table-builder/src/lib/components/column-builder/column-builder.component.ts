@@ -6,6 +6,7 @@ import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { FilterType } from '../../enums/filterTypes';
 import { debounceTime } from 'rxjs/operators';
+import { TableStateManager } from '../../classes/table-state-manager';
 
 
 @Component({
@@ -29,7 +30,11 @@ export class ColumnBuilderComponent {
 
   @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
 
-  constructor() {}
+  constructor( private tableState: TableStateManager) {}
+
+  hideField(key) {
+    this.tableState.hideColumn(key);
+  }
 
   ngOnInit() {
     this.filter = new FilterInfo(this.metaData);
@@ -61,6 +66,11 @@ export class ColumnBuilderComponent {
       this.filter.filterType = filterType;
     }
     this.change$.emit();
+  }
+
+  stopClickPropagate(event: any) {
+    event.stopPropagation();
+    event.preventDefault();
   }
 
 }

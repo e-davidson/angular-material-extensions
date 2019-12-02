@@ -12,8 +12,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable, MatColumnDef } from '@angular/material/table';
-import { Observable, scheduled, } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, scheduled } from 'rxjs';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -21,6 +20,8 @@ import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { orderBy } from 'lodash';
 import { combineArrays, mapArray } from '../../functions/rxjs-operators';
+import { TableStateManager } from '../../classes/table-state-manager';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tb-generic-table',
@@ -34,7 +35,6 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
-  @Input() columns$: Observable<string[]>;
   @Input() rows: QueryList<MatRowDef<any>>;
   @Input() isSticky = false;
   @Input() pageSize: number;
@@ -52,7 +52,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   keys$: Observable<string[]>;
   filterKeys$: Observable<string[]>;
 
-  constructor(private sort: MatSort) {
+  constructor(private sort: MatSort, public state: TableStateManager) {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
   }
@@ -111,7 +111,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
     this.keys$ = combineArrays(
       [
         scheduled([staticColumns], asap),
-        this.columns$,
+        this.state.displayedColumns$,
       ]
     ).pipe(
       tap(d => {
