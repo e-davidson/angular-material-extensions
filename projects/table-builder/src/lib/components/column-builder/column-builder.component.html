@@ -8,20 +8,8 @@
     </ng-container>
     <ng-template #header>
       <mat-header-cell class="f-mat-header-cell">
-        <div style='display: flex;flex-direction: row;'>
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)=hideField(metaData.key)>
-                  <mat-icon>clear</mat-icon>
-                  <span>Hide</span>
-                </button>
-                <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width">
-                  <input matInput placeholder="filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
-                </mat-form-field>
-              </mat-menu>
-          <div mat-sort-header>
+        <div style='display: flex;flex-direction: row; width: 100%; align-items: center;'>
+          <div mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
           </div>
           <div *ngIf='displayFilter'>
@@ -53,6 +41,19 @@
             </div>
 
           </div>
+          <button mat-icon-button disableRipple [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu" style="height:16px;" >
+            <mat-icon class="menu-icon" >more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)=hideField(metaData.key)>
+              <mat-icon>clear</mat-icon>
+              <span>Hide</span>
+            </button>
+            <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width" style="padding: 0 16px">
+              <mat-icon matPrefix class="search-icon">search</mat-icon>
+              <input matInput placeholder="filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+            </mat-form-field>
+          </mat-menu>
         </div>
       </mat-header-cell>
     </ng-template>

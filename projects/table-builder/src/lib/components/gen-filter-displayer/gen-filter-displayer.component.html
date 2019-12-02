@@ -1,5 +1,5 @@
-<p>
-  <button class="filter-button" mat-button [matMenuTriggerFor]="menu" ><mat-icon class="filter-icon" color="primary">add</mat-icon>Filter</button>
+<p class="filter-wrapper">
+  <button class="filter-button" mat-icon-button [matMenuTriggerFor]="menu" ><mat-icon class="filter-icon" color="primary">filter_list</mat-icon></button>
   <button class="cancel-button pull-right" *ngIf="currentFilters.length" mat-icon-button (click)="clearAll()" matTooltip="Close all Filters">
     <mat-icon class="cancel-button" color="primary">close</mat-icon>
   </button>
