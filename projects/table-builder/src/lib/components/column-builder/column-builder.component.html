@@ -52,7 +52,7 @@
             <ng-container [ngSwitch]="true">
               <ng-container
                 *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
-                <mat-form-field  (click)="stopClickPropagate($event)" class="example-full-width" style="font-size: 14px; padding: 0 16px">
+                <mat-form-field  (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
                   <mat-icon matPrefix class="search-icon">search</mat-icon>
                   <input matInput placeholder="Filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
                 </mat-form-field>
