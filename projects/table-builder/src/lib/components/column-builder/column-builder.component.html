@@ -49,10 +49,42 @@
               <mat-icon>clear</mat-icon>
               <span>Hide</span>
             </button>
-            <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width" style="padding: 0 16px">
-              <mat-icon matPrefix class="search-icon">search</mat-icon>
-              <input matInput placeholder="filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
-            </mat-form-field>
+            <ng-container [ngSwitch]="true">
+              <ng-container
+                *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
+                <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width" style="padding: 0 16px">
+                  <mat-icon matPrefix class="search-icon">search</mat-icon>
+                  <input matInput placeholder="filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
+                <mat-form-field class="auto-width" (click)="stopClickPropagate($event)"  style="padding: 0 16px">
+                  <mat-icon matPrefix class="search-icon">search</mat-icon>
+                  <input matInput type='number' [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
+                  <span matSuffix  >
+                    <mat-icon (dblclick)="setFilterType(FilterType.NumberGreaterThen)" class="suffix-icons" [ngStyle]="{'color': filter.filterType === FilterType.NumberGreaterThen ? 'green' : ''  }" >arrow_forward_ios</mat-icon>
+                    <mat-icon (dblclick)="setFilterType(FilterType.NumberLessThen)" class="suffix-icons" [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }">arrow_back_ios</mat-icon>
+                  </span>
+                </mat-form-field>
+              </ng-container>
+              <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Boolean">
+                <label style="padding: 0 16px;" >Filter</label>
+                <mat-radio-group (click)="stopClickPropagate($event)"  [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" style="display: flex;flex-direction: column;padding: 0 16px;">
+                  <mat-radio-button [value]="null">Reset</mat-radio-button>
+                  <mat-radio-button [value]="true">True</mat-radio-button>
+                  <mat-radio-button [value]="false">False</mat-radio-button>
+                </mat-radio-group>
+              </ng-container>
+              <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
+                  <mat-form-field (click)="stopClickPropagate($event)" >
+                      <input matInput [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" [matDatepicker]="calendar" (click)="calendar.open()">
+                      <mat-datepicker-toggle matSuffix [for]="calendar"></mat-datepicker-toggle>
+                      <mat-icon (dblclick)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons" [ngStyle]="{'color': filter.filterType === FilterType.NumberGreaterThen ? 'green' : ''  }" >arrow_forward_ios</mat-icon>
+                      <mat-icon (dblclick)="setFilterType(FilterType.DateOnOrBefore)" class="suffix-icons" [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }">arrow_back_ios</mat-icon>
+                      <mat-datepicker #calendar></mat-datepicker>
+                  </mat-form-field>
+              </ng-container>
+            </ng-container>
           </mat-menu>
         </div>
       </mat-header-cell>
@@ -114,7 +146,7 @@
             <mat-form-field appearance="outline" class="form-field">
               <input matInput type='number' [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" >
               <div matSuffix style='display: flex; flex-direction: row;'>
-                  <button mat-icon-button disableRipple matTooltip="Less than" (dblclick)="setFilterType(FilterType.NumberLessThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }"><mat-icon>arrow_back_ios</mat-icon></button>
+                <button mat-icon-button disableRipple matTooltip="Less than" (dblclick)="setFilterType(FilterType.NumberLessThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }"><mat-icon>arrow_back_ios</mat-icon></button>
                 <button mat-icon-button disableRipple matTooltip="Greater than" (dblclick)="setFilterType(FilterType.NumberGreaterThen)" [ngStyle]="{'color': filter.filterType === FilterType.NumberGreaterThen ? 'green' : ''  }" ><mat-icon>arrow_forward_ios</mat-icon></button>
               </div>
             </mat-form-field>

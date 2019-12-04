@@ -57,12 +57,12 @@
 </ng-template>
 
 <ng-template #Boolean>
-    <div class="switch" [ngSwitch]="info.filterType">
-        <div class="switch" *ngSwitchCase="FilterType.BooleanEquals">
-            <mat-radio-group [(ngModel)]="info.filterValue"  (ngModelChange)="change$.emit()">
-            <mat-radio-button [value]="true">True</mat-radio-button>
-            <mat-radio-button [value]="false">False</mat-radio-button>
-            </mat-radio-group>
-        </div>
+  <div class="switch" [ngSwitch]="info.filterType">
+    <div class="switch" *ngSwitchCase="FilterType.BooleanEquals">
+      <mat-radio-group [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()">
+        <mat-radio-button [value]="true">True</mat-radio-button>
+        <mat-radio-button [value]="false">False</mat-radio-button>
+      </mat-radio-group>
     </div>
+  </div>
 </ng-template>

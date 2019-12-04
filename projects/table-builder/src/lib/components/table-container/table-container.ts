@@ -100,7 +100,13 @@ import * as _ from 'lodash';
     }
 
     filters.push(
-      this.inlineFilters$.pipe(map(f => this.columnBuilders.filter( cb => cb.filter.filterValue  ).map( cb => cb.filter.getFunc() )  ))
+      this.inlineFilters$.pipe(
+        map(
+            f => this.columnBuilders
+              .filter( cb => cb.hasFilter()  )
+              .map( cb => cb.filter.getFunc() )
+          )
+      )
     );
 
     this.filteredData = new DataFilter(

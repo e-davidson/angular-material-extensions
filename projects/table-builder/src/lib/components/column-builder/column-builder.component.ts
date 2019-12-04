@@ -38,6 +38,10 @@ export class ColumnBuilderComponent {
 
   ngOnInit() {
     this.filter = new FilterInfo(this.metaData);
+    this.resetFilterType();
+  }
+
+  resetFilterType() {
     switch (this.metaData.fieldType) {
       case FieldType.String:
       case FieldType.Array:
@@ -47,21 +51,19 @@ export class ColumnBuilderComponent {
       case FieldType.Currency:
       case FieldType.Number:
         this.filter.filterType = FilterType.NumberEquals;
+        break;
+      case FieldType.Boolean:
+          this.filter.filterType = FilterType.BooleanEquals;
+          break;
+      case FieldType.Date:
+          this.filter.filterType = FilterType.DateIsOn;
+          break;
     }
   }
 
   setFilterType(filterType: FilterType) {
     if (filterType === this.filter.filterType) {
-      switch (this.metaData.fieldType) {
-        case FieldType.String:
-        case FieldType.Array:
-        case FieldType.Unknown:
-          this.filter.filterType = FilterType.StringContains;
-          break;
-        case FieldType.Currency:
-        case FieldType.Number:
-          this.filter.filterType = FilterType.NumberEquals;
-      }
+      this.resetFilterType();
     } else {
       this.filter.filterType = filterType;
     }
@@ -71,6 +73,13 @@ export class ColumnBuilderComponent {
   stopClickPropagate(event: any) {
     event.stopPropagation();
     event.preventDefault();
+  }
+
+  hasFilter(): boolean {
+    if ( this.metaData.fieldType === FieldType.Boolean ) {
+      return this.filter.filterValue !== undefined && this.filter.filterValue !== null;
+    }
+    return this.filter.filterValue;
   }
 
 }
