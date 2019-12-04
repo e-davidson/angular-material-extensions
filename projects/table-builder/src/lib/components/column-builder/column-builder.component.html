@@ -70,7 +70,7 @@
               <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Boolean">
                 <div style="padding: 0 16px">
                 <label><mat-icon class="search-icon">filter_list</mat-icon> </label>
-                <mat-radio-group class="font" (click)="stopClickPropagate($event)"  [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
+                <mat-radio-group class="font" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
                   <mat-radio-button class="filter-radio-button" [value]="null">Reset</mat-radio-button><br>
                   <mat-radio-button class="filter-radio-button" [value]="true">True</mat-radio-button><br>
                   <mat-radio-button class="filter-radio-button" [value]="false">False</mat-radio-button>
