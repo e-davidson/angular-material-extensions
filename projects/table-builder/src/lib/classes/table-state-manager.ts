@@ -60,6 +60,5 @@ export class TableStateManager {
 
   constructor(private store: Store<{fullTableState: fullTableState}>,
               @Inject(TableBuilderConfigToken) private config: TableBuilderConfig) {
-    this.store.subscribe( s => console.log(s));
   }
 }
