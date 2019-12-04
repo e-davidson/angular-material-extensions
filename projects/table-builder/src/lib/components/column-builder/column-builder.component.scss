@@ -22,12 +22,23 @@ input[type=number]::-webkit-outer-spin-button {
   font-size: 21px;
   line-height: 1.125
 }
+.font{
+  font-size: 14px;
+}
+.filter-radio-button:first-of-type{
+  padding-left: 0;
+}
+.filter-radio-button{
+  padding: 10px 40px;
+  min-width: 110px;
+}
+
 ::ng-deep .form-field.mat-form-field-appearance-outline .mat-form-field-infix{
   padding: 5px 0 5px 0;
   width: auto;
 }
 ::ng-deep .auto-width .mat-form-field-infix{
-  width: 100%;
+  width: auto;
 }
 
 .suffix-icons{
