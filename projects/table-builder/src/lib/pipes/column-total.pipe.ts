@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 
 @Pipe({ name: 'columnTotal' })
 export class ColumnTotalPipe implements PipeTransform {
-  transform(data$: Observable<any>, metaData: MetaData ) {
+  transform(data$: Observable<any[]>, metaData: MetaData ) {
       switch (metaData.additional.footer.type) {
         case 'sum':
         return data$.pipe(

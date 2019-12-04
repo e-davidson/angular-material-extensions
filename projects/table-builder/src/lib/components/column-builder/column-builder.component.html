@@ -124,7 +124,7 @@
       <mat-footer-cell>
         <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
           <span *ngSwitchCase="FieldType.Currency">
-            {{ data$ | async | columnTotal:metaData | async | currency }}
+            {{ data$ | columnTotal: metaData | async | currency }}
           </span>
         </span>
       </mat-footer-cell>
