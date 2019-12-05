@@ -1,12 +1,10 @@
 import { Component, Input, ViewChild, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
-import { FieldType, MetaData } from '../../interfaces/report-def';
+import { MetaData, FieldType } from '../../interfaces/report-def';
 import { MatColumnDef } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
+import { HeaderMenuComponent } from '../header-menu/header-menu.component';
 import { FilterInfo } from '../../classes/filter-info';
-import { FilterType } from '../../enums/filterTypes';
-import { debounceTime } from 'rxjs/operators';
-import { TableStateManager } from '../../classes/table-state-manager';
 
 
 @Component({
@@ -16,63 +14,19 @@ import { TableStateManager } from '../../classes/table-state-manager';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColumnBuilderComponent {
-  FieldType = FieldType;
-  FilterType = FilterType;
-
   filter: FilterInfo;
-
   @Input() metaData: MetaData;
   @Input() customCell: CustomCellDirective;
   @Input() data$: Observable<any[]>;
-  @Input() displayFilter = false;
-  change$  = new EventEmitter();
-  @Output() filter$ = this.change$.pipe(debounceTime(250));
+
+  @Output() filter$ = new EventEmitter();
 
   @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
 
-  constructor( private tableState: TableStateManager) {}
-
-  hideField(key) {
-    this.tableState.hideColumn(key);
-  }
+  @ViewChild('menu', { static : false }) headerMenu: HeaderMenuComponent;
 
   ngOnInit() {
     this.filter = new FilterInfo(this.metaData);
-    this.resetFilterType();
-  }
-
-  resetFilterType() {
-    switch (this.metaData.fieldType) {
-      case FieldType.String:
-      case FieldType.Array:
-      case FieldType.Unknown:
-        this.filter.filterType = FilterType.StringContains;
-        break;
-      case FieldType.Currency:
-      case FieldType.Number:
-        this.filter.filterType = FilterType.NumberEquals;
-        break;
-      case FieldType.Boolean:
-          this.filter.filterType = FilterType.BooleanEquals;
-          break;
-      case FieldType.Date:
-          this.filter.filterType = FilterType.DateIsOn;
-          break;
-    }
-  }
-
-  setFilterType(filterType: FilterType) {
-    if (filterType === this.filter.filterType) {
-      this.resetFilterType();
-    } else {
-      this.filter.filterType = filterType;
-    }
-    this.change$.emit();
-  }
-
-  stopClickPropagate(event: any) {
-    event.stopPropagation();
-    event.preventDefault();
   }
 
   hasFilter(): boolean {
@@ -81,5 +35,4 @@ export class ColumnBuilderComponent {
     }
     return this.filter.filterValue;
   }
-
 }

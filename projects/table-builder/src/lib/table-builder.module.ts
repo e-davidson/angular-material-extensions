@@ -20,6 +20,7 @@ import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuil
 import { NumberFilterComponent } from './components/number-filter/number-filter.component';
 import { StoreModule } from '@ngrx/store';
 import { tableStateReducer } from './ngrx/reducer';
+import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
 
 @NgModule({
   imports: [
@@ -52,6 +53,7 @@ import { tableStateReducer } from './ngrx/reducer';
         MultiSortDirective,
         NumberFilterComponent,
         ColumnBuilderComponent,
+        HeaderMenuComponent,
     ]
 })
 export class TableBuilderModule {

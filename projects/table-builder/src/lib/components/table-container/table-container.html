@@ -3,7 +3,6 @@
     <tb-column-builder
       *ngFor="let column of myColumns$ | async"
       (filter$)='inlineFilters$.next()'
-      [displayFilter]='filtersExpanded'
       [customCell]="column.customCell"
       [metaData]="column.metaData"
     >
@@ -28,7 +27,6 @@
             [isSticky]='isSticky'
             [pageSize]='pageSize'
             [columnDefs]='columns'
-            [displayFilter]='filtersExpanded'
             >
           </tb-generic-table>
         </div>
