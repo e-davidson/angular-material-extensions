@@ -1,11 +1,14 @@
-<mat-table multiSort [rules$]='rules$'  [dataSource]="dataSource" [trackBy]='trackByFunction' >
+<mat-table [dataSource]="dataSource" [trackBy]='trackByFunction' >
 
     <ng-container matColumnDef="select">
+
         <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" style="width:20px;" >
+
           <mat-checkbox (change)="$event ? masterToggle() : null"
                         [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
+
         </mat-header-cell>
 
         <mat-cell *matCellDef="let row" style="width:20px;">
@@ -24,26 +27,8 @@
           <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" >#</mat-header-cell>
           <mat-cell *matCellDef="let i = index;"> {{ (paginator.pageIndex * paginator.pageSize) +  i + 1 }} </mat-cell>
           <mat-footer-cell *matFooterCellDef></mat-footer-cell>
+
       </ng-container>
-
-  <ng-container *ngFor="let columnTemplate of columnTemplates$ | async" [matColumnDef]="columnTemplate.metaData.key" >
-
-    <mat-header-cell mat-sort-header *matHeaderCellDef class="f-mat-header-cell" >
-      <ng-container *ngTemplateOutlet="columnTemplate.header;context: {metaData: columnTemplate.metaData }" >
-      </ng-container>
-    </mat-header-cell>
-
-    <mat-cell *matCellDef="let element" >
-      <ng-container *ngTemplateOutlet="columnTemplate.body;context: {metaData: columnTemplate.metaData, element: element }" >
-      </ng-container>
-    </mat-cell>
-
-    <mat-footer-cell *matFooterCellDef >
-      <ng-container *ngTemplateOutlet="columnTemplate.footer;context: {metaData: columnTemplate.metaData, data: data$ }" >
-      </ng-container>
-    </mat-footer-cell>
-
-  </ng-container>
 
   <mat-header-row *matHeaderRowDef="keys$ | async; sticky: isSticky"></mat-header-row>
   <mat-row *matRowDef="let row; columns: keys$ | async; let i = index"></mat-row>
@@ -51,6 +36,5 @@
 
 </mat-table>
 
-<mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons>
+<mat-paginator [pageSize]="(state.state$ | async).pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons>
 </mat-paginator>
-

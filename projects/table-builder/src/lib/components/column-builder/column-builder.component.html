@@ -1,0 +1,54 @@
+<ng-container [matColumnDef]="metaData.key">
+
+  <ng-template matHeaderCellDef>
+
+    <ng-container *ngIf="customCell?.columnDef?.headerCell;else header">
+      <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData } ">
+      </ng-container>
+    </ng-container>
+    <ng-template #header>
+      <mat-header-cell class="f-mat-header-cell">
+        <div style='display: flex;flex-direction: row; width: 100%; align-items: center;'>
+          <div mat-sort-header style="width: 100%">
+            {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+          </div>
+          <tb-header-menu #menu [metaData]='metaData' [filter]='filter' (filter$)='filter$.next($event)' ></tb-header-menu>
+        </div>
+      </mat-header-cell>
+    </ng-template>
+  </ng-template>
+
+
+  <ng-container *matCellDef="let element">
+    <ng-container *ngIf="customCell?.columnDef?.cell;else body">
+      <ng-container *ngTemplateOutlet="customCell.columnDef.cell.template; context: {metaData: metaData, element: element }">
+      </ng-container>
+    </ng-container>
+    <ng-template #body>
+      <mat-cell>
+        <ng-container *ngTemplateOutlet="customCell?.TemplateRef ? customCell.TemplateRef : body2 ;context: {metaData: metaData, element: element }">
+        </ng-container>
+        <ng-template #body2>
+          <tb-val-displayer [col]="metaData" [element]="element"></tb-val-displayer>
+        </ng-template>
+      </mat-cell>
+    </ng-template>
+  </ng-container>
+
+  <ng-template matFooterCellDef>
+    <ng-container *ngIf="customCell?.columnDef?.footerCell;else footer">
+      <ng-container
+        *ngTemplateOutlet="customCell.columnDef.footerCell.template;context: {metaData: metaData, data: data$ }">
+      </ng-container>
+    </ng-container>
+    <ng-template #footer>
+      <mat-footer-cell>
+        <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
+          <span *ngSwitchCase="FieldType.Currency">
+            {{ data$ | columnTotal: metaData | async | currency }}
+          </span>
+        </span>
+      </mat-footer-cell>
+    </ng-template>
+  </ng-template>
+</ng-container>

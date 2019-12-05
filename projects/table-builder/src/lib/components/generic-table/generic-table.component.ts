@@ -10,23 +10,24 @@ import {
   QueryList,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { Sort } from '@angular/material/sort';
-import { MatRowDef, MatTable } from '@angular/material/table';
-import { Observable, combineLatest, scheduled, } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { MatSort } from '@angular/material/sort';
+import { MatRowDef, MatTable, MatColumnDef } from '@angular/material/table';
+import { Observable, scheduled } from 'rxjs';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ColumnTemplates } from '../../interfaces/column-template';
 import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { asap } from 'rxjs/internal/scheduler/asap';
 import { orderBy } from 'lodash';
+import { combineArrays } from '../../functions/rxjs-operators';
+import { TableStateManager } from '../../classes/table-state-manager';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tb-generic-table',
   templateUrl: './generic-table.component.html',
   styleUrls: ['./generic-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenericTableComponent implements AfterContentInit, OnInit {
 
@@ -34,15 +35,12 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
-  @Input() columns$: Observable<string[]>;
   @Input() rows: QueryList<MatRowDef<any>>;
-  @Input() columnTemplates$: Observable<ColumnTemplates[]>;
-  @Input() isSticky: boolean;
+  @Input() isSticky = false;
   @Input() pageSize: number;
-
+  @Input() columnDefs: QueryList<MatColumnDef>;
   @Output() selection$: Observable<any>;
 
-  @ViewChild(MultiSortDirective, { static: true }) _sort: MultiSortDirective;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
 
@@ -50,9 +48,8 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   selection: SelectionModel<any>;
   dataSource: MatTableObservableDataSource<any>;
   keys$: Observable<string[]>;
-  rules$: Observable<Sort[]>;
 
-  constructor() {
+  constructor(private sort: MatSort, public state: TableStateManager) {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
   }
@@ -76,25 +73,26 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
         }
       });
     }
+    if ( changes.columnDefs && this.columnDefs ) {
+      this.columnDefs.forEach( cd => this.table.addColumnDef(cd));
+    }
   }
 
   ngOnInit() {
-    this.preSort();
+    this.createDataSource();
   }
 
   ngAfterContentInit() {
-    this.createDataSource();
     this.initColumns();
   }
 
   createDataSource() {
     this.dataSource = new MatTableObservableDataSource(
-      this.data$.pipe(tap((d) => { this.selection.clear();
-      }))
+      this.data$.pipe(tap((d) => this.selection.clear() ))
     );
-    this.dataSource.sort = this._sort;
+    this.dataSource.sort = this.sort;
     this.dataSource.sortData = (data: {}[], sort: MultiSortDirective) =>
-      orderBy(data, sort.rules.map(r => r.active), sort.rules.map(r => r.direction as direc));
+      orderBy(data, sort.rules.map(r => r.active), sort.rules.map(r => r.direction as direc ));
     this.dataSource.paginator = this.paginator;
   }
 
@@ -107,18 +105,12 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
       staticColumns.push('index');
     }
 
-    this.keys$ = combineLatest(
+    this.keys$ = combineArrays(
       [
         scheduled([staticColumns], asap),
-        this.columns$,
+        this.state.displayedColumns$,
       ]
     ).pipe(
-      map(([def, customCells]) =>
-        [
-          ...def,
-          ...customCells
-        ]
-      ),
       tap(d => {
         this.currentColumns = d;
         if (this.rows) {
@@ -126,21 +118,8 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
             r => r.columns = d
           );
         }
-      })
+      }),
     );
-  }
-
-  preSort() {
-    this.rules$ = this.columnTemplates$.pipe(
-      map(templates => {
-      return templates.filter(({ metaData }) => metaData.preSort)
-        .sort(
-          ({ metaData: { preSort: ps1 } }, { metaData: { preSort: ps2 } }) => {
-           return (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE);
-          })
-        .map(({ metaData: md, metaData: { preSort: ps } }) =>
-          ({ active: md.key, direction: ps.direction }));
-    }));
   }
 
   isAllSelected() {

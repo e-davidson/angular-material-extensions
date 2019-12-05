@@ -6,67 +6,115 @@ import {
   ContentChildren,
   QueryList,
   ChangeDetectionStrategy,
-  ViewChild,
-  TemplateRef,
+  ViewChildren,
+  ChangeDetectorRef
 } from '@angular/core';
-import { Observable, Subject, concat } from 'rxjs';
+import { Observable, Subject, concat, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { first, map, switchMap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { FilterInfo } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
-import { mapArray } from '../../functions/rxjs-operators';
+import { mapArray, combineArrays } from '../../functions/rxjs-operators';
 import { TableBuilder } from '../../classes/table-builder';
-import { MatRowDef, MatColumnDef } from '@angular/material/table';
-import { TableTemplateBuilder } from '../../classes/TableTemplateBuilder';
-import { ColumnTemplates } from '../../interfaces/column-template';
-import { CustomCellDirective } from '../../directives/custom-cell-directive';
+import { MatColumnDef, MatRowDef } from '@angular/material/table';
+import { Sort } from '@angular/material/sort';
+import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
+import { CustomCellDirective } from '../../directives';
+import { TableStateManager } from '../../classes/table-state-manager';
+import * as _ from 'lodash';
 
 
 @Component({
   selector: 'tb-table-container',
   templateUrl: './table-container.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TableStateManager]
 }) export class TableContainerComponent {
-
+  _tableId: string;
+  @Input() set tableId(value: string) {
+    this._tableId = value;
+    if (this._pageSize) {
+      this.state.updateState( { pageSize: this._pageSize});
+    }
+  }
   @Input() tableBuilder: TableBuilder;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
-  @Input() isSticky: boolean = true;
-  @Input() pageSize: number = 20;
+  @Input() isSticky = true;
+  _pageSize: number;
+  @Input() set pageSize(size: number) {
+    this._pageSize = size;
+    if ( this._tableId ) {
+      this.state.updateState( { pageSize: size});
+    }
+  }
+  @Input() inputFilters: Observable<Array<(val: any) => boolean>>;
   @Output() filters$ = new EventEmitter();
   @Output() selection$ = new EventEmitter();
-  @Output() get data() { return this._data$.pipe(switchMap(d => d)); }
-  @ViewChild('header', { static: true }) header: TemplateRef<any>;
-  @ViewChild('body', { static: true }) body: TemplateRef<any>;
-  @ViewChild('footer', { static: true }) footer: TemplateRef<any>;
-  @ContentChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef>;
+  subscriptions: Subscription[] = [];
+  @Output() data = new Subject<any[]>();
+
   @ContentChildren(MatRowDef) customRows: QueryList<MatRowDef<any>>;
   @ContentChildren(CustomCellDirective) customCells: QueryList<CustomCellDirective>;
 
+  @ViewChildren(ColumnBuilderComponent) columnBuilders: QueryList<ColumnBuilderComponent>;
+  hiddenFields: string [] = [];
+  columns: MatColumnDef[];
+  filtersExpanded = false;
+  rules$: Observable<Sort[]>;
   FieldType = FieldType;
-  displayedColumns$: Observable<string[]>;
-  columnsSelected$ = new Subject<string[]>();
-  columnNames$: Observable<MetaData[]>;
   filteredData: DataFilter;
-  columnTemplates$: Observable<ColumnTemplates[]>;
   filterCols$: Observable<MetaData[]>;
-  _data$ = new Subject<Observable<any[]>>();  
+  inlineFilters$ = new Subject<FilterInfo[]>();
+
+  myColumns$: Observable<{metaData: MetaData, customCell: CustomCellDirective}[]>;
+
+  constructor(
+      private cdr: ChangeDetectorRef,
+      private state: TableStateManager
+    ) { }
+
+
+
+  ngOnInit() {
+    this.InitializeData();
+    if (this.tableId ) {
+      this.state.tableId = this.tableId;
+    }
+  }
 
   ngAfterContentInit() {
-    this.InitializeData();
     this.InitializeColumns();
   }
 
   InitializeData() {
-    this.filteredData = new DataFilter(
+    const filters = [
       this.filters$.pipe(
         mapArray((fltr: FilterInfo) => fltr.getFunc())
-      ),
+      )
+    ];
+
+    if (this.inputFilters) {
+      filters.push(this.inputFilters);
+    }
+
+    filters.push(
+      this.inlineFilters$.pipe(
+        map(
+            f => this.columnBuilders
+              .filter( cb => cb.hasFilter()  )
+              .map( cb => cb.filter.getFunc() )
+          )
+      )
+    );
+
+    this.filteredData = new DataFilter(
+      combineArrays( filters ),
       this.tableBuilder.getData$()
     );
 
-    this._data$.next(this.filteredData.filteredData$)
+    this.subscriptions.push( this.filteredData.filteredData$.subscribe(this.data));
 
     this.filterCols$ = this.tableBuilder.metaData$.pipe(
       map(md => md.filter(m => m.fieldType !== FieldType.Hidden))
@@ -74,21 +122,49 @@ import { CustomCellDirective } from '../../directives/custom-cell-directive';
   }
 
   InitializeColumns() {
-    const t = new TableTemplateBuilder(
-      this.tableBuilder,
-      this.header,
-      this.body,
-      this.footer,
-      this.columnDefs.toArray(),
-      this.customCells.toArray()
-    );
-    this.columnNames$ = t.getColumns();
-    this.displayedColumns$ = concat(
-      this.columnNames$.pipe(first(), map(cols => cols.map(c => c.key))),
-      this.columnsSelected$
+
+    this.myColumns$ = this.tableBuilder.metaData$.pipe(
+      map( metaDatas => {
+        return [
+          ...metaDatas.filter( md => !this.customCells.find(cc => cc.customCell === md.key) ),
+          ...this.customCells.filter( cc => !metaDatas.find( md => md.key ===  cc.customCell )  ).map( cc => cc.getMetaData() ),
+          ...metaDatas.filter( md => this.customCells.find(cc => cc.customCell === md.key) )
+            .map( md => ({...md, ...this.customCells.find(cc => cc.customCell === md.key)})
+          ),
+        ];
+      }),
+      map( metaDatas => metaDatas.map(metaData => ({metaData, customCell: this.customCells.find( cc => cc.customCell === metaData.key ) })))
     );
 
-    this.columnTemplates$ = t.getColumnTemplates();
+    this.subscriptions.push(this.myColumns$.pipe(map(columns => columns.map( column => column.metaData ))).subscribe( columns => {
+      this.state.setMetaData(columns);
+    }));
+
+    this.preSort();
+
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.columns = _.flatten(this.columnBuilders.map( cb => cb.columnDefs.toArray() ));
+      this.cdr.markForCheck();
+    }, 0);
+  }
+
+  preSort() {
+    this.rules$ = this.state.state$.pipe(map(state => state.metaData)).pipe(
+      map(templates =>
+      templates.filter(( metaData ) => metaData.preSort)
+        .sort(
+          ({  preSort: ps1  }, { preSort: ps2 } ) =>  (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
+        )
+        .map(( {key, preSort} ) =>
+          ({ active: key, direction: preSort.direction }))
+    ));
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
 }

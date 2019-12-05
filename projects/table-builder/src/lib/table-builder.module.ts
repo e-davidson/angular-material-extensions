@@ -14,12 +14,19 @@ import { DateFilterComponent } from './components/date-filter/date-filter.compon
 import { TableContainerComponent } from './components/table-container/table-container';
 import { ColumnTotalPipe } from './pipes/column-total.pipe';
 import { MultiSortDirective } from './directives/multi-sort.directive';
+import { ColumnBuilderComponent } from './components/column-builder/column-builder.component';
+import { ModuleWithProviders } from '@angular/compiler/src/core';
+import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuilderConfig';
 import { NumberFilterComponent } from './components/number-filter/number-filter.component';
+import { StoreModule } from '@ngrx/store';
+import { tableStateReducer } from './ngrx/reducer';
+import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
 
 @NgModule({
   imports: [
     CommonModule,
     MaterialModule,
+    StoreModule.forFeature('fullTableState', tableStateReducer),
     FormsModule,
   ],
     exports: [
@@ -44,10 +51,19 @@ import { NumberFilterComponent } from './components/number-filter/number-filter.
         DateFilterComponent,
         FilterComponent,
         MultiSortDirective,
-        NumberFilterComponent
-    ],
-    providers: [
-      MultiSortDirective
+        NumberFilterComponent,
+        ColumnBuilderComponent,
+        HeaderMenuComponent,
     ]
 })
-export class TableBuilderModule { }
+export class TableBuilderModule {
+  static forRoot(config: TableBuilderConfig): ModuleWithProviders {
+    return {
+      ngModule: TableBuilderModule,
+      providers: [
+        MultiSortDirective,
+        { provide : TableBuilderConfigToken , useValue: config}
+      ]
+    };
+  }
+}

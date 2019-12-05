@@ -14,20 +14,11 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <div class="switch" [ngSwitch]="info.field.fieldType">
-            <div class="switch" *ngSwitchCase="FieldType.String" >
+        <div class="switch" [ngSwitch]="true">
+            <div class="switch" *ngSwitchCase="info.field.fieldType === FieldType.String || info.field.fieldType === FieldType.Array || info.field.fieldType === FieldType.Unknown" >
                 <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
             </div>
-            <div class="switch" *ngSwitchCase="FieldType.Array" >
-                <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
-            </div>
-            <div class="switch" *ngSwitchCase="FieldType.Unknown" >
-                <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
-            </div>
-            <div class="switch" *ngSwitchCase="FieldType.Number">
-                <tb-number-filter [info]="info" [CurrentFilterType]="info.filterType" (filter$)="change$.emit()"></tb-number-filter>
-            </div>
-            <div class="switch" *ngSwitchCase="FieldType.Currency">
+            <div class="switch" *ngSwitchCase="info.field.fieldType === FieldType.Number || info.field.fieldType === FieldType.Currency">
                 <tb-number-filter [info]="info" [CurrentFilterType]="info.filterType" (filter$)="change$.emit()"></tb-number-filter>
             </div>
             <div class="switch" *ngSwitchCase="FieldType.Boolean">
@@ -66,12 +57,12 @@
 </ng-template>
 
 <ng-template #Boolean>
-    <div class="switch" [ngSwitch]="info.filterType">
-        <div class="switch" *ngSwitchCase="FilterType.BooleanEquals">
-            <mat-radio-group [(ngModel)]="info.filterValue"  (ngModelChange)="change$.emit()">
-            <mat-radio-button [value]="true">True</mat-radio-button>
-            <mat-radio-button [value]="false">False</mat-radio-button>
-            </mat-radio-group>
-        </div>
+  <div class="switch" [ngSwitch]="info.filterType">
+    <div class="switch" *ngSwitchCase="FilterType.BooleanEquals">
+      <mat-radio-group [(ngModel)]="info.filterValue" (ngModelChange)="change$.emit()">
+        <mat-radio-button [value]="true">True</mat-radio-button>
+        <mat-radio-button [value]="false">False</mat-radio-button>
+      </mat-radio-group>
     </div>
+  </div>
 </ng-template>
