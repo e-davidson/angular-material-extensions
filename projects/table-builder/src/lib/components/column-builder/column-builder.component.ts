@@ -23,8 +23,6 @@ export class ColumnBuilderComponent {
 
   @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
 
-  @ViewChild('menu', { static : false }) headerMenu: HeaderMenuComponent;
-
   ngOnInit() {
     this.filter = new FilterInfo(this.metaData);
   }
