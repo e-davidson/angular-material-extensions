@@ -28,7 +28,7 @@ export class TableStateManager {
 
     initializeState() {
       const state = {...{ hiddenKeys: [], pageSize: 20 }, ...this.config.defaultTableState };
-      this.store.dispatch( initTable({tableId: this._tableId, tableState: { hiddenKeys: [], pageSize: 20 }}));
+      this.store.dispatch( initTable({tableId: this._tableId, tableState: state }));
     }
 
     get state$(): Observable<TableState> {
