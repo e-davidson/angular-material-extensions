@@ -8,6 +8,7 @@ import { TableBuilderModule } from '../../projects/table-builder/src/lib/table-b
 import { TableBuilderExampleComponent } from './table-builder-example/table-builder-example.component';
 import { MatTableModule } from '@angular/material/table';
 import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [
@@ -18,8 +19,9 @@ import { StoreModule } from '@ngrx/store';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    TableBuilderModule.forRoot({ defaultTableState: { pageSize: 20}}),
     StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
+    TableBuilderModule.forRoot({ defaultTableState: { pageSize: 20}}),
     MatTableModule,
   ],
   providers: [],

@@ -12,6 +12,11 @@
       <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
         <mat-icon matPrefix class="search-icon">search</mat-icon>
         <input matInput placeholder="Filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
+        <span matSuffix>
+          <button mat-icon-button disableRipple>
+            <mat-icon (click)="saveFilter()" class="suffix-icons" > save</mat-icon>
+          </button>
+        </span>
       </mat-form-field>
     </ng-container>
     <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
@@ -29,6 +34,9 @@
               [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }">
               arrow_back_ios</mat-icon>
           </button>
+          <button mat-icon-button disableRipple>
+            <mat-icon (click)="saveFilter()" class="suffix-icons" > save</mat-icon>
+          </button>
         </span>
       </mat-form-field>
     </ng-container>
@@ -40,8 +48,11 @@
         <mat-radio-group class="font" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
           <mat-radio-button class="filter-radio-button" [value]="null">Reset</mat-radio-button><br>
           <mat-radio-button class="filter-radio-button" [value]="true">True</mat-radio-button><br>
-          <mat-radio-button class="filter-radio-button" [value]="false">False</mat-radio-button>
+          <mat-radio-button class="filter-radio-button" [value]="false">False</mat-radio-button><br>
         </mat-radio-group>
+        <button mat-icon-button disableRipple>
+          <mat-icon (click)="saveFilter()" class="suffix-icons" > save</mat-icon>
+        </button>
       </div>
     </ng-container>
     <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
@@ -61,6 +72,9 @@
         <input matInput [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" [matDatepicker]="calendar"
           (click)="calendar.open()">
         <mat-datepicker-toggle matSuffix [for]="calendar"></mat-datepicker-toggle>
+        <button matSuffix mat-icon-button disableRipple>
+          <mat-icon (click)="saveFilter()" class="suffix-icons" > save</mat-icon>
+        </button>
         <mat-datepicker #calendar></mat-datepicker>
       </mat-form-field>
     </ng-container>

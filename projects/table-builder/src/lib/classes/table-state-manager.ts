@@ -1,5 +1,5 @@
 import { Store, select } from '@ngrx/store';
-import { fullTableState, setMetaData, selectTableState, setHiddenColumn, setHiddenColumns, initTable, updateTableState } from '../ngrx/reducer';
+import { fullTableState, setMetaData, selectTableState, setHiddenColumn, setHiddenColumns, initTable, updateTableState, saveTableState, addFilter } from '../ngrx/reducer';
 import { MetaData } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
 import { Observable } from 'rxjs';
@@ -7,9 +7,14 @@ import { TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { map } from 'rxjs/operators';
+import { FilterInfo } from './filter-info';
+
 
 @Injectable()
 export class TableStateManager {
+  saveTable() {
+    this.store.dispatch(saveTableState({tableId: this.tableId}));
+  }
 
   private _tableId: string;
     get tableId(): string {
@@ -27,12 +32,16 @@ export class TableStateManager {
     }
 
     initializeState() {
-      const state = {...{ hiddenKeys: [], pageSize: 20 }, ...this.config.defaultTableState };
+      const state = {...{ hiddenKeys: [], pageSize: 20, filters: [] }, ...this.config.defaultTableState };
       this.store.dispatch( initTable({tableId: this._tableId, tableState: state }));
     }
 
     get state$(): Observable<TableState> {
       return this.store.pipe( select(selectTableState, {tableId: this.tableId}) );
+    }
+
+    filters(): Observable<FilterInfo[]> {
+      return this.state$.pipe( map(table => table.filters ) );
     }
 
     get displayedColumns$(): Observable<string[]> {
@@ -56,6 +65,10 @@ export class TableStateManager {
 
   updateState( tableState: Partial<TableState>) {
     this.store.dispatch( updateTableState({tableId: this.tableId, tableState } ));
+  }
+
+  addFilter(filter: FilterInfo) {
+    this.store.dispatch(addFilter({tableId: this.tableId, filter }));
   }
 
   constructor(private store: Store<{fullTableState: fullTableState}>,

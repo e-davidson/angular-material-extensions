@@ -1,8 +1,9 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { FilterInfo } from '../../classes/filter-info';
+import { FilterInfo, filterTypeMap } from '../../classes/filter-info';
 import { FilterType } from '../../enums/filterTypes';
 import { FieldType } from '../../interfaces/report-def';
 import { debounceTime } from 'rxjs/operators';
+import { MetaData } from 'dist/mx-table-builder/public-api';
 
 @Component({
     selector: 'tb-filter',
@@ -11,6 +12,8 @@ import { debounceTime } from 'rxjs/operators';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterComponent {
+    filterTypes = filterTypeMap;
+    @Input() metaData: MetaData;
     @Input() info: FilterInfo;
     @Output() delete$ = new EventEmitter();
     change$  = new EventEmitter();

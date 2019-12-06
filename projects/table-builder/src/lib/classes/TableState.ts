@@ -7,5 +7,5 @@ export interface TableState {
   hiddenKeys?: string [];
   pageSize?: number;
   currentPage?: number;
-  filters?: FilterInfo [];
+  filters: FilterInfo [];
 }

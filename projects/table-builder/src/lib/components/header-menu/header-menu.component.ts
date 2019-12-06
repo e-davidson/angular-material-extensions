@@ -51,6 +51,10 @@ export class HeaderMenuComponent {
     }
   }
 
+  saveFilter() {
+    this.tableState.addFilter(this.filter);
+  }
+
   setFilterType(filterType: FilterType) {
     if (filterType === this.filter.filterType) {
       this.resetFilterType();

@@ -7,7 +7,7 @@ import { BooleanFilterFuncs } from '../functions/boolean-filter-function';
 
 
 
-const filterTypeMap = {
+export const filterTypeMap = {
   [FieldType.String] : StringFilterMap,
   [FieldType.Array] : StringFilterMap,
   [FieldType.Currency] : NumberFilterMap,
@@ -26,23 +26,20 @@ const filterTypeFuncMap = {
   [FieldType.Boolean] : BooleanFilterFuncs,
   [FieldType.Unknown] : StringFilterFuncs,
 };
-export class FilterInfo {
+export interface FilterInfo {
     filterType?: FilterType;
     filterValue?: any;
-    types: any;
+    key: string;
+    fieldType: FieldType;
+}
 
-    constructor(public field: MetaData) {
-      this.types = filterTypeMap[field.fieldType];
-    }
-
-    getFunc(): (val: any) => boolean {
-      if ( this.filterValue === undefined ) {
-         return () => true;
-      }
-      const func = filterTypeFuncMap[this.field.fieldType][this.filterType];
-      return (val) => {
-          const obj = val[this.field.key];
-          return (obj === null || obj === undefined) ?  false : func(this.filterValue, obj);
-      };
-    }
+export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
+  if (filter.filterValue === undefined) {
+    return () => true;
+  }
+  const func = filterTypeFuncMap[filter.fieldType][filter.filterType];
+  return (val) => {
+    const obj = val[filter.key];
+    return (obj === null || obj === undefined) ? false : func(filter.filterValue, obj);
+  };
 }

@@ -9,10 +9,10 @@ import {
   ViewChildren,
   ChangeDetectorRef
 } from '@angular/core';
-import { Observable, Subject, concat, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { map } from 'rxjs/operators';
-import { FilterInfo } from '../../classes/filter-info';
+import { FilterInfo, createFilterFunc } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { mapArray, combineArrays } from '../../functions/rxjs-operators';
 import { TableBuilder } from '../../classes/table-builder';
@@ -78,10 +78,10 @@ import * as _ from 'lodash';
 
 
   ngOnInit() {
-    this.InitializeData();
-    if (this.tableId ) {
-      this.state.tableId = this.tableId;
+    if (this._tableId ) {
+      this.state.tableId = this._tableId;
     }
+    this.InitializeData();
   }
 
   ngAfterContentInit() {
@@ -91,7 +91,7 @@ import * as _ from 'lodash';
   InitializeData() {
     const filters = [
       this.filters$.pipe(
-        mapArray((fltr: FilterInfo) => fltr.getFunc())
+        mapArray((fltr: FilterInfo) => createFilterFunc( fltr) )
       )
     ];
 
@@ -104,10 +104,12 @@ import * as _ from 'lodash';
         map(
             f => this.columnBuilders
               .filter( cb => cb.hasFilter()  )
-              .map( cb => cb.filter.getFunc() )
+              .map( cb => createFilterFunc( cb.filter) )
           )
       )
     );
+
+    filters.push( this.state.filters().pipe(map( fltrs => fltrs.map(filter => createFilterFunc(filter) ))) );
 
     this.filteredData = new DataFilter(
       combineArrays( filters ),
@@ -165,6 +167,10 @@ import * as _ from 'lodash';
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  save() {
+    this.state.saveTable();
   }
 
 }

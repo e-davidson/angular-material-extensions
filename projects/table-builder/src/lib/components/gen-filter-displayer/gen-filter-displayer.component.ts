@@ -32,7 +32,7 @@ export class GenFilterDisplayerComponent {
     }
 
     addFilter(filter: MetaData) {
-      this.currentFilters.push(new FilterInfo(filter));
+      this.currentFilters.push( {key: filter.key, fieldType: filter.fieldType});
       this.RefreshFilters();
     }
 }

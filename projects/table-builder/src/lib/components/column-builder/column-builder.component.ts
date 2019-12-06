@@ -24,7 +24,7 @@ export class ColumnBuilderComponent {
   @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
 
   ngOnInit() {
-    this.filter = new FilterInfo(this.metaData);
+    this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
   }
 
   hasFilter(): boolean {

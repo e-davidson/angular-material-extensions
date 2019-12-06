@@ -2,14 +2,13 @@ import { createReducer, Action, createAction, props, on, createSelector } from '
 import { TableState } from '../classes/TableState';
 import { MetaData } from '../interfaces/report-def';
 import update from 'immutability-helper';
+import { FilterInfo } from '../classes/filter-info';
 
 
 export class TableStateAction implements Action {
   type: string;
   tableId: string;
 }
-
-export const initOrUpdateTable = createAction( '[Table State] Init table', props<{tableId: string, tableState: Partial<TableState>}>());
 
 export const initTable = createAction( '[Table State] Init table', props<{tableId: string, tableState: Partial<TableState>}>());
 
@@ -20,7 +19,11 @@ export const setHiddenColumn = createAction('[Table State] Set Hidden Column', p
 export const setHiddenColumns = createAction('[Table State] Set Hidden Columns',
   props<{tableId: string, columns: {key: string, visible: boolean}[]}>());
 
-export const updateTableState = createAction('[Table State] Update ', props<{tableId: string, tableState: Partial<TableState>}>());
+export const updateTableState = createAction('[Table State] Update', props<{tableId: string, tableState: Partial<TableState>}>());
+
+export const saveTableState = createAction('[Table State] Save', props<{tableId: string}>());
+
+export const addFilter = createAction('[Table State] Add Filter', props<{tableId: string, filter: FilterInfo}>());
 
 export interface fullTableState {
   [key: string]: TableState;
@@ -59,12 +62,9 @@ const reducer = createReducer(initialState,
   on(updateTableState, (state, {tableId, tableState}) => {
     return update( state , {[tableId] : { $merge: tableState}});
   }),
-  on(initOrUpdateTable , (state, {tableId, tableState}) => {
-    if (state[tableId]) {
-      return update( state , {[tableId] : { $merge: tableState}});
-    }
-    return {... state , [tableId]: tableState};
-  })
+  on(addFilter, (state, {tableId, filter}) => {
+    return update( state , {[tableId] : { filters: {$push: [filter] }}});
+  } )
 );
 
 export function tableStateReducer(state: fullTableState| undefined, action: Action) {

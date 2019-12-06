@@ -1,6 +1,6 @@
 <mat-card class="mat-elevation-z5">
     <div class="row">
-        <h4 class="filter-name">{{info.field.displayName || (info.field.key | spaceCase)}} Filter</h4>
+        <h4 class="filter-name">{{metaData?.displayName || (info.key | spaceCase)}} Filter</h4>
         <button class="cancel-button" color="primary" mat-icon-button (click)="delete$.emit()"
             matTooltip="Cancel Filter">
             <mat-icon class="cancel-button" color="primary">close</mat-icon>
@@ -9,16 +9,16 @@
     <div class="row">
         <mat-form-field class="my-filter">
             <mat-select  placeholder="Select Filter Type"  [(ngModel)]="info.filterType" >
-                <mat-option *ngFor="let kvp of info.types | keyvalue " [value]="info.types[kvp.key][0]">
+                <mat-option *ngFor="let kvp of filterTypes[info.fieldType] | keyvalue " [value]="filterTypes[info.fieldType][kvp.key][0]">
                     {{ kvp.key }}
                 </mat-option>
             </mat-select>
         </mat-form-field>
         <div class="switch" [ngSwitch]="true">
-            <div class="switch" *ngSwitchCase="info.field.fieldType === FieldType.String || info.field.fieldType === FieldType.Array || info.field.fieldType === FieldType.Unknown" >
+            <div class="switch" *ngSwitchCase="info.fieldType === FieldType.String || info.fieldType === FieldType.Array || info.fieldType === FieldType.Unknown" >
                 <ng-container class="switch" *ngTemplateOutlet="String"></ng-container>
             </div>
-            <div class="switch" *ngSwitchCase="info.field.fieldType === FieldType.Number || info.field.fieldType === FieldType.Currency">
+            <div class="switch" *ngSwitchCase="info.fieldType === FieldType.Number || info.fieldType === FieldType.Currency">
                 <tb-number-filter [info]="info" [CurrentFilterType]="info.filterType" (filter$)="change$.emit()"></tb-number-filter>
             </div>
             <div class="switch" *ngSwitchCase="FieldType.Boolean">
