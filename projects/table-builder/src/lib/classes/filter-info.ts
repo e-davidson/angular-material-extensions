@@ -1,13 +1,12 @@
-import { MetaData, FieldType } from '../interfaces/report-def';
 import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, FilterType } from '../enums/filterTypes';
 import { StringFilterFuncs } from '../functions/string-filter-function';
 import { NumberFilterFuncs } from '../functions/number-filter-function';
 import { DateFilterFuncs } from '../functions/date-filter-function';
 import { BooleanFilterFuncs } from '../functions/boolean-filter-function';
+import { FieldType } from '../interfaces/report-def';
 
 
-
-export const filterTypeMap = {
+export const filterTypeMap: { [key: string]: { [key: string]: FilterType[]}  } = {
   [FieldType.String] : StringFilterMap,
   [FieldType.Array] : StringFilterMap,
   [FieldType.Currency] : NumberFilterMap,
