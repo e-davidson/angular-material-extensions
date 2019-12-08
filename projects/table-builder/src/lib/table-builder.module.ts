@@ -21,12 +21,15 @@ import { NumberFilterComponent } from './components/number-filter/number-filter.
 import { StoreModule } from '@ngrx/store';
 import { tableStateReducer } from './ngrx/reducer';
 import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
+import { EffectsModule } from '@ngrx/effects';
+import { SaveTableEffects } from './ngrx/effects';
 
 @NgModule({
   imports: [
     CommonModule,
     MaterialModule,
     StoreModule.forFeature('fullTableState', tableStateReducer),
+    EffectsModule.forFeature([SaveTableEffects]),
     FormsModule,
   ],
     exports: [

@@ -12,7 +12,7 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable, MatColumnDef } from '@angular/material/table';
-import { Observable, scheduled } from 'rxjs';
+import { Observable, scheduled, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -21,7 +21,7 @@ import { asap } from 'rxjs/internal/scheduler/asap';
 import { orderBy } from 'lodash';
 import { combineArrays } from '../../functions/rxjs-operators';
 import { TableStateManager } from '../../classes/table-state-manager';
-import { tap } from 'rxjs/operators';
+import { tap, scan, map, distinct } from 'rxjs/operators';
 
 @Component({
   selector: 'tb-generic-table',
@@ -40,6 +40,8 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() pageSize: number;
   @Input() columnDefs: QueryList<MatColumnDef>;
   @Output() selection$: Observable<any>;
+
+  subs: Subscription[] = [];
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
@@ -94,6 +96,9 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
     this.dataSource.sortData = (data: {}[], sort: MultiSortDirective) =>
       orderBy(data, sort.rules.map(r => r.active), sort.rules.map(r => r.direction as direc ));
     this.dataSource.paginator = this.paginator;
+    this.subs.push(this.paginator.page.pipe(map( e => e.pageSize ), distinct()).subscribe( size => {
+      this.state.updateState( { pageSize: size});
+    }));
   }
 
   initColumns() {
@@ -133,6 +138,10 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
     this.isAllSelected() ?
       this.selection.clear() :
       this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  ngOnDestroy() {
+    this.subs.forEach( sub => sub.unsubscribe());
   }
 }
 

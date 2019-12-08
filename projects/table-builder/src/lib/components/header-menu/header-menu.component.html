@@ -7,8 +7,7 @@
     <span>Hide</span>
   </button>
   <ng-container [ngSwitch]="true">
-    <ng-container
-      *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
+    <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
       <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
         <mat-icon matPrefix class="search-icon">search</mat-icon>
         <input matInput placeholder="Filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
@@ -38,9 +37,8 @@
           <mat-icon class="search-icon">filter_list</mat-icon>
         </label>
         <mat-radio-group class="font" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
-          <mat-radio-button class="filter-radio-button" [value]="null">Reset</mat-radio-button><br>
           <mat-radio-button class="filter-radio-button" [value]="true">True</mat-radio-button><br>
-          <mat-radio-button class="filter-radio-button" [value]="false">False</mat-radio-button>
+          <mat-radio-button class="filter-radio-button" [value]="false">False</mat-radio-button><br>
         </mat-radio-group>
       </div>
     </ng-container>
@@ -65,4 +63,7 @@
       </mat-form-field>
     </ng-container>
   </ng-container>
+    <button mat-button (click)="tableState.addFilter(filter)" disableRipple>
+      Apply
+    </button>
 </mat-menu>

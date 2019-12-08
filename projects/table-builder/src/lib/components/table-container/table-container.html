@@ -1,34 +1,38 @@
-
- <ng-container multiSort [rules$]='rules$' >
-    <tb-column-builder
-      *ngFor="let column of myColumns$ | async"
-      (filter$)='inlineFilters$.next()'
-      [customCell]="column.customCell"
-      [metaData]="column.metaData"
+<ng-container multiSort [rules$]='rules$'>
+  <tb-column-builder
+    *ngFor="let column of myColumns$ | async"
+    (filter$)='inlineFilters$.next()'
+    [customCell]="column.customCell"
+    [metaData]="column.metaData"
     >
   </tb-column-builder>
-    <ng-container  *ngIf='columns' >
-        <div style="width:100%;">
-          <div>
-            <tb-filter-displayer style="display: inline-block; width: 96%;" class="filter-row col-md-11" [filterCols$]="filterCols$" (filters$)="filters$.emit($event)">
-            </tb-filter-displayer>
-
-            <tb-col-displayer style="margin-top: 1em; margin-bottom: 1em; width: 3%; float: right;" class="menu pull-right"></tb-col-displayer>
-            </div>
-        </div>
-        <div style="clear: both;">
-          <tb-generic-table
-            [rows]='customRows'
-            [data$]="filteredData.filteredData$"
-            [IndexColumn]='IndexColumn'
-            [SelectionColumn]='SelectionColumn'
-            (selection$)='selection$.emit($event)'
-            [trackBy]='trackBy'
-            [isSticky]='isSticky'
-            [pageSize]='pageSize'
-            [columnDefs]='columns'
-            >
-          </tb-generic-table>
-        </div>
-    </ng-container>
+  <ng-container *ngIf='columns'>
+    <div style="width:100%;">
+      <div style="display: flex; flex-direction: row;justify-content: flex-end; ">
+        <tb-filter-displayer [filterCols$]="filterCols$"  >
+        </tb-filter-displayer>
+        <tb-col-displayer></tb-col-displayer>
+        <button mat-icon-button (click)="state.saveTable()">
+          <mat-icon color="primary">save</mat-icon>
+        </button>
+        <button mat-icon-button (click)="state.resetState()">
+          <mat-icon color="primary">autorenew</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div style="clear: both;">
+      <tb-generic-table
+      [rows]='customRows'
+      [data$]="filteredData.filteredData$"
+      [IndexColumn]='IndexColumn'
+      [SelectionColumn]='SelectionColumn'
+      (selection$)='selection$.emit($event)'
+      [trackBy]='trackBy'
+      [isSticky]='isSticky'
+      [pageSize]='pageSize'
+      [columnDefs]='columns'
+      >
+      </tb-generic-table>
+    </div>
+  </ng-container>
 </ng-container>
