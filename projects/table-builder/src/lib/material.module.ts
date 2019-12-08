@@ -28,7 +28,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { MatChipsModule } from '@angular/material/chips';
 
 
 @NgModule({
@@ -61,6 +61,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatSortModule,
     MatAutocompleteModule,
     MatPaginatorModule,
+    MatChipsModule,
   ],
     exports: [
       MatSlideToggleModule,
@@ -91,6 +92,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       MatSortModule,
       MatAutocompleteModule,
       MatPaginatorModule,
+      MatChipsModule,
     ]
 
 })

@@ -1,9 +1,8 @@
-import { Component, Input, ViewChild, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
 import { MetaData, FieldType } from '../../interfaces/report-def';
 import { MatColumnDef } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
-import { HeaderMenuComponent } from '../header-menu/header-menu.component';
 import { FilterInfo } from '../../classes/filter-info';
 
 
@@ -14,6 +13,7 @@ import { FilterInfo } from '../../classes/filter-info';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColumnBuilderComponent {
+  FieldType = FieldType;
   filter: FilterInfo;
   @Input() metaData: MetaData;
   @Input() customCell: CustomCellDirective;
@@ -25,12 +25,5 @@ export class ColumnBuilderComponent {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
-  }
-
-  hasFilter(): boolean {
-    if ( this.metaData.fieldType === FieldType.Boolean ) {
-      return this.filter.filterValue !== undefined && this.filter.filterValue !== null;
-    }
-    return this.filter.filterValue;
   }
 }

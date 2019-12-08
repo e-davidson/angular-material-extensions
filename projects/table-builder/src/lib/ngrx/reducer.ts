@@ -1,41 +1,23 @@
-import { createReducer, Action, createAction, props, on, createSelector } from '@ngrx/store';
+import { createReducer, Action, on, createSelector } from '@ngrx/store';
 import { TableState } from '../classes/TableState';
-import { MetaData } from '../interfaces/report-def';
 import update from 'immutability-helper';
-import { FilterInfo } from '../classes/filter-info';
 
+import * as tableActions from './actions';
+import { Dictionary } from '../interfaces/dictionary';
 
 export class TableStateAction implements Action {
   type: string;
   tableId: string;
 }
 
-export const initTable = createAction( '[Table State] Init table', props<{tableId: string, tableState: Partial<TableState>}>());
-
-export const setMetaData = createAction('[Table State] Set MetaData', props<{tableId: string, metaData: MetaData[]}>());
-
-export const setHiddenColumn = createAction('[Table State] Set Hidden Column', props<{tableId: string, column: string}>());
-
-export const setHiddenColumns = createAction('[Table State] Set Hidden Columns',
-  props<{tableId: string, columns: {key: string, visible: boolean}[]}>());
-
-export const updateTableState = createAction('[Table State] Update', props<{tableId: string, tableState: Partial<TableState>}>());
-
-export const saveTableState = createAction('[Table State] Save', props<{tableId: string}>());
-
-export const addFilter = createAction('[Table State] Add Filter', props<{tableId: string, filter: FilterInfo}>());
-
-export interface fullTableState {
-  [key: string]: TableState;
+export interface fullTableState extends  Dictionary<TableState> {
 }
 
 const initialState: fullTableState = {};
 
 const reducer = createReducer(initialState,
-  on(setMetaData, ( state, {tableId, metaData} ) => {
-    return update( state, {[tableId]: { metaData: {$set: metaData} }} );
-  }),
-  on(setHiddenColumn, ( state, {tableId, column} ) => {
+  on(tableActions.setMetaData, ( state, {tableId, metaData} ) => update( state, {[tableId]: { metaData: {$set: metaData} }} )),
+  on(tableActions.setHiddenColumn, ( state, {tableId, column} ) => {
     const tableState = state[tableId];
     let hiddenColumns: string[] = [];
     if (tableState.hiddenKeys.includes(column)) {
@@ -45,7 +27,7 @@ const reducer = createReducer(initialState,
     }
     return update( state , {[tableId] : { hiddenKeys: {$set: hiddenColumns}}});
   } ),
-  on(setHiddenColumns, ( state, {tableId, columns} ) => {
+  on(tableActions.setHiddenColumns, ( state, {tableId, columns} ) => {
     let hiddenKeys = [...state[tableId].hiddenKeys];
     columns.forEach(column => {
       if (column.visible) {
@@ -56,15 +38,20 @@ const reducer = createReducer(initialState,
     });
     return update( state , {[tableId] : { hiddenKeys: {$set: hiddenKeys}}});
   }),
-  on( initTable, (state, {tableId, tableState}) => {
+  on( tableActions.initTable, (state, {tableId, tableState}) => {
     return {... state , [tableId]: tableState};
   }),
-  on(updateTableState, (state, {tableId, tableState}) => {
+  on(tableActions.updateTableState, (state, {tableId, tableState}) => {
     return update( state , {[tableId] : { $merge: tableState}});
   }),
-  on(addFilter, (state, {tableId, filter}) => {
-    return update( state , {[tableId] : { filters: {$push: [filter] }}});
-  } )
+  on(tableActions.addFilter, (state, {tableId, filter}) => {
+    const filterId = filter.filterId;
+    return update( state , { [tableId] : {filters : { [filterId] : { $set: filter } }}} );
+  } ),
+  on(tableActions.removeFilter, (state, {tableId, filterId}) => {
+    return update(state, {[tableId] : {filters : { $unset : [filterId]}  }});
+  }),
+  on(tableActions.reset, (state, {tableId}) => update(state, {[tableId]: {hiddenKeys: {$set: []}, filters: {$set: {}}}})  )
 );
 
 export function tableStateReducer(state: fullTableState| undefined, action: Action) {

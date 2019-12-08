@@ -27,6 +27,7 @@ const filterTypeFuncMap = {
   [FieldType.Unknown] : StringFilterFuncs,
 };
 export interface FilterInfo {
+    filterId?: string;
     filterType?: FilterType;
     filterValue?: any;
     key: string;

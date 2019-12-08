@@ -1,9 +1,8 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { FilterInfo, filterTypeMap } from '../../classes/filter-info';
+import { filterTypeMap, FilterInfo } from '../../classes/filter-info';
 import { FilterType } from '../../enums/filterTypes';
 import { FieldType } from '../../interfaces/report-def';
-import { debounceTime } from 'rxjs/operators';
-import { MetaData } from 'dist/mx-table-builder/public-api';
+import { TableStateManager } from '../../classes/table-state-manager';
 
 @Component({
     selector: 'tb-filter',
@@ -12,12 +11,15 @@ import { MetaData } from 'dist/mx-table-builder/public-api';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterComponent {
-    filterTypes = filterTypeMap;
-    @Input() metaData: MetaData;
-    @Input() info: FilterInfo;
-    @Output() delete$ = new EventEmitter();
-    change$  = new EventEmitter();
-    @Output() filter$ = this.change$.pipe(debounceTime(250));
-    FilterType = FilterType;
-    FieldType = FieldType;
+  filterTypes = filterTypeMap;
+  FilterType = FilterType;
+  FieldType = FieldType;
+  @Input() filter: FilterInfo;
+  @Output() close = new EventEmitter();
+  currentFilterType: FilterType;
+  constructor( public state: TableStateManager) { }
+
+  ngOnInit() {
+    this.currentFilterType = this.filter.filterType;
+  }
 }

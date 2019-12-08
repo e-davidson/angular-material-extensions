@@ -1,30 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { FilterInfo } from '../../classes/filter-info';
-import { debounceTime } from 'rxjs/operators';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FilterType } from '../../enums/filterTypes';
+import { ControlContainer, NgForm } from '@angular/forms';
 
 
 @Component({
   selector: 'tb-number-filter',
   templateUrl: './number-filter.component.html',
   styleUrls: ['./number-filter.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class NumberFilterComponent implements OnInit {
-  @Input() info: FilterInfo;
-  change$ = new EventEmitter();
-  @Output() filter$ = this.change$.pipe(debounceTime(250));
+export class NumberFilterComponent {
   FilterType = FilterType;
-
-  @Input() set CurrentFilterType(ft: FilterType) {
-    if (ft === FilterType.NumberBetween) {
-      this.info.filterValue = {};
-    }
-  }
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  @Input() CurrentFilterType: FilterType;
+  @Input() info;
 }

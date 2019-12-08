@@ -1,5 +1,6 @@
 import { MetaData } from '../interfaces/report-def';
 import { FilterInfo } from './filter-info';
+import { Dictionary } from '../interfaces/dictionary';
 
 export interface TableState {
   metaData?: MetaData [];
@@ -7,5 +8,5 @@ export interface TableState {
   hiddenKeys?: string [];
   pageSize?: number;
   currentPage?: number;
-  filters: FilterInfo [];
+  filters: Dictionary<FilterInfo>;
 }

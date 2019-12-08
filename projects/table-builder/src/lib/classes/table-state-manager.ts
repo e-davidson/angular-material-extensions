@@ -1,5 +1,5 @@
 import { Store, select } from '@ngrx/store';
-import { fullTableState, setMetaData, selectTableState, setHiddenColumn, setHiddenColumns, initTable, updateTableState, saveTableState, addFilter } from '../ngrx/reducer';
+import * as tableActions from '../ngrx/actions';
 import { MetaData } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
 import { Observable } from 'rxjs';
@@ -8,12 +8,12 @@ import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { map } from 'rxjs/operators';
 import { FilterInfo } from './filter-info';
-
+import { selectTableState, fullTableState } from '../ngrx/reducer';
 
 @Injectable()
 export class TableStateManager {
   saveTable() {
-    this.store.dispatch(saveTableState({tableId: this.tableId}));
+    this.store.dispatch(tableActions.saveTableState({tableId: this.tableId}));
   }
 
   private _tableId: string;
@@ -32,16 +32,20 @@ export class TableStateManager {
     }
 
     initializeState() {
-      const state = {...{ hiddenKeys: [], pageSize: 20, filters: [] }, ...this.config.defaultTableState };
-      this.store.dispatch( initTable({tableId: this._tableId, tableState: state }));
+      const state = {...{ hiddenKeys: [], pageSize: 20, filters: {} }, ...this.config.defaultTableState };
+      this.store.dispatch( tableActions.initTable({tableId: this._tableId, tableState: state }));
     }
 
     get state$(): Observable<TableState> {
       return this.store.pipe( select(selectTableState, {tableId: this.tableId}) );
     }
 
-    filters(): Observable<FilterInfo[]> {
-      return this.state$.pipe( map(table => table.filters ) );
+    get filters$(): Observable<FilterInfo[]> {
+      return this.state$.pipe(map(table => Object.values( table.filters) ) );
+    }
+
+    get metaData$(): Observable<FilterInfo[]> {
+      return this.state$.pipe( map(table => table.metaData ) );
     }
 
     get displayedColumns$(): Observable<string[]> {
@@ -52,26 +56,38 @@ export class TableStateManager {
     }
 
   setMetaData(metaData: MetaData[]) {
-    this.store.dispatch( setMetaData({tableId: this.tableId, metaData}));
+    this.store.dispatch( tableActions.setMetaData({tableId: this.tableId, metaData}));
   }
 
   hideColumn(key: string) {
-    this.store.dispatch( setHiddenColumn( {tableId: this.tableId, column: key}) );
+    this.store.dispatch( tableActions.setHiddenColumn( {tableId: this.tableId, column: key}) );
   }
 
   hideColumns(displayCols: {key: string, visible: boolean}[]) {
-    this.store.dispatch( setHiddenColumns( {tableId: this.tableId, columns: displayCols}) );
+    this.store.dispatch( tableActions.setHiddenColumns( {tableId: this.tableId, columns: displayCols}) );
   }
 
   updateState( tableState: Partial<TableState>) {
-    this.store.dispatch( updateTableState({tableId: this.tableId, tableState } ));
+    this.store.dispatch( tableActions.updateTableState({tableId: this.tableId, tableState } ));
   }
 
   addFilter(filter: FilterInfo) {
-    this.store.dispatch(addFilter({tableId: this.tableId, filter }));
+    if (!filter.filterId) {
+      filter.filterId = uuid();
+    }
+    this.store.dispatch(tableActions.addFilter({tableId: this.tableId, filter }));
+  }
+
+  removeFilter(filterId: string) {
+    this.store.dispatch(tableActions.removeFilter({tableId: this.tableId, filterId }));
+  }
+
+  resetState() {
+    this.store.dispatch(tableActions.reset({tableId: this.tableId}));
   }
 
   constructor(private store: Store<{fullTableState: fullTableState}>,
               @Inject(TableBuilderConfigToken) private config: TableBuilderConfig) {
+                this.store.subscribe( d => console.log(d));
   }
 }

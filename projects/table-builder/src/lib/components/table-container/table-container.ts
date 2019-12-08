@@ -14,7 +14,7 @@ import { FieldType, MetaData } from '../../interfaces/report-def';
 import { map } from 'rxjs/operators';
 import { FilterInfo, createFilterFunc } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
-import { mapArray, combineArrays } from '../../functions/rxjs-operators';
+import { combineArrays } from '../../functions/rxjs-operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
@@ -50,7 +50,6 @@ import * as _ from 'lodash';
     }
   }
   @Input() inputFilters: Observable<Array<(val: any) => boolean>>;
-  @Output() filters$ = new EventEmitter();
   @Output() selection$ = new EventEmitter();
   subscriptions: Subscription[] = [];
   @Output() data = new Subject<any[]>();
@@ -72,7 +71,7 @@ import * as _ from 'lodash';
 
   constructor(
       private cdr: ChangeDetectorRef,
-      private state: TableStateManager
+      public state: TableStateManager
     ) { }
 
 
@@ -90,26 +89,12 @@ import * as _ from 'lodash';
 
   InitializeData() {
     const filters = [
-      this.filters$.pipe(
-        mapArray((fltr: FilterInfo) => createFilterFunc( fltr) )
-      )
+      this.state.filters$.pipe(map( fltrs => fltrs.map(filter => createFilterFunc(filter) )))
     ];
 
     if (this.inputFilters) {
       filters.push(this.inputFilters);
     }
-
-    filters.push(
-      this.inlineFilters$.pipe(
-        map(
-            f => this.columnBuilders
-              .filter( cb => cb.hasFilter()  )
-              .map( cb => createFilterFunc( cb.filter) )
-          )
-      )
-    );
-
-    filters.push( this.state.filters().pipe(map( fltrs => fltrs.map(filter => createFilterFunc(filter) ))) );
 
     this.filteredData = new DataFilter(
       combineArrays( filters ),
@@ -168,9 +153,4 @@ import * as _ from 'lodash';
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
-
-  save() {
-    this.state.saveTable();
-  }
-
 }

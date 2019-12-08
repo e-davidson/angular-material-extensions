@@ -21,7 +21,7 @@ export class HeaderMenuComponent {
   change$  = new EventEmitter();
   @Output() filter$ = this.change$.pipe(debounceTime(250));
 
-  constructor( private tableState: TableStateManager) {}
+  constructor( public tableState: TableStateManager) {}
 
   hideField(key) {
     this.tableState.hideColumn(key);
@@ -51,10 +51,6 @@ export class HeaderMenuComponent {
     }
   }
 
-  saveFilter() {
-    this.tableState.addFilter(this.filter);
-  }
-
   setFilterType(filterType: FilterType) {
     if (filterType === this.filter.filterType) {
       this.resetFilterType();
@@ -67,5 +63,12 @@ export class HeaderMenuComponent {
   stopClickPropagate(event: any) {
     event.stopPropagation();
     event.preventDefault();
+  }
+
+  hasFilter(): boolean {
+    if ( this.metaData.fieldType === FieldType.Boolean ) {
+      return this.filter.filterValue !== undefined && this.filter.filterValue !== null;
+    }
+    return this.filter.filterValue;
   }
 }

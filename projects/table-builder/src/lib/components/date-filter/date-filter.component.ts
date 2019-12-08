@@ -2,22 +2,16 @@ import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from 
 import { FilterInfo } from '../../classes/filter-info';
 import { FilterType } from '../../enums/filterTypes';
 import { debounceTime } from 'rxjs/operators';
+import { ControlContainer, NgForm } from '@angular/forms';
 
 @Component({
     selector: 'tb-date-filter',
     templateUrl: './date-filter.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DateFilterComponent {
-    @Input() info: FilterInfo;
-    change$  = new EventEmitter();
-    @Output() filter$ = this.change$.pipe(debounceTime(250));
     FilterType = FilterType;
-    filterType: FilterType;
-    @Input() set  CurrentFilterType(ft: FilterType) {
-      this.filterType = ft;
-      if (ft === FilterType.DateBetween) {
-        this.info.filterValue = {};
-      }
-    }
+    @Input() info: FilterInfo;
+    @Input() CurrentFilterType: FilterType;
 }
