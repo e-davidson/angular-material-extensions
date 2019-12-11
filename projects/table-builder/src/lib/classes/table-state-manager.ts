@@ -32,7 +32,7 @@ export class TableStateManager {
     }
 
     initializeState() {
-      const state = {...{ hiddenKeys: [], pageSize: 20, filters: {} }, ...this.config.defaultTableState };
+      const state = {...{ metaData: [], data: [], hiddenKeys: [], pageSize: 20, filters: {} }, ...this.config.defaultTableState };
       this.store.dispatch( tableActions.initTable({tableId: this._tableId, tableState: state }));
     }
 
