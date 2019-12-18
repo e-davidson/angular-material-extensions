@@ -34,7 +34,7 @@ const META_DATA: MetaData[] = [
   {key: 'symbol', fieldType: FieldType.String, preSort: {direction: SortDirection.asc, precedence: 1 }},
   {key: 'name', fieldType: FieldType.String },
   {key: 'gas', fieldType: FieldType.Boolean },
-  {key: 'date', fieldType: FieldType.Date }
+  {key: 'date', fieldType: FieldType.Date , displayName: 'The Date' }
 ];
 
 

@@ -8,7 +8,7 @@ import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { map } from 'rxjs/operators';
 import { FilterInfo } from './filter-info';
-import { selectTableState, fullTableState } from '../ngrx/reducer';
+import { selectTableState, fullTableState, selectMetaData } from '../ngrx/reducer';
 
 @Injectable()
 export class TableStateManager {
@@ -43,8 +43,12 @@ export class TableStateManager {
       return this.state$.pipe(map(table => Object.values( table.filters) ) );
     }
 
-    get metaData$(): Observable<FilterInfo[]> {
+    get metaDatas$(): Observable<MetaData[]> {
       return this.state$.pipe( map(table => table.metaData ) );
+    }
+
+    metaData$(key: string): Observable<MetaData> {
+      return this.store.pipe( select(selectMetaData, {tableId: this.tableId, key}) );
     }
 
     get displayedColumns$(): Observable<string[]> {

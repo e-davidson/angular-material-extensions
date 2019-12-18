@@ -16,7 +16,7 @@
 
   <mat-chip-list>
     <mat-chip *ngFor="let filter of tableState.filters$ | async" (dblclick)="currentFilters.push(filter)"  (removed)="tableState.removeFilter(filter.filterId)">
-      {{filter.key}} {{filter.filterType}} {{filter.filterValue | json}}
+      {{ filter.key | keyDisplay | async  }} {{filter.filterType}} {{ filter.filterValue | formatValue: filter.key | async }}
       <mat-icon matChipRemove>cancel</mat-icon>
     </mat-chip>
   </mat-chip-list>

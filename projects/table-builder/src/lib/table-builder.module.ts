@@ -6,7 +6,7 @@ import { GenColDisplayerComponent } from './components/gen-col-displayer/gen-col
 import { GenValDisplayerComponent } from './components/gen-val-displayer/gen-val-displayer.component';
 import { GenFilterDisplayerComponent } from './components/gen-filter-displayer/gen-filter-displayer.component';
 import { FilterComponent } from './components/filter/filter.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SpaceCasePipe } from './pipes/space-case.pipes';
 import { MaterialModule } from './material.module';
@@ -23,6 +23,8 @@ import { tableStateReducer } from './ngrx/reducer';
 import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
 import { EffectsModule } from '@ngrx/effects';
 import { SaveTableEffects } from './ngrx/effects';
+import { KeyDisplayPipe } from './pipes/key-display';
+import { FormatValuePipe } from './pipes/format-value';
 
 @NgModule({
   imports: [
@@ -57,7 +59,10 @@ import { SaveTableEffects } from './ngrx/effects';
         NumberFilterComponent,
         ColumnBuilderComponent,
         HeaderMenuComponent,
-    ]
+        KeyDisplayPipe,
+        FormatValuePipe,
+    ],
+    providers : [SpaceCasePipe, DatePipe]
 })
 export class TableBuilderModule {
   static forRoot(config: TableBuilderConfig): ModuleWithProviders {

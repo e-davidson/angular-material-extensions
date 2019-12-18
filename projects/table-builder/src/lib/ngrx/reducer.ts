@@ -70,3 +70,5 @@ export const selectFullTableState: (any) => fullTableState = (state: any) => sta
 
 export const selectTableState = createSelector(selectFullTableState, (state: fullTableState, {tableId}  ) => state[tableId] );
 
+export const selectMetaData = createSelector(selectTableState, ( d, {key}) =>  d.metaData.find(md => md.key === key) );
+
