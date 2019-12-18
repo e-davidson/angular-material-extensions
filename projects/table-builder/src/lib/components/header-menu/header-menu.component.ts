@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { FilterType } from '../../enums/filterTypes';
 import { FilterInfo } from '../../classes/filter-info';
-import { debounceTime } from 'rxjs/operators';
 import { TableStateManager } from '../../classes/table-state-manager';
 
 @Component({
@@ -14,12 +13,12 @@ import { TableStateManager } from '../../classes/table-state-manager';
 export class HeaderMenuComponent {
   FieldType = FieldType;
   FilterType = FilterType;
+  myFilterType: FilterType;
+  myFilterValue: any;
 
   @Input() filter: FilterInfo;
 
   @Input() metaData: MetaData;
-  change$  = new EventEmitter();
-  @Output() filter$ = this.change$.pipe(debounceTime(250));
 
   constructor( public tableState: TableStateManager) {}
 
@@ -36,28 +35,27 @@ export class HeaderMenuComponent {
       case FieldType.String:
       case FieldType.Array:
       case FieldType.Unknown:
-        this.filter.filterType = FilterType.StringContains;
+        this.myFilterType = FilterType.StringContains;
         break;
       case FieldType.Currency:
       case FieldType.Number:
-        this.filter.filterType = FilterType.NumberEquals;
+        this.myFilterType = FilterType.NumberEquals;
         break;
       case FieldType.Boolean:
-          this.filter.filterType = FilterType.BooleanEquals;
+          this.myFilterType = FilterType.BooleanEquals;
           break;
       case FieldType.Date:
-          this.filter.filterType = FilterType.DateIsOn;
+          this.myFilterType = FilterType.DateIsOn;
           break;
     }
   }
 
   setFilterType(filterType: FilterType) {
-    if (filterType === this.filter.filterType) {
+    if (filterType === this.myFilterType) {
       this.resetFilterType();
     } else {
-      this.filter.filterType = filterType;
+      this.myFilterType = filterType;
     }
-    this.change$.emit();
   }
 
   stopClickPropagate(event: any) {
@@ -65,10 +63,4 @@ export class HeaderMenuComponent {
     event.preventDefault();
   }
 
-  hasFilter(): boolean {
-    if ( this.metaData.fieldType === FieldType.Boolean ) {
-      return this.filter.filterValue !== undefined && this.filter.filterValue !== null;
-    }
-    return this.filter.filterValue;
-  }
 }

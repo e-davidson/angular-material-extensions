@@ -6,64 +6,68 @@
     <mat-icon>clear</mat-icon>
     <span>Hide</span>
   </button>
-  <ng-container [ngSwitch]="true">
-    <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
-      <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
-        <mat-icon matPrefix class="search-icon">search</mat-icon>
-        <input matInput placeholder="Filter" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
-      </mat-form-field>
-    </ng-container>
-    <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
-      <mat-form-field class="auto-width" (click)="stopClickPropagate($event)" style="padding: 0 16px">
-        <mat-icon matPrefix class="search-icon">search</mat-icon>
-        <input matInput type='number' [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
-        <span matSuffix>
-          <button mat-icon-button disableRipple>
-            <mat-icon (dblclick)="setFilterType(FilterType.NumberGreaterThen)" class="suffix-icons"
-              [ngStyle]="{'color': filter.filterType === FilterType.NumberGreaterThen ? 'green' : ''  }">
-              arrow_forward_ios</mat-icon>
-          </button>
-          <button mat-icon-button disableRipple>
-            <mat-icon (dblclick)="setFilterType(FilterType.NumberLessThen)" class="suffix-icons"
-              [ngStyle]="{'color': filter.filterType === FilterType.NumberLessThen ? 'green' : ''  }">
-              arrow_back_ios</mat-icon>
-          </button>
-        </span>
-      </mat-form-field>
-    </ng-container>
-    <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Boolean">
-      <div style="padding: 0 16px">
-        <label>
-          <mat-icon class="search-icon">filter_list</mat-icon>
-        </label>
-        <mat-radio-group class="font" [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()">
-          <mat-radio-button class="filter-radio-button" [value]="true">True</mat-radio-button><br>
-          <mat-radio-button class="filter-radio-button" [value]="false">False</mat-radio-button><br>
-        </mat-radio-group>
-      </div>
-    </ng-container>
-    <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
-      <mat-form-field style="padding: 0 16px" class="font auto-width" (click)="stopClickPropagate($event)">
-        <span matPrefix>
-          <button mat-icon-button disableRipple>
-            <mat-icon (dblclick)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons"
-              [ngStyle]="{'color': filter.filterType === FilterType.DateOnOrAfter ? 'green' : ''  }">
-              arrow_forward_ios</mat-icon>
-          </button>
-          <button mat-icon-button disableRipple>
-            <mat-icon (dblclick)="setFilterType(FilterType.DateOnOrBefore)" class="suffix-icons"
-              [ngStyle]="{'color': filter.filterType === FilterType.DateOnOrBefore ? 'green' : ''  }">
-              arrow_back_ios</mat-icon>
-          </button>
-        </span>
-        <input matInput [(ngModel)]="filter.filterValue" (ngModelChange)="change$.emit()" [matDatepicker]="calendar"
-          (click)="calendar.open()">
-        <mat-datepicker-toggle matSuffix [for]="calendar"></mat-datepicker-toggle>
-        <mat-datepicker #calendar></mat-datepicker>
-      </mat-form-field>
-    </ng-container>
-  </ng-container>
-    <button mat-button (click)="tableState.addFilter(filter)" disableRipple>
+  <ng-form #myForm="ngForm" [ngSwitch]="true" >
+      <input type="hidden" name="filterId"  [ngModel]="'header-column-' + metaData.key" >
+      <input type="hidden" name="filterType"  [ngModel]="myFilterType" >
+      <input type="hidden" name="key"  [ngModel]="metaData.key" >
+      <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType" >
+      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
+        <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
+          <mat-icon matPrefix class="search-icon">search</mat-icon>
+          <input matInput placeholder="Filter" name="filterValue" [ngModel]="filter.filterValue" >
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
+        <mat-form-field class="auto-width" (click)="stopClickPropagate($event)" style="padding: 0 16px">
+          <mat-icon matPrefix class="search-icon">search</mat-icon>
+          <input matInput type='number'  name="filterValue" [ngModel]="filter.filterValue" >
+          <span matSuffix>
+            <button mat-icon-button disableRipple>
+              <mat-icon (click)="setFilterType(FilterType.NumberGreaterThen)" class="suffix-icons"
+                [ngStyle]="{'color': myFilterType === FilterType.NumberGreaterThen ? 'green' : ''  }">
+                arrow_forward_ios</mat-icon>
+            </button>
+            <button mat-icon-button disableRipple>
+              <mat-icon (click)="setFilterType(FilterType.NumberLessThen)" class="suffix-icons"
+                [ngStyle]="{'color': myFilterType === FilterType.NumberLessThen ? 'green' : ''  }">
+                arrow_back_ios</mat-icon>
+            </button>
+          </span>
+        </mat-form-field>
+      </ng-container>
+      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Boolean">
+        <div style="padding: 0 16px">
+          <label>
+            <mat-icon class="search-icon">filter_list</mat-icon>
+          </label>
+          <mat-radio-group (click)="stopClickPropagate($event)" #ctrl="matRadioGroup" #boolField='ngModel' class="font" name="filterValue" [ngModel]="myFilterValue" >
+            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = true;" [value]="true">True</mat-radio-button><br>
+            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = false" [value]="false">False</mat-radio-button><br>
+          </mat-radio-group>
+        </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
+        <mat-form-field style="padding: 0 16px" class="font auto-width" (click)="stopClickPropagate($event)">
+          <span matPrefix>
+            <button mat-icon-button disableRipple>
+              <mat-icon (click)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons"
+                [ngStyle]="{'color': myFilterType === FilterType.DateOnOrAfter ? 'green' : ''  }">
+                arrow_forward_ios</mat-icon>
+            </button>
+            <button mat-icon-button disableRipple>
+              <mat-icon (click)="setFilterType(FilterType.DateOnOrBefore)" class="suffix-icons"
+                [ngStyle]="{'color': myFilterType === FilterType.DateOnOrBefore ? 'green' : ''  }">
+                arrow_back_ios</mat-icon>
+            </button>
+          </span>
+          <input matInput name="filterValue" [ngModel]="filter.filterValue" [matDatepicker]="calendar"
+            (click)="calendar.open()">
+          <mat-datepicker-toggle matSuffix [for]="calendar"></mat-datepicker-toggle>
+          <mat-datepicker #calendar></mat-datepicker>
+        </mat-form-field>
+      </ng-container>
+    <button mat-button (click)="tableState.addFilter(myForm.value)" disableRipple>
       Apply
     </button>
+  </ng-form>
 </mat-menu>

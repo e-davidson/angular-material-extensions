@@ -32,8 +32,7 @@ export class TableStateManager {
     }
 
     initializeState() {
-      const state = {...{ hiddenKeys: [], pageSize: 20, filters: {} }, ...this.config.defaultTableState };
-      this.store.dispatch( tableActions.initTable({tableId: this._tableId, tableState: state }));
+      this.store.dispatch( tableActions.initTable({tableId: this._tableId}));
     }
 
     get state$(): Observable<TableState> {
@@ -84,6 +83,10 @@ export class TableStateManager {
 
   resetState() {
     this.store.dispatch(tableActions.reset({tableId: this.tableId}));
+  }
+
+  destroy() {
+    this.store.dispatch(tableActions.removeTable({tableId: this.tableId}));
   }
 
   constructor(private store: Store<{fullTableState: fullTableState}>,

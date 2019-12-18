@@ -3,7 +3,7 @@ import { TableState } from '../classes/TableState';
 import { FilterInfo } from '../classes/filter-info';
 import { MetaData } from '../interfaces/report-def';
 
-export const initTable = createAction( '[Table State] Init table', props<{tableId: string, tableState: Partial<TableState>}>());
+export const initTable = createAction( '[Table State] Init table', props<{tableId: string }>());
 
 export const setMetaData = createAction('[Table State] Set MetaData', props<{tableId: string, metaData: MetaData[]}>());
 
@@ -21,3 +21,5 @@ export const addFilter = createAction('[Table State] Add Filter', props<{tableId
 export const removeFilter = createAction('[Table State] Remove Filter', props<{tableId: string, filterId: string}>());
 
 export const reset = createAction('[Table State] Reset', props<{tableId: string}>());
+
+export const removeTable = createAction('[Table State] Remove table', props<{tableId: string}>());

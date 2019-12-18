@@ -5,6 +5,7 @@ import { asap } from 'rxjs/internal/scheduler/asap';
 import { scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
+import { Store } from '@ngrx/store';
 
 export interface PeriodicElement {
   name: string;
@@ -48,13 +49,15 @@ export class TableBuilderExampleComponent implements OnInit {
   newElement$ = new Subject<PeriodicElement>();
   metaData$ = new BehaviorSubject(META_DATA);
   myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
-  constructor() {
+
+  constructor(private store: Store<any>) {
     const addedElements = this.newElement$.pipe(
       scan((acc, value ) => {acc.push(value); return acc; }, []),
       startWith([]),
     );
     const all = combineArrays([scheduled([ELEMENT_DATA], asap ), addedElements]);
     this.tableBuiler = new TableBuilder( all, this.metaData$ );
+    this.store.subscribe( d => console.log(d));
   }
 
   ngOnInit() {

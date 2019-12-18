@@ -37,6 +37,7 @@ import * as _ from 'lodash';
       this.state.updateState( { pageSize: this._pageSize});
     }
   }
+  @Input() SaveState: boolean = false;
   @Input() tableBuilder: TableBuilder;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
@@ -65,7 +66,6 @@ import * as _ from 'lodash';
   FieldType = FieldType;
   filteredData: DataFilter;
   filterCols$: Observable<MetaData[]>;
-  inlineFilters$ = new Subject<FilterInfo[]>();
 
   myColumns$: Observable<{metaData: MetaData, customCell: CustomCellDirective}[]>;
 
@@ -152,5 +152,8 @@ import * as _ from 'lodash';
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
+    if (!this.SaveState || !this._tableId) {
+      this.state.destroy();
+    }
   }
 }

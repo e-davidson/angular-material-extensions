@@ -19,8 +19,6 @@ export class ColumnBuilderComponent {
   @Input() customCell: CustomCellDirective;
   @Input() data$: Observable<any[]>;
 
-  @Output() filter$ = new EventEmitter();
-
   @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
 
   ngOnInit() {

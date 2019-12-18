@@ -1,7 +1,6 @@
 <ng-container multiSort [rules$]='rules$'>
   <tb-column-builder
     *ngFor="let column of myColumns$ | async"
-    (filter$)='inlineFilters$.next()'
     [customCell]="column.customCell"
     [metaData]="column.metaData"
     >
@@ -12,10 +11,10 @@
         <tb-filter-displayer [filterCols$]="filterCols$"  >
         </tb-filter-displayer>
         <tb-col-displayer></tb-col-displayer>
-        <button mat-icon-button (click)="state.saveTable()">
+        <button *ngIf="_tableId" mat-icon-button (click)="state.saveTable()" matTooltip="Save Table">
           <mat-icon color="primary">save</mat-icon>
         </button>
-        <button mat-icon-button (click)="state.resetState()">
+        <button mat-icon-button (click)="state.resetState()" matTooltip="Reset table">
           <mat-icon color="primary">autorenew</mat-icon>
         </button>
       </div>

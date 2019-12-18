@@ -1,7 +1,6 @@
 import { createReducer, Action, on, createSelector } from '@ngrx/store';
 import { TableState } from '../classes/TableState';
 import update from 'immutability-helper';
-
 import * as tableActions from './actions';
 import { Dictionary } from '../interfaces/dictionary';
 
@@ -38,11 +37,18 @@ const reducer = createReducer(initialState,
     });
     return update( state , {[tableId] : { hiddenKeys: {$set: hiddenKeys}}});
   }),
-  on( tableActions.initTable, (state, {tableId, tableState}) => {
-    return {... state , [tableId]: tableState};
+  on( tableActions.initTable, (state, {tableId}) => {
+    if (!state[tableId]) {
+      return {... state , [tableId]: null};
+    }
+    return state;
   }),
   on(tableActions.updateTableState, (state, {tableId, tableState}) => {
-    return update( state , {[tableId] : { $merge: tableState}});
+    if (state[tableId]) {
+      return update( state , {[tableId] : { $merge: tableState}});
+    } else {
+      return update( state , {[tableId] : { $set: tableState as TableState }});
+    }
   }),
   on(tableActions.addFilter, (state, {tableId, filter}) => {
     const filterId = filter.filterId;
@@ -51,7 +57,8 @@ const reducer = createReducer(initialState,
   on(tableActions.removeFilter, (state, {tableId, filterId}) => {
     return update(state, {[tableId] : {filters : { $unset : [filterId]}  }});
   }),
-  on(tableActions.reset, (state, {tableId}) => update(state, {[tableId]: {hiddenKeys: {$set: []}, filters: {$set: {}}}})  )
+  on(tableActions.reset, (state, {tableId}) => update(state, {[tableId]: {hiddenKeys: {$set: []}, filters: {$set: {}}}})  ),
+  on(tableActions.removeTable, (state, {tableId}) => update(state, {$unset: [tableId] }))
 );
 
 export function tableStateReducer(state: fullTableState| undefined, action: Action) {
