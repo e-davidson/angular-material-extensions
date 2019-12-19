@@ -12,7 +12,7 @@ import {
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { map } from 'rxjs/operators';
-import { FilterInfo, createFilterFunc } from '../../classes/filter-info';
+import { createFilterFunc } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { combineArrays } from '../../functions/rxjs-operators';
 import { TableBuilder } from '../../classes/table-builder';
@@ -120,10 +120,12 @@ import * as _ from 'lodash';
           ),
         ];
       }),
-      map( metaDatas => metaDatas.map(metaData => ({metaData, customCell: this.customCells.find( cc => cc.customCell === metaData.key ) })))
+      map( metaDatas =>
+        metaDatas.map( metaData => ({metaData, customCell: this.customCells.find( cc => cc.customCell === metaData.key ) }))  ),
     );
 
-    this.subscriptions.push(this.myColumns$.pipe(map(columns => columns.map( column => column.metaData ))).subscribe( columns => {
+    this.subscriptions.push(this.myColumns$.pipe(map(columns => _.orderBy( columns.map( column => column.metaData ), 'order' )   ))
+    .subscribe( columns => {
       this.state.setMetaData(columns);
     }));
 
