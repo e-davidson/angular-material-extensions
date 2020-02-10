@@ -143,12 +143,13 @@ import * as _ from 'lodash';
   preSort() {
     this.rules$ = this.state.state$.pipe(map(state => state.metaData)).pipe(
       map(templates =>
-      templates.filter(( metaData ) => metaData.preSort)
-        .sort(
-          ({  preSort: ps1  }, { preSort: ps2 } ) =>  (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
-        )
-        .map(( {key, preSort} ) =>
-          ({ active: key, direction: preSort.direction }))
+              templates
+                .filter(( metaData ) => metaData.preSort)
+                .sort(
+                  ({  preSort: ps1  }, { preSort: ps2 } ) =>  (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
+                )
+                .map(( {key, preSort} ) =>
+                  ({ active: key, direction: preSort.direction }))
     ));
   }
 

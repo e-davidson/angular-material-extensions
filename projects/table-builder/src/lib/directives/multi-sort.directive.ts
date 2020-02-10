@@ -21,6 +21,7 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
   ngOnInit() {
     this.SubRef = this.rules$.subscribe( rules => {
       if (rules.length) {
+        this.active = null;
         const initRules = [...rules];
         const firstRule = initRules.shift();
         this.rules = initRules;
@@ -46,7 +47,6 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
         this.rules.unshift({ active: this.active, direction: newDirection });
       }
     }
-
     super.sort(sortable);
     this.multiSortChange.emit(this.rules);
   }

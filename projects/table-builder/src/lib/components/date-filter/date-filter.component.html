@@ -8,13 +8,13 @@
 <ng-template #between>
   <ng-container ngModelGroup="filterValue">
     <mat-form-field class="my-filter" >
-      <input matInput name="From" [ngModel]="info.filterValue?.From"  placeholder="From" [matDatepicker]="fromVal"
+      <input matInput name="Start" [ngModel]="info.filterValue?.Start"  placeholder="From" [matDatepicker]="fromVal"
           (click)="fromVal.open()"/>
       <mat-datepicker-toggle matSuffix [for]="fromVal"></mat-datepicker-toggle>
       <mat-datepicker #fromVal></mat-datepicker>
     </mat-form-field>
     <mat-form-field class="my-filter">
-      <input matInput name="To" [ngModel]="info.filterValue?.To"  placeholder="To" [matDatepicker]="toVal" (click)="toVal.open()"/>
+      <input matInput name="End" [ngModel]="info.filterValue?.End"  placeholder="To" [matDatepicker]="toVal" (click)="toVal.open()"/>
       <mat-datepicker-toggle matSuffix [for]="toVal"></mat-datepicker-toggle>
       <mat-datepicker #toVal></mat-datepicker>
     </mat-form-field>

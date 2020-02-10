@@ -1,4 +1,4 @@
-<tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuiler' [inputFilters]='myFilter' >
+<tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' >
   <p *customCell="'testCell';let element = element" [class.makeMeRed]="element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
   <ng-container customCell="blue" matColumnDef="blue" >

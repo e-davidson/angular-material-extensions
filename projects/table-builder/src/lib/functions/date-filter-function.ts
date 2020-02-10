@@ -17,7 +17,7 @@ function dateIsOnOrBeforeFunc(filterVal: Date, val: Date): boolean {
 }
 
 function dateBetweenFunc(filterVal: any, val: Date): boolean {
-    return  val >= new Date(filterVal.From ) &&    val <= new Date( filterVal.To);
+    return  val >= new Date(filterVal.Start ) &&    val <= new Date( filterVal.End);
 }
 
 export const DateFilterFuncs = {
