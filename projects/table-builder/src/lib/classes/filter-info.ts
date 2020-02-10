@@ -1,13 +1,12 @@
-import { MetaData, FieldType } from '../interfaces/report-def';
 import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, FilterType } from '../enums/filterTypes';
 import { StringFilterFuncs } from '../functions/string-filter-function';
 import { NumberFilterFuncs } from '../functions/number-filter-function';
 import { DateFilterFuncs } from '../functions/date-filter-function';
 import { BooleanFilterFuncs } from '../functions/boolean-filter-function';
+import { FieldType } from '../interfaces/report-def';
 
 
-
-const filterTypeMap = {
+export const filterTypeMap: { [key: string]: { [key: string]: FilterType[]}  } = {
   [FieldType.String] : StringFilterMap,
   [FieldType.Array] : StringFilterMap,
   [FieldType.Currency] : NumberFilterMap,
@@ -26,23 +25,21 @@ const filterTypeFuncMap = {
   [FieldType.Boolean] : BooleanFilterFuncs,
   [FieldType.Unknown] : StringFilterFuncs,
 };
-export class FilterInfo {
+export interface FilterInfo {
+    filterId?: string;
     filterType?: FilterType;
     filterValue?: any;
-    types: any;
+    key: string;
+    fieldType: FieldType;
+}
 
-    constructor(public field: MetaData) {
-      this.types = filterTypeMap[field.fieldType];
-    }
-
-    getFunc(): (val: any) => boolean {
-      if ( this.filterValue === undefined ) {
-         return () => true;
-      }
-      const func = filterTypeFuncMap[this.field.fieldType][this.filterType];
-      return (val) => {
-          const obj = val[this.field.key];
-          return (obj === null || obj === undefined) ?  false : func(this.filterValue, obj);
-      };
-    }
+export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
+  if (filter.filterValue === undefined) {
+    return () => true;
+  }
+  const func = filterTypeFuncMap[filter.fieldType][filter.filterType];
+  return (val) => {
+    const obj = val[filter.key];
+    return (obj === null || obj === undefined) ? false : func(filter.filterValue, obj);
+  };
 }

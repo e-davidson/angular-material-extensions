@@ -5,7 +5,7 @@ export class DataFilter {
   filteredData$: Observable<any[]>;
   constructor(filters$: Observable< Array< (val: any) => boolean>>, data$: Observable<any[]>) {
     this.filteredData$ = combineLatest([data$, filters$.pipe(startWith([]))]).pipe(
-      map((res: [any[], Array<(val: any) => boolean>]) => this.filter(res[0], res[1])),
+      map(([data, filters]) => this.filter(data, filters)),
     );
   }
 

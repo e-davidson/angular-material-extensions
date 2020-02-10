@@ -2,22 +2,22 @@ import { FilterType } from '../enums/filterTypes';
 
 
 function dateIsOnFunc(filterVal: Date, val: Date): boolean {
-    const isOnVal = filterVal.getTime();
-    return  val.getTime() === isOnVal;
+    const isOnVal = new Date( filterVal).getTime();
+    return  val.getTime()  === isOnVal;
 }
 
 function dateIsOnOrAfterFunc(filterVal: Date, val: Date): boolean {
-    const afterVal = filterVal.getTime();
-    return  val.getTime() >= afterVal;
+    const afterVal = new Date( filterVal);
+    return  val >= afterVal;
 }
 
 function dateIsOnOrBeforeFunc(filterVal: Date, val: Date): boolean {
-    const beforeVal = filterVal.getTime();
-    return val.getTime() <= beforeVal;
+    const beforeVal = new Date( filterVal);
+    return val <= beforeVal;
 }
 
 function dateBetweenFunc(filterVal: any, val: Date): boolean {
-    return  val >= filterVal.From  &&    val <= filterVal.To;
+    return  val >= new Date(filterVal.From ) &&    val <= new Date( filterVal.To);
 }
 
 export const DateFilterFuncs = {

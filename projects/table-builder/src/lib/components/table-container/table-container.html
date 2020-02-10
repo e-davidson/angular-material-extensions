@@ -1,40 +1,37 @@
-
-  <div class="row">
-    <tb-filter-displayer class="filter-row col-md-11" [filterCols$]="filterCols$" (filters$)="filters$.emit($event)">
-    </tb-filter-displayer>
-
-    <tb-col-displayer class="menu pull-right" [cols]="columnNames$" (update)="columnsSelected$.next($event)">
-    </tb-col-displayer>
-  </div>
-<div>
-  <tb-generic-table
-    [rows]='customRows'
-    [data$]="filteredData.filteredData$"
-    [IndexColumn]='IndexColumn'
-    [SelectionColumn]='SelectionColumn'
-    (selection$)='selection$.emit($event)'
-    [columnTemplates$]='columnTemplates$'
-    [columns$]='displayedColumns$'
-    [trackBy]='trackBy'
-    [isSticky]='isSticky'
-    [pageSize]='pageSize'
+<ng-container multiSort [rules$]='rules$'>
+  <tb-column-builder
+    *ngFor="let column of myColumns$ | async"
+    [customCell]="column.customCell"
+    [metaData]="column.metaData"
     >
-  </tb-generic-table>
-
-</div>
-
-<ng-template #header let-metaData="metaData" >
-  {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
-</ng-template>
-
-<ng-template #body let-metaData="metaData" let-element="element">
-  <tb-val-displayer [col]="metaData" [element]="element"></tb-val-displayer>
-</ng-template>
-
-<ng-template #footer let-metaData="metaData" let-element="element" let-data="data">
-  <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
-    <span *ngSwitchCase="FieldType.Currency">
-      {{ data | columnTotal:metaData | async | currency }}
-    </span>
-  </span>
-</ng-template>
+  </tb-column-builder>
+  <ng-container *ngIf='columns'>
+    <div style="width:100%;">
+      <div style="display: flex; flex-direction: row;justify-content: flex-end; ">
+        <tb-filter-displayer [filterCols$]="filterCols$"  >
+        </tb-filter-displayer>
+        <tb-col-displayer></tb-col-displayer>
+        <button *ngIf="_tableId" mat-icon-button (click)="state.saveTable()" matTooltip="Save Table">
+          <mat-icon color="primary">save</mat-icon>
+        </button>
+        <button mat-icon-button (click)="state.resetState()" matTooltip="Reset table">
+          <mat-icon color="primary">autorenew</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div style="clear: both;">
+      <tb-generic-table
+      [rows]='customRows'
+      [data$]="filteredData.filteredData$"
+      [IndexColumn]='IndexColumn'
+      [SelectionColumn]='SelectionColumn'
+      (selection$)='selection$.emit($event)'
+      [trackBy]='trackBy'
+      [isSticky]='isSticky'
+      [pageSize]='pageSize'
+      [columnDefs]='columns'
+      >
+      </tb-generic-table>
+    </div>
+  </ng-container>
+</ng-container>

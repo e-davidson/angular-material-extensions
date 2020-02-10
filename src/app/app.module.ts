@@ -6,17 +6,23 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TableBuilderModule } from '../../projects/table-builder/src/lib/table-builder.module';
 import { TableBuilderExampleComponent } from './table-builder-example/table-builder-example.component';
+import { MatTableModule } from '@angular/material/table';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TableBuilderExampleComponent
+    TableBuilderExampleComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    TableBuilderModule
+    StoreModule.forRoot({}),
+    EffectsModule.forRoot([]),
+    TableBuilderModule.forRoot({ defaultTableState: { pageSize: 20}}),
+    MatTableModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

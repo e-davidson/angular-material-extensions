@@ -1,15 +1,26 @@
-<p>
-  <button class="filter-button" mat-button [matMenuTriggerFor]="menu" ><mat-icon class="filter-icon" color="primary">add</mat-icon>Filter</button>
-  <button class="cancel-button pull-right" *ngIf="currentFilters.length" mat-icon-button (click)="clearAll()" matTooltip="Close all Filters">
+<div style="display: flex; flex-direction: row;justify-content: flex-end; ">
+
+  <button class="cancel-button pull-right" *ngIf="currentFilters.length" mat-icon-button (click)="clearAll()"
+    matTooltip="Close all Filters">
     <mat-icon class="cancel-button" color="primary">close</mat-icon>
   </button>
-</p>
-<mat-menu #menu="matMenu">
-  <button class="filter-labels" *ngFor="let filter of filterCols$ | async" (click)="addFilter(filter)" mat-menu-item>
-    {{filter.displayName || (filter.key | spaceCase)}}
-  </button>
-</mat-menu>
+  <mat-menu #menu="matMenu">
+    <button class="filter-labels" *ngFor="let md of filterCols$ | async" (click)="addFilter(md)" mat-menu-item>
+      {{md.displayName || (md.key | spaceCase)}}
+    </button>
+  </mat-menu>
 
-<div class="filter" *ngFor="let filterInfo of currentFilters; index as i;">
-  <tb-filter [info]="filterInfo" (filter$)="RefreshFilters()"  (delete$)="deleteByIndex(i)"> </tb-filter>
+  <div class="filter" *ngFor="let filter of currentFilters; index as i;">
+    <tb-filter [filter]="filter" (close)="deleteByIndex(i)" > </tb-filter>
+  </div>
+
+  <mat-chip-list>
+    <mat-chip *ngFor="let filter of tableState.filters$ | async" (dblclick)="currentFilters.push(filter)"  (removed)="tableState.removeFilter(filter.filterId)">
+      {{ filter.key | keyDisplay | async  }} {{filter.filterType}} {{ filter.filterValue | formatValue: filter.key | async }}
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+  </mat-chip-list>
+  <button class="filter-button" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Add Filter">
+    <mat-icon class="filter-icon" color="primary">filter_list</mat-icon>
+  </button>
 </div>
