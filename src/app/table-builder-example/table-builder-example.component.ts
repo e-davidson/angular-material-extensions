@@ -57,7 +57,6 @@ export class TableBuilderExampleComponent implements OnInit {
     );
     const all = combineArrays([scheduled([ELEMENT_DATA], asap ), addedElements]);
     this.tableBuiler = new TableBuilder( all, this.metaData$ );
-    this.store.subscribe( d => console.log(d));
   }
 
   ngOnInit() {
@@ -69,10 +68,6 @@ export class TableBuilderExampleComponent implements OnInit {
     });
 
     this.metaData$.next(META_DATA);
-  }
-
-  emitData(data) {
-    console.log(data);
   }
 
   emitFilter() {
