@@ -2,7 +2,7 @@
 
   <ng-template matHeaderCellDef>
 
-    <ng-container *ngIf="customCell?.columnDef?.headerCell;else header">
+    <ng-container *ngIf="customCell?.columnDef?.headerCell;else header;">
       <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData } ">
       </ng-container>
     </ng-container>
@@ -19,7 +19,7 @@
   </ng-template>
 
 
-  <ng-container *matCellDef="let element">
+  <ng-container *matCellDef="let element;">
     <ng-container *ngIf="customCell?.columnDef?.cell;else body">
       <ng-container *ngTemplateOutlet="customCell.columnDef.cell.template; context: {metaData: metaData, element: element }">
       </ng-container>

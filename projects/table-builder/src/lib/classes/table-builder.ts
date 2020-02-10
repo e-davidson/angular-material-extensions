@@ -19,7 +19,7 @@ export class TableBuilder {
   }
 
   createMetaData(obj): MetaData [] {
-    return Object.keys(obj)
+    return Object.keys(obj ?? {})
     .map( key => ({
       key,
       fieldType: FieldType.Unknown,
