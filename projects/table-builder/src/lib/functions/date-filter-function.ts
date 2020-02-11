@@ -1,4 +1,5 @@
 import { FilterType } from '../enums/filterTypes';
+import { isNull } from './null-filter-function';
 
 
 function dateIsOnFunc(filterVal: Date, val: Date): boolean {
@@ -17,12 +18,13 @@ function dateIsOnOrBeforeFunc(filterVal: Date, val: Date): boolean {
 }
 
 function dateBetweenFunc(filterVal: any, val: Date): boolean {
-    return  val >= new Date(filterVal.From ) &&    val <= new Date( filterVal.To);
+    return  val >= new Date(filterVal.Start ) &&    val <= new Date( filterVal.End);
 }
 
 export const DateFilterFuncs = {
     [FilterType.DateIsOn]: dateIsOnFunc,
     [FilterType.DateOnOrAfter]: dateIsOnOrAfterFunc,
     [FilterType.DateOnOrBefore]: dateIsOnOrBeforeFunc,
-    [FilterType.DateBetween]: dateBetweenFunc
+    [FilterType.DateBetween]: dateBetweenFunc,
+    [FilterType.IsNull]: isNull,
 };

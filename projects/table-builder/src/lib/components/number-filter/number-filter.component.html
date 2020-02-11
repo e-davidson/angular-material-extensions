@@ -1,11 +1,11 @@
-<ng-container *ngIf="CurrentFilterType !== FilterType.NumberBetween;else between">
+<ng-container *ngIf="CurrentFilterType !== FilterType.NumberBetween && CurrentFilterType !== FilterType.IsNull">
   <mat-form-field class="my-filter">
     <input matInput name="filterValue" [ngModel]="info.filterValue" type="number"/>
   </mat-form-field>
 </ng-container>
 
 
-<ng-template #between>
+<ng-container *ngIf="CurrentFilterType === FilterType.NumberBetween">
   <ng-container ngModelGroup="filterValue"  >
     <mat-form-field class="my-filter">
       <input matInput name="Start" [ngModel]="info.filterValue?.Start" placeholder="Start" type="number"/>
@@ -14,4 +14,4 @@
       <input matInput name="End" [ngModel]="info.filterValue?.End" placeholder="End" type="number"/>
     </mat-form-field>
   </ng-container>
-</ng-template>
+</ng-container>
