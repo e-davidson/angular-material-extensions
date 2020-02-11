@@ -7,10 +7,10 @@
     <span>Hide</span>
   </button>
   <ng-form #myForm="ngForm" [ngSwitch]="true" >
-      <input type="hidden" name="filterId"  [ngModel]="'header-column-' + metaData.key" >
-      <input type="hidden" name="filterType"  [ngModel]="myFilterType" >
-      <input type="hidden" name="key"  [ngModel]="metaData.key" >
-      <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType" >
+      <input type="hidden" name="filterId"  [ngModel]="'header-column-' + metaData.key" />
+      <input type="hidden" name="filterType"  [ngModel]="myFilterType" />
+      <input type="hidden" name="key"  [ngModel]="metaData.key" />
+      <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType"/ >
 
       <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
         <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
@@ -49,8 +49,8 @@
             <mat-icon class="search-icon">filter_list</mat-icon>
           </label>
           <mat-radio-group (click)="stopClickPropagate($event)" #ctrl="matRadioGroup" #boolField='ngModel' class="font" name="filterValue" [ngModel]="myFilterValue" >
-            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = true;" [value]="true">True</mat-radio-button><br>
-            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = false" [value]="false">False</mat-radio-button><br>
+            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = true;" [value]="true">True</mat-radio-button><br/>
+            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = false" [value]="false">False</mat-radio-button><br/>
           </mat-radio-group>
         </div>
       </ng-container>
@@ -75,7 +75,7 @@
             </button>
           </span>
           <input matInput name="filterValue" [ngModel]="filter.filterValue" [matDatepicker]="calendar"
-            (click)="calendar.open()">
+            (click)="calendar.open()"/>
           <mat-datepicker-toggle matSuffix [for]="calendar"></mat-datepicker-toggle>
           <mat-datepicker #calendar></mat-datepicker>
         </mat-form-field>
