@@ -1,4 +1,4 @@
-<ng-container multiSort [rules$]='rules$'>
+<ng-container multiSort [rules$]='rules$' [reSort]="resort$ | async">
   <tb-column-builder
     *ngFor="let column of myColumns$ | async"
     [customCell]="column.customCell"
@@ -14,7 +14,7 @@
         <button *ngIf="_tableId" mat-icon-button (click)="state.saveTable()" matTooltip="Save Table">
           <mat-icon color="primary">save</mat-icon>
         </button>
-        <button mat-icon-button (click)="state.resetState()" matTooltip="Reset table">
+        <button mat-icon-button (click)="state.resetState();resort()" matTooltip="Reset table">
           <mat-icon color="primary">autorenew</mat-icon>
         </button>
       </div>

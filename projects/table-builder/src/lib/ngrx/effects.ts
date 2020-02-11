@@ -28,7 +28,6 @@ export class SaveTableEffects {
   initTable$ = createEffect(
     () => this.actions$.pipe(
       ofType(tableActions.initTable),
-      tap( d => console.log(d)),
       mergeMap( ({tableId}) =>
         this.store$.pipe(
           map(s => s.fullTableState[tableId]),

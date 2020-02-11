@@ -1,4 +1,5 @@
 import { FilterType } from '../enums/filterTypes';
+import { isNull } from './null-filter-function';
 
 
 function stringEqualFunc(filterVal: string, val: any): boolean  {
@@ -26,4 +27,5 @@ export const StringFilterFuncs = {
     [FilterType.StringContains]: stringContainsFunc,
     [FilterType.StringStartWith]: stringStartsWithFunc,
     [FilterType.StringEndsWith]: stringEndsWithFunc,
+    [FilterType.IsNull]: isNull,
 };

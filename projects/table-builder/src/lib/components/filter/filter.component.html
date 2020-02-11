@@ -1,14 +1,14 @@
 <mat-card class="mat-elevation-z5" *ngIf="filter">
   <form #form="ngForm">
-    <input type="hidden" name="filterId" [ngModel]="filter.filterId" >
-    <input type="hidden" name="key" [ngModel]="filter.key" >
-    <input type="hidden" name="fieldType" [ngModel]="filter.fieldType" >
+    <input type="hidden" name="filterId" [ngModel]="filter.filterId" />
+    <input type="hidden" name="key" [ngModel]="filter.key" />
+    <input type="hidden" name="fieldType" [ngModel]="filter.fieldType" />
     <div class="row">
-        <h4 class="filter-name">{{(filter.key | spaceCase)}} Filter</h4>
-        <button class="cancel-button" color="primary" mat-icon-button (click)="close.emit()"
-            matTooltip="Cancel Filter">
-            <mat-icon class="cancel-button" color="primary">close</mat-icon>
-        </button>
+      <h4 class="filter-name">{{(filter.key | spaceCase)}} Filter</h4>
+      <button class="cancel-button" color="primary" mat-icon-button (click)="close.emit();"
+          matTooltip="Cancel Filter">
+        <mat-icon class="cancel-button" color="primary">close</mat-icon>
+      </button>
     </div>
     <div class="row">
         <mat-form-field class="my-filter">
@@ -32,6 +32,12 @@
                 <tb-date-filter [info]="filter" [CurrentFilterType]="currentFilterType"></tb-date-filter>
             </ng-container>
         </ng-container>
+        
+        <mat-radio-group name="filterValue" [ngModel]="filter.filterValue" *ngIf="currentFilterType === FilterType.IsNull">
+          <mat-radio-button [value]="true">True</mat-radio-button>
+          <mat-radio-button [value]="false">False</mat-radio-button>
+        </mat-radio-group>
+      
     </div>
     <button mat-button (click)="state.addFilter(form.value)" disableRipple>
       Apply
@@ -42,22 +48,22 @@
     <div class="switch" [ngSwitch]="currentFilterType">
         <div class="switch" *ngSwitchCase="FilterType.StringEquals">
             <mat-form-field class="my-filter" >
-                <input name="filterValue" matInput [ngModel]="filter.filterValue"  >
+                <input name="filterValue" matInput [ngModel]="filter.filterValue"  />
             </mat-form-field>
         </div>
         <div class="switch" *ngSwitchCase="FilterType.StringContains">
             <mat-form-field class="my-filter">
-                <input matInput name="filterValue" [ngModel]="filter.filterValue" >
+                <input matInput name="filterValue" [ngModel]="filter.filterValue" />
             </mat-form-field>
         </div>
         <div class="switch" *ngSwitchCase="FilterType.StringStartWith">
             <mat-form-field class="my-filter">
-                <input matInput name="filterValue" [ngModel]="filter.filterValue"   >
+                <input matInput name="filterValue" [ngModel]="filter.filterValue"   />
             </mat-form-field>
         </div>
         <div class="switch" *ngSwitchCase="FilterType.StringEndsWith">
             <mat-form-field class="my-filter">
-                <input matInput name="filterValue" [ngModel]="filter.filterValue" >
+                <input matInput name="filterValue" [ngModel]="filter.filterValue" />
             </mat-form-field>
         </div>
     </div>

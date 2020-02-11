@@ -40,6 +40,6 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
   const func = filterTypeFuncMap[filter.fieldType][filter.filterType];
   return (val) => {
     const obj = val[filter.key];
-    return (obj === null || obj === undefined) ? false : func(filter.filterValue, obj);
+    return ((obj === null || obj === undefined) && filter.filterType !== FilterType.IsNull) ? false : func(filter.filterValue, obj);
   };
 }

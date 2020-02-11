@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { createFilterFunc } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { combineArrays } from '../../functions/rxjs-operators';
@@ -143,15 +143,20 @@ import * as _ from 'lodash';
   preSort() {
     this.rules$ = this.state.state$.pipe(map(state => state.metaData)).pipe(
       map(templates =>
-      templates.filter(( metaData ) => metaData.preSort)
-        .sort(
-          ({  preSort: ps1  }, { preSort: ps2 } ) =>  (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
-        )
-        .map(( {key, preSort} ) =>
-          ({ active: key, direction: preSort.direction }))
-    ));
+              templates
+                .filter(( metaData ) => metaData.preSort)
+                .sort(
+                  ({  preSort: ps1  }, { preSort: ps2 } ) =>  (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
+                )
+                .map(( {key, preSort} ) =>
+                  ({ active: key, direction: preSort.direction }))
+      ),
+      shareReplay());
   }
-
+  resort$ = new Subject<{}>();
+  resort(){
+    this.resort$.next({});
+  }
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     if (!this.SaveState || !this._tableId) {

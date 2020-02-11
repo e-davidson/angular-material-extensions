@@ -1,4 +1,5 @@
 import { FilterType } from '../enums/filterTypes';
+import { isNull } from './null-filter-function';
 
 function numberEqalsFunc(filterVal: number, val: number): boolean {
     return  val === filterVal;
@@ -23,4 +24,5 @@ export const NumberFilterFuncs = {
     [FilterType.NumberGreaterThen]: numberGreaterThenFunc,
     [FilterType.NumberLessThen]: numberLessThenFunc,
     [FilterType.NumberBetween]: numberBetweenFunc,
+    [FilterType.IsNull]: isNull,
 };
