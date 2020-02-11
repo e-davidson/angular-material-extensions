@@ -154,9 +154,6 @@ import * as _ from 'lodash';
       shareReplay());
   }
   resort$ = new Subject<{}>();
-  resort(){
-    this.resort$.next({});
-  }
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
     if (!this.SaveState || !this._tableId) {
