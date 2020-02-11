@@ -153,9 +153,9 @@ import * as _ from 'lodash';
       ),
       shareReplay());
   }
-  resort$ = new Subject<boolean>();
+  resort$ = new Subject<{}>();
   resort(){
-    this.resort$.next(true);
+    this.resort$.next({});
   }
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());

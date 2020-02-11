@@ -16,7 +16,7 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
 
   @Input() rules$: Observable<Sort[]> = new Subject();
 
-  @Input() set  reSort (rules: Sort[]){
+  @Input() set  reSort (val){
     this.initRules();
   } 
   rules: Sort[] = [];
