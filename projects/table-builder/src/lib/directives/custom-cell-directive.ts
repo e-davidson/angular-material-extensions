@@ -34,8 +34,7 @@ export class CustomCellDirective implements AfterContentInit {
         displayName: this.displayName,
         preSort: this.preSort,
         fieldType: FieldType.Unknown,
-        order: this.customCellOrder,
-        _internalNotUserDefined: true,
+        order: this.customCellOrder
       };
     }
 }

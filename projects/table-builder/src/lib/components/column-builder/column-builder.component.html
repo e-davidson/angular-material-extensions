@@ -10,13 +10,10 @@
     <ng-template #header>
       <mat-header-cell class="f-mat-header-cell">
         <div style='display: flex;flex-direction: row; width: 100%; align-items: center;'>
-          <div *ngIf="!metaData._internalNotUserDefined;" mat-sort-header style="width: 100%">
+          <div mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
           </div>
-          <div *ngIf="metaData._internalNotUserDefined;" style="width: 100%">
-            {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
-          </div>
-          <tb-header-menu *ngIf="!metaData._internalNotUserDefined" #menu [metaData]='metaData' [filter]='filter' ></tb-header-menu>
+          <tb-header-menu #menu [metaData]='metaData' [filter]='filter' ></tb-header-menu>
         </div>
       </mat-header-cell>
     </ng-template>

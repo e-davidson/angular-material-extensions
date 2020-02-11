@@ -14,7 +14,7 @@
         <button *ngIf="_tableId" mat-icon-button (click)="state.saveTable()" matTooltip="Save Table">
           <mat-icon color="primary">save</mat-icon>
         </button>
-        <button mat-icon-button (click)="state.resetState();resort$.next({})" matTooltip="Reset table">
+        <button mat-icon-button (click)="state.resetState();resort()" matTooltip="Reset table">
           <mat-icon color="primary">autorenew</mat-icon>
         </button>
       </div>

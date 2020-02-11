@@ -10,10 +10,8 @@
     </button>
   </mat-menu>
 
-  <div *ngIf="currentFilters.length" class="float">
-    <div class="filter" *ngFor="let filter of currentFilters; index as i;">
-      <tb-filter [filter]="filter" (close)="deleteByIndex(i)" > </tb-filter>
-    </div>
+  <div class="filter" *ngFor="let filter of currentFilters; index as i;">
+    <tb-filter [filter]="filter" (close)="deleteByIndex(i)" > </tb-filter>
   </div>
 
   <mat-chip-list>

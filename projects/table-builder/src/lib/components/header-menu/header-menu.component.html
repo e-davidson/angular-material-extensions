@@ -10,7 +10,7 @@
       <input type="hidden" name="filterId"  [ngModel]="'header-column-' + metaData.key" />
       <input type="hidden" name="filterType"  [ngModel]="myFilterType" />
       <input type="hidden" name="key"  [ngModel]="metaData.key" />
-      <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType" />
+      <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType"/ >
 
       <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
         <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
