@@ -113,16 +113,14 @@ import * as _ from 'lodash';
     this.myColumns$ = this.tableBuilder.metaData$.pipe(
       map( metaDatas => {
 
-        const metas: ColumnInfo[] = [];
         const customCellMap = new Map(this.customCells.map(cc => [cc.customCell,cc]));
 
-        metaDatas.forEach(metaData => {
+        const metas: ColumnInfo[] = metaDatas.map(metaData => {
           const customCell = popFromMap(metaData.key, customCellMap);
-          metaData = {...metaData, ...customCell};
-          metas.push({metaData, customCell});
           if(metaData.fieldType === FieldType.Hidden){
             this.state.hideColumn(metaData.key);
           }
+          return { metaData:{...metaData,...customCell}, customCell };
         })
         
         const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
