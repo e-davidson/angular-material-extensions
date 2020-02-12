@@ -113,26 +113,20 @@ import * as _ from 'lodash';
     this.myColumns$ = this.tableBuilder.metaData$.pipe(
       map( metaDatas => {
 
-        const metasCustom: ColumnInfo[] = [];
-        const metasNotCustom: Partial<ColumnInfo>[] = [];
-        let customNotMetas: ColumnInfo[];
+        const metas: ColumnInfo[] = [];
         const customCellMap = new Map(this.customCells.map(cc => [cc.customCell,cc]));
 
         metaDatas.forEach(metaData => {
           const customCell = popFromMap(metaData.key, customCellMap);
-          if(metaDataIsCustomCell(metaData, customCell)){
-            metaData = {...metaData, ...customCell};
-            metasCustom.push({metaData, customCell});
-          } else {
-            metasNotCustom.push({metaData});
-          }
+          metaData = {...metaData, ...customCell};
+          metas.push({metaData, customCell});
           if(metaData.fieldType === FieldType.Hidden){
             this.state.hideColumn(metaData.key);
           }
         })
         
-        customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
-        const fullArr = metasNotCustom.concat(customNotMetas, metasCustom);
+        const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
+        const fullArr = metas.concat(customNotMetas);
         return fullArr;
       }),
       shareReplay()
@@ -179,10 +173,6 @@ function popFromMap(key:string, map: Map<string, CustomCellDirective>){
   const customCell = map.get(key);
   map.delete(key);
   return customCell;
-}
-
-function metaDataIsCustomCell( metaData: MetaData, customCellDirective : CustomCellDirective){
-  return customCellDirective && customCellDirective.customCell === metaData.key;
 }
 
 interface ColumnInfo {
