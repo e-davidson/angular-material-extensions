@@ -7,6 +7,11 @@ function dateIsOnFunc(filterVal: Date, val: Date): boolean {
     return  val.getTime()  === isOnVal;
 }
 
+function dateIsNotOnFunc(filterVal: Date, val: Date): boolean {
+  const isNotOnVal = new Date( filterVal).getTime();
+  return  val.getTime()  !== isNotOnVal;
+} 
+
 function dateIsOnOrAfterFunc(filterVal: Date, val: Date): boolean {
     const afterVal = new Date( filterVal);
     return  val >= afterVal;
@@ -23,6 +28,7 @@ function dateBetweenFunc(filterVal: any, val: Date): boolean {
 
 export const DateFilterFuncs = {
     [FilterType.DateIsOn]: dateIsOnFunc,
+    [FilterType.DateIsNotOn]: dateIsNotOnFunc,
     [FilterType.DateOnOrAfter]: dateIsOnOrAfterFunc,
     [FilterType.DateOnOrBefore]: dateIsOnOrBeforeFunc,
     [FilterType.DateBetween]: dateBetweenFunc,

@@ -45,28 +45,9 @@
 
 
 <ng-template #String>
-    <div class="switch" [ngSwitch]="currentFilterType">
-        <div class="switch" *ngSwitchCase="FilterType.StringEquals">
-            <mat-form-field class="my-filter" >
-                <input name="filterValue" matInput [ngModel]="filter.filterValue"  />
-            </mat-form-field>
-        </div>
-        <div class="switch" *ngSwitchCase="FilterType.StringContains">
-            <mat-form-field class="my-filter">
-                <input matInput name="filterValue" [ngModel]="filter.filterValue" />
-            </mat-form-field>
-        </div>
-        <div class="switch" *ngSwitchCase="FilterType.StringStartWith">
-            <mat-form-field class="my-filter">
-                <input matInput name="filterValue" [ngModel]="filter.filterValue"   />
-            </mat-form-field>
-        </div>
-        <div class="switch" *ngSwitchCase="FilterType.StringEndsWith">
-            <mat-form-field class="my-filter">
-                <input matInput name="filterValue" [ngModel]="filter.filterValue" />
-            </mat-form-field>
-        </div>
-    </div>
+  <mat-form-field class="my-filter" *ngIf="currentFilterType !== FilterType.IsNull">
+    <input matInput name="filterValue" [ngModel]="filter.filterValue" />
+  </mat-form-field>
 </ng-template>
 
 <ng-template #Boolean >

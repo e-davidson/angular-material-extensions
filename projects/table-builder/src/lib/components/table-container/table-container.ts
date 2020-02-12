@@ -67,7 +67,7 @@ import * as _ from 'lodash';
   filteredData: DataFilter;
   filterCols$: Observable<MetaData[]>;
 
-  myColumns$: Observable<{metaData: MetaData, customCell: CustomCellDirective}[]>;
+  myColumns$: Observable<Partial<ColumnInfo>[]>;
 
   constructor(
       private cdr: ChangeDetectorRef,
@@ -104,7 +104,7 @@ import * as _ from 'lodash';
     this.subscriptions.push( this.filteredData.filteredData$.subscribe(this.data));
 
     this.filterCols$ = this.tableBuilder.metaData$.pipe(
-      map(md => md.filter(m => m.fieldType !== FieldType.Hidden))
+      map(md => md.filter(m => m.fieldType !== FieldType.Hidden)),
     );
   }
 
@@ -112,22 +112,27 @@ import * as _ from 'lodash';
 
     this.myColumns$ = this.tableBuilder.metaData$.pipe(
       map( metaDatas => {
-        return [
-          ...metaDatas.filter( md => !this.customCells.find(cc => cc.customCell === md.key) ),
-          ...this.customCells.filter( cc => !metaDatas.find( md => md.key ===  cc.customCell )  ).map( cc => cc.getMetaData() ),
-          ...metaDatas.filter( md => this.customCells.find(cc => cc.customCell === md.key) )
-            .map( md => ({...md, ...this.customCells.find(cc => cc.customCell === md.key)})
-          ),
-        ];
+
+        const customCellMap = new Map(this.customCells.map(cc => [cc.customCell,cc]));
+
+        const metas: ColumnInfo[] = metaDatas.map(metaData => {
+          const customCell = popFromMap(metaData.key, customCellMap);
+          if(metaData.fieldType === FieldType.Hidden){
+            this.state.hideColumn(metaData.key);
+          }
+          return { metaData:{...metaData,...customCell}, customCell };
+        })
+        
+        const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
+        const fullArr = metas.concat(customNotMetas);
+        return fullArr;
       }),
-      map( metaDatas =>
-        metaDatas.map( metaData => ({metaData, customCell: this.customCells.find( cc => cc.customCell === metaData.key ) }))  ),
+      shareReplay()
     );
 
     this.subscriptions.push(this.myColumns$.pipe(map(columns => _.orderBy( columns.map( column => column.metaData ), 'order' )   ))
-    .subscribe( columns => {
-      this.state.setMetaData(columns);
-    }));
+      .subscribe( columns => {this.state.setMetaData(columns);})
+    );
 
     this.preSort();
 
@@ -161,3 +166,14 @@ import * as _ from 'lodash';
     }
   }
 }
+
+function popFromMap(key:string, map: Map<string, CustomCellDirective>){
+  const customCell = map.get(key);
+  map.delete(key);
+  return customCell;
+}
+
+interface ColumnInfo {
+  metaData: MetaData,
+  customCell: CustomCellDirective,
+} 
