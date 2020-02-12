@@ -21,9 +21,8 @@
 
       <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
         <mat-form-field class="auto-width" (click)="stopClickPropagate($event)" style="padding: 0 16px">
-          <mat-icon matPrefix class="search-icon">search</mat-icon>
           <input matInput type='number'  name="filterValue" [ngModel]="filter.filterValue" />
-          <span matSuffix>
+          <span matPrefix>
             <button mat-icon-button disableRipple>
               <mat-icon (click)="setFilterType(FilterType.NumberLessThen)" class="suffix-icons"
                 [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberLessThen }">

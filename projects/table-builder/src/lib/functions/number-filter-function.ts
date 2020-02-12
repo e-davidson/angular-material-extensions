@@ -5,6 +5,10 @@ function numberEqalsFunc(filterVal: number, val: number): boolean {
     return  val === filterVal;
 }
 
+function numberNotEqualFunc(filterVal: number, val: number): boolean {
+  return val !== filterVal;
+}
+
 function numberGreaterThenFunc(filterVal: number, val: number): boolean {
     return val > filterVal;
 }
@@ -21,6 +25,7 @@ function numberBetweenFunc(filterVal: any, val: number): boolean {
 
 export const NumberFilterFuncs = {
     [FilterType.NumberEquals]: numberEqalsFunc,
+    [FilterType.NumberNotEqual]: numberNotEqualFunc,
     [FilterType.NumberGreaterThen]: numberGreaterThenFunc,
     [FilterType.NumberLessThen]: numberLessThenFunc,
     [FilterType.NumberBetween]: numberBetweenFunc,

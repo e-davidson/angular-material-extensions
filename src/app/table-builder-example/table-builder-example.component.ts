@@ -21,7 +21,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', gas: true, date: null },
   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', gas: false, date: new Date(2019, 1, 5) },
   {position: undefined, name: 'Beryllium', weight: 9.0122, symbol: 'Be', gas: false, date: new Date(2019, 1, 4) },
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B', gas: false, date: new Date(2019, 1, 3) },
+  {position: 5, name: '', weight: 10.811, symbol: 'B', gas: false, date: new Date(2019, 1, 3) },
   {position: 6, name: undefined, weight: 12.0107, symbol: 'C', gas: false, date: new Date(2019, 1, 6) },
   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N', gas: true, date: new Date(2019, 1, 7) },
   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O', gas: false, date: new Date(2019, 1, 1) },

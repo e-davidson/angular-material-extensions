@@ -12,6 +12,12 @@ function stringContainsFunc(filterVal: string, val: any): boolean {
     return val.toString().trim().toLowerCase().includes(containsVal);
 }
 
+function stringDoesNotContainFunc(filterVal: string, val: any): boolean {
+  const cleanfilterVal = filterVal.toString().trim().toLowerCase();
+  const cleanVal = val.toString().trim().toLowerCase();
+  return !cleanVal.includes(cleanfilterVal);
+}
+
 function stringStartsWithFunc(filterVal: string, val: any): boolean {
     const startsWith = filterVal.toString().trim().toLowerCase();
     return val.toString().trim().toLowerCase().startsWith(startsWith);
@@ -25,6 +31,7 @@ function stringEndsWithFunc(filterVal: string, val: any): boolean {
 export const StringFilterFuncs = {
     [FilterType.StringEquals]: stringEqualFunc,
     [FilterType.StringContains]: stringContainsFunc,
+    [FilterType.StringDoesNotContain]: stringDoesNotContainFunc,
     [FilterType.StringStartWith]: stringStartsWithFunc,
     [FilterType.StringEndsWith]: stringEndsWithFunc,
     [FilterType.IsNull]: isNull,
