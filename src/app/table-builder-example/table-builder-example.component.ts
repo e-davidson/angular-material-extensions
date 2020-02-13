@@ -30,7 +30,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 const META_DATA: MetaData[] = [
-  {key: 'position', fieldType: FieldType.Number },
+  {key: 'position', fieldType: FieldType.Number, order: 2 },
   {key: 'symbol', fieldType: FieldType.String},
   {key: 'name', fieldType: FieldType.String },
   {key: 'gas', fieldType: FieldType.Boolean },
