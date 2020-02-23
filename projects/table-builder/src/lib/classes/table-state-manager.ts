@@ -85,6 +85,12 @@ export class TableStateManager {
     this.store.dispatch(tableActions.removeFilter({tableId: this.tableId, filterId }));
   }
 
+  getFilter$(filterId) : Observable<FilterInfo | undefined> {
+    return this.state$.pipe(
+      map( tableState => tableState.filters[filterId] )
+    );
+  }
+
   resetState() {
     this.store.dispatch(tableActions.reset({tableId: this.tableId}));
   }

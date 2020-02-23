@@ -10,7 +10,7 @@ function dateIsOnFunc(filterVal: Date, val: Date): boolean {
 function dateIsNotOnFunc(filterVal: Date, val: Date): boolean {
   const isNotOnVal = new Date( filterVal).getTime();
   return  val.getTime()  !== isNotOnVal;
-} 
+}
 
 function dateIsOnOrAfterFunc(filterVal: Date, val: Date): boolean {
     const afterVal = new Date( filterVal);

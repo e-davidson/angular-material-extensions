@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
-import { scheduled, Subject, BehaviorSubject } from 'rxjs';
+import { scheduled, Subject, BehaviorSubject, Observable } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { scan, startWith } from 'rxjs/operators';
+import { scan, startWith, map } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
+import { TableContainerComponent } from '../../../projects/table-builder/src/lib/components';
+import { FilterType } from '../../../projects/table-builder/src/lib/enums/filterTypes';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { FilterInfo } from '../../../projects/table-builder/src/lib/classes/filter-info';
 
 export interface PeriodicElement {
   name: string;
@@ -30,9 +34,9 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 const META_DATA: MetaData[] = [
-  {key: 'position', fieldType: FieldType.Number, order: 2 },
-  {key: 'symbol', fieldType: FieldType.String},
-  {key: 'name', fieldType: FieldType.String },
+  {key: 'position', fieldType: FieldType.Number, order: 2  },
+  {key: 'symbol', fieldType: FieldType.String },
+  {key: 'name', fieldType: FieldType.String , width: '25%'},
   {key: 'gas', fieldType: FieldType.Boolean },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date', preSort: {direction: SortDirection.asc, precedence: 1 } },
 ];
@@ -50,6 +54,10 @@ export class TableBuilderExampleComponent implements OnInit {
   metaData$ = new BehaviorSubject(META_DATA);
   myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
 
+  @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
+
+  isFilterChecked: Observable<FilterInfo>;
+
   constructor(private store: Store<any>) {
     const addedElements = this.newElement$.pipe(
       scan((acc, value ) => {acc.push(value); return acc; }, []),
@@ -60,6 +68,13 @@ export class TableBuilderExampleComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  ngAfterViewInit() {
+    setTimeout( () => {
+      this.isFilterChecked = this.tableContainer.state.getFilter$('test')
+      this.isFilterChecked.subscribe( d => console.log(d));
+    },0);
   }
 
   addItem() {
@@ -80,6 +95,21 @@ export class TableBuilderExampleComponent implements OnInit {
 
   clearFilter() {
     this.myFilter.next([]);
+  }
+
+  Checked(input: MatCheckboxChange) {
+    if (input.checked) {
+      const fi = {
+        filterId: 'test',
+        filterType: FilterType.NumberEquals,
+        filterValue: 5,
+        key: 'position',
+        fieldType: FieldType.Number
+      };
+      this.tableContainer.state.addFilter(fi);
+    } else {
+      this.tableContainer.state.removeFilter('test');
+    }
   }
 
 }

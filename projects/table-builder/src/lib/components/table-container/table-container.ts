@@ -59,6 +59,9 @@ import * as _ from 'lodash';
   @ContentChildren(CustomCellDirective) customCells: QueryList<CustomCellDirective>;
 
   @ViewChildren(ColumnBuilderComponent) columnBuilders: QueryList<ColumnBuilderComponent>;
+
+  @Output() OnStateReset = new EventEmitter();
+  @Output() OnSaveState = new EventEmitter();
   hiddenFields: string [] = [];
   columns: MatColumnDef[];
   filtersExpanded = false;
@@ -122,7 +125,6 @@ import * as _ from 'lodash';
           }
           return { metaData:{...metaData,...customCell?.getMetaData()}, customCell };
         })
-        
         const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
         const fullArr = metas.concat(customNotMetas);
         return fullArr;
@@ -176,4 +178,4 @@ function popFromMap(key:string, map: Map<string, CustomCellDirective>){
 interface ColumnInfo {
   metaData: MetaData,
   customCell: CustomCellDirective,
-} 
+}

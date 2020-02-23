@@ -25,6 +25,7 @@ export interface MetaData {
     order?: number;
     preSort?: PreSortDef;
     _internalNotUserDefined?: boolean;
+    width?: string;
 }
 
 export interface  ReportDef<DataType = any> {

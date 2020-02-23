@@ -6,9 +6,9 @@
       <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData } ">
       </ng-container>
     </ng-container>
-    
+
     <ng-template #header>
-      <mat-header-cell class="f-mat-header-cell">
+      <mat-header-cell  [style.flex-basis]='metaData.width'  class="f-mat-header-cell">
         <div style='display: flex;flex-direction: row; width: 100%; align-items: center;'>
           <div *ngIf="!metaData._internalNotUserDefined;" mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
@@ -29,7 +29,7 @@
       </ng-container>
     </ng-container>
     <ng-template #body>
-      <mat-cell>
+      <mat-cell [style.flex-basis]='metaData.width' >
         <ng-container *ngTemplateOutlet="customCell?.TemplateRef ? customCell.TemplateRef : body2 ;context: {metaData: metaData, element: element }">
         </ng-container>
         <ng-template #body2>
@@ -46,7 +46,7 @@
       </ng-container>
     </ng-container>
     <ng-template #footer>
-      <mat-footer-cell>
+      <mat-footer-cell  [style.flex-basis]='metaData.width' >
         <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
           <span *ngSwitchCase="FieldType.Currency">
             {{ data$ | columnTotal: metaData | async | currency }}

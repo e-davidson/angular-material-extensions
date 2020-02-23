@@ -9,6 +9,7 @@ import { TableBuilderExampleComponent } from './table-builder-example/table-buil
 import { MatTableModule } from '@angular/material/table';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { EffectsModule } from '@ngrx/effects';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    MatCheckboxModule,
     BrowserAnimationsModule,
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),

@@ -16,6 +16,7 @@ export class CustomCellDirective implements AfterContentInit {
     @Input() preSort: PreSortDef;
     @Input() TemplateRef: TemplateRef<any>;
     @Input() customCellOrder: number;
+    @Input() customCellWidth: string;
     constructor(
       @Optional()  private templateRef: TemplateRef<any>,
       @Optional() public columnDef: CdkColumnDef
@@ -36,6 +37,7 @@ export class CustomCellDirective implements AfterContentInit {
         fieldType: FieldType.Unknown,
         order: this.customCellOrder,
         _internalNotUserDefined: true,
+        width: this.customCellWidth
       };
     }
 }
