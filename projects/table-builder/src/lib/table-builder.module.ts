@@ -25,6 +25,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { SaveTableEffects } from './ngrx/effects';
 import { KeyDisplayPipe } from './pipes/key-display';
 import { FormatValuePipe } from './pipes/format-value';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -33,6 +34,7 @@ import { FormatValuePipe } from './pipes/format-value';
     StoreModule.forFeature('fullTableState', tableStateReducer),
     EffectsModule.forFeature([SaveTableEffects]),
     FormsModule,
+    RouterModule,
   ],
     exports: [
         GenericTableComponent,

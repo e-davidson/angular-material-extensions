@@ -10,6 +10,7 @@ export enum FieldType {
     Number = 7,
     String = 8,
     Boolean = 9,
+    Href = 10,
 }
 
 export enum SortDirection {
@@ -17,11 +18,18 @@ export enum SortDirection {
     desc= 'desc'
 }
 
+export enum Target {
+  Blank = '_blank',
+  Self = '_self',
+  Parent = '_parent',
+  Top = '_top'
+}
+
 export interface MetaData {
     key: string;
     displayName?: string;
     fieldType: FieldType;
-    additional?: any;
+    additional?: Additional;
     order?: number;
     preSort?: PreSortDef;
     _internalNotUserDefined?: boolean;
@@ -38,4 +46,11 @@ export interface  ReportDef<DataType = any> {
 export interface PreSortDef {
     direction: SortDirection;
     precedence?: number;
+}
+
+export interface Additional   {
+  base?: string;
+  urlKey?: string;
+  target?: Target;
+  footer?: { type: string };
 }

@@ -6,7 +6,12 @@
         <mat-icon *ngIf="element[col.key]">check</mat-icon>
     </span>
     <span *ngSwitchCase="FieldType.Link">
-        <a target="_blank" href="{{col.additional.base}}{{col.additional.urlKey? element[col.additional.urlKey] : element[col.key]}}">
+        <a target="{{col.additional?.target || '_blank'}}" [routerLink]="[col.additional.base, col.additional.urlKey ? element[col.additional.urlKey] : element[col.key]]">
+            {{element[col.key]}}
+        </a>
+    </span>
+    <span *ngSwitchCase="FieldType.Href">
+        <a target="{{col.additional?.target || '_blank'}}" href="{{col.additional.base}}{{col.additional.urlKey? element[col.additional.urlKey] : element[col.key]}}">
             {{element[col.key]}}
         </a>
     </span>
