@@ -10,7 +10,6 @@ export enum FieldType {
     Number = 7,
     String = 8,
     Boolean = 9,
-    Href = 10,
 }
 
 export enum SortDirection {
@@ -53,4 +52,5 @@ export interface Additional   {
   urlKey?: string;
   target?: Target;
   footer?: { type: string };
+  useRouterLink?: boolean;
 }

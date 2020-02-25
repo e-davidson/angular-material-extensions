@@ -6,14 +6,14 @@
         <mat-icon *ngIf="element[col.key]">check</mat-icon>
     </span>
     <span *ngSwitchCase="FieldType.Link">
-        <a target="{{col.additional?.target || '_blank'}}" [routerLink]="[col.additional.base, col.additional.urlKey ? element[col.additional.urlKey] : element[col.key]]">
-            {{element[col.key]}}
-        </a>
-    </span>
-    <span *ngSwitchCase="FieldType.Href">
+      <a *ngIf="col.additional.useRouterLink; else hrefLink" target="{{col.additional?.target || '_blank'}}" [routerLink]="[col.additional.base, col.additional.urlKey ? element[col.additional.urlKey] : element[col.key]]">
+          {{element[col.key]}}
+      </a>
+      <ng-template #hrefLink>
         <a target="{{col.additional?.target || '_blank'}}" href="{{col.additional.base}}{{col.additional.urlKey? element[col.additional.urlKey] : element[col.key]}}">
             {{element[col.key]}}
         </a>
+      </ng-template>
     </span>
     <span *ngSwitchCase="FieldType.ImageUrl">
         <img src="{{element[col.key]}}" height="75px" width="75px" />
