@@ -29,15 +29,15 @@ export class CustomCellDirective implements AfterContentInit {
       }
     }
 
-    getMetaData(): MetaData {
+    getMetaData(metaData? : MetaData): MetaData {
       return {
         key: this.customCell,
-        displayName: this.displayName,
-        preSort: this.preSort,
-        fieldType: FieldType.Unknown,
-        order: this.customCellOrder,
-        _internalNotUserDefined: true,
-        width: this.customCellWidth
+        displayName: this.displayName ?? metaData?.displayName,
+        preSort: this.preSort ?? metaData?.preSort,
+        fieldType: metaData?.fieldType ??  FieldType.Unknown,
+        order: this.customCellOrder ?? metaData?.order,
+        _internalNotUserDefined: !(!!metaData),
+        width: this.customCellWidth ?? metaData?.width
       };
     }
 }
