@@ -123,7 +123,7 @@ import * as _ from 'lodash';
           if(metaData.fieldType === FieldType.Hidden){
             this.state.hideColumn(metaData.key);
           }
-          return { metaData:{...metaData,...customCell?.getMetaData()}, customCell };
+          return { metaData:{...metaData,...customCell?.getMetaData(metaData)}, customCell };
         })
         const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
         const fullArr = metas.concat(customNotMetas);
