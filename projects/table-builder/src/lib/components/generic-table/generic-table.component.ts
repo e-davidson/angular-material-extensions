@@ -8,6 +8,7 @@ import {
   SimpleChanges,
   OnInit,
   QueryList,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -18,9 +19,10 @@ import { MatTableObservableDataSource } from '../../classes/MatTableObservableDa
 import { SelectionModel } from '@angular/cdk/collections';
 import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { orderBy } from 'lodash';
-import { combineArrays } from '../../functions/rxjs-operators';
+import { combineArrays, filterArray } from '../../functions/rxjs-operators';
 import { TableStateManager } from '../../classes/table-state-manager';
-import { tap, scan, map, distinct } from 'rxjs/operators';
+import { tap,  map, distinct, switchMap, shareReplay, scan } from 'rxjs/operators';
+import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 
 @Component({
   selector: 'tb-generic-table',
@@ -37,7 +39,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() rows: QueryList<MatRowDef<any>>;
   @Input() isSticky = false;
   @Input() pageSize: number;
-  @Input() columnDefs: QueryList<MatColumnDef>;
+  @Input() columnBuilders: QueryList<ColumnBuilderComponent>;
   @Output() selection$: Observable<any>;
 
   subs: Subscription[] = [];
@@ -50,7 +52,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   dataSource: MatTableObservableDataSource<any>;
   keys$: Observable<string[]>;
 
-  constructor(private sort: MatSort, public state: TableStateManager) {
+  constructor(private sort: MatSort, public state: TableStateManager, private cdr: ChangeDetectorRef) {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
   }
@@ -74,8 +76,8 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
         }
       });
     }
-    if ( changes.columnDefs && this.columnDefs ) {
-      this.columnDefs.forEach( cd => this.table.addColumnDef(cd));
+    if ( changes.columnBuilders && this.columnBuilders ) {
+        this.columnBuilders.forEach( cb => cb.columnDefs.forEach(cd => this.table.addColumnDef(cd)));
     }
   }
 
@@ -109,10 +111,30 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
       staticColumns.push('index');
     }
 
+    const keysFromColumnBuilder = this.columnBuilders.changes.pipe(
+      map( () => _.flatten(this.columnBuilders.map( cb => cb.columnDefs.toArray() ))),
+      scan( (acc, current) => {
+        return { current, previous: acc.current }
+      }, {current: [], previous: []}),
+      tap(
+        (data: {current: MatColumnDef[],previous: MatColumnDef[]}) => {
+          data.previous.forEach( cd => this.table.removeColumnDef(cd));
+          data.current.forEach( cd => this.table.addColumnDef(cd));
+          setTimeout(() => {
+           this.cdr.detectChanges();
+          }, 0);
+        }
+      ),
+      shareReplay(),
+      switchMap( () => this.state.displayedColumns$.pipe(
+        filterArray( dc => this.columnBuilders.some( mcd => mcd.metaData.key === dc )),
+      ) )
+    );
+
     this.keys$ = combineArrays(
       [
         of(staticColumns),
-        this.state.displayedColumns$,
+        keysFromColumnBuilder
       ]
     ).pipe(
       tap(d => {
@@ -122,7 +144,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
             r => r.columns = d
           );
         }
-      }),
+      })
     );
   }
 

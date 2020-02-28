@@ -8,7 +8,7 @@
   <ng-container *ngIf='columns'>
     <div style="width:100%;">
       <div style="display: flex; flex-direction: row;justify-content: flex-end; ">
-        <tb-filter-displayer [filterCols$]="filterCols$" >
+        <tb-filter-displayer >
         </tb-filter-displayer>
         <tb-col-displayer></tb-col-displayer>
         <button *ngIf="_tableId" mat-icon-button (click)="state.saveTable();OnSaveState.next()" matTooltip="Save Table">
@@ -29,7 +29,7 @@
       [trackBy]='trackBy'
       [isSticky]='isSticky'
       [pageSize]='pageSize'
-      [columnDefs]='columns'
+      [columnBuilders]='columnBuilders'
       >
       </tb-generic-table>
     </div>
