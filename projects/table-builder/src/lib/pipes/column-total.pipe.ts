@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { MetaData } from '../interfaces/report-def';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import * as _ from 'lodash';
 
 @Pipe({ name: 'columnTotal' })
