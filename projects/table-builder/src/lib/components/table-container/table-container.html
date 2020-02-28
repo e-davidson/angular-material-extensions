@@ -3,6 +3,7 @@
     *ngFor="let column of myColumns$ | async"
     [customCell]="column.customCell"
     [metaData]="column.metaData"
+    [data$]="filteredData.filteredData$"
     >
   </tb-column-builder>
   <ng-container *ngIf='columns'>

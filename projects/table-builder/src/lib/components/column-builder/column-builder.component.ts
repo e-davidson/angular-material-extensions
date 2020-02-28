@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TableStateManager } from '../../classes/table-state-manager';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 
 @Component({
@@ -19,13 +19,9 @@ export class ColumnBuilderComponent {
   filter: FilterInfo;
   @Input() metaData: MetaData;
   @Input() customCell: CustomCellDirective;
-  data$: Observable<any[]>;
+  @Input()data$: Observable<any[]>;
 
   @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
-
-  constructor(private tableState: TableStateManager) {
-    this.data$ = this.tableState.state$.pipe(map( state => state.data ));
-  }
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
