@@ -68,7 +68,6 @@ import * as _ from 'lodash';
   rules$: Observable<Sort[]>;
   FieldType = FieldType;
   filteredData: DataFilter;
-  filterCols$: Observable<MetaData[]>;
 
   myColumns$: Observable<Partial<ColumnInfo>[]>;
 
@@ -106,9 +105,6 @@ import * as _ from 'lodash';
 
     this.subscriptions.push( this.filteredData.filteredData$.subscribe(this.data));
 
-    this.filterCols$ = this.tableBuilder.metaData$.pipe(
-      map(md => md.filter(m => m.fieldType !== FieldType.Hidden)),
-    );
   }
 
   InitializeColumns() {

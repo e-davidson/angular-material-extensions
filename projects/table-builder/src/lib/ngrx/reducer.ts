@@ -39,7 +39,7 @@ const reducer = createReducer(initialState,
   }),
   on( tableActions.initTable, (state, {tableId}) => {
     if (!state[tableId]) {
-      return {... state , [tableId]: null};
+      return {... state , [tableId]: { metaData: [], filters: {}, hiddenKeys: []  } };
     }
     return state;
   }),

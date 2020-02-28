@@ -1,8 +1,9 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { MetaData } from '../../interfaces/report-def';
+import { MetaData, FieldType } from '../../interfaces/report-def';
 import { Observable } from 'rxjs';
 import { TableStateManager } from '../../classes/table-state-manager';
 import { FilterInfo } from '../../classes/filter-info';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'tb-filter-displayer',
@@ -13,9 +14,12 @@ import { FilterInfo } from '../../classes/filter-info';
 export class GenFilterDisplayerComponent {
 
   constructor( public tableState: TableStateManager) {
+    this.filterCols$ = tableState.metaDatas$.pipe(
+      map(md => md.filter(m => m.fieldType !== FieldType.Hidden)),
+    );
   }
 
-    @Input() filterCols$: Observable<MetaData[]>;
+    filterCols$: Observable<MetaData[]>;
     currentFilters: FilterInfo[] = [];
 
 

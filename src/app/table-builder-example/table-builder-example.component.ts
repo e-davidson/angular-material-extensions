@@ -51,7 +51,7 @@ const META_DATA: MetaData[] = [
 export class TableBuilderExampleComponent implements OnInit {
   public tableBuilder: TableBuilder;
   newElement$ = new Subject<PeriodicElement>();
-  metaData$ = new BehaviorSubject(META_DATA);
+  metaData$ = new Subject<MetaData[]>();
   myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
 
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
@@ -64,6 +64,9 @@ export class TableBuilderExampleComponent implements OnInit {
       startWith([]),
     );
     const all = combineArrays([scheduled([ELEMENT_DATA], asap ), addedElements]);
+    setTimeout(() => {
+      this.metaData$.next(META_DATA);
+    }, 1000);
     this.tableBuilder = new TableBuilder( all, this.metaData$ );
   }
 

@@ -9,7 +9,7 @@
 
     <ng-template #header>
       <mat-header-cell  [style.flex-basis]='metaData.width'  class="f-mat-header-cell">
-        <div style='display: flex;flex-direction: row; width: 100%; align-items: center;'>
+        <div class="header-container">
           <div *ngIf="!metaData._internalNotUserDefined;" mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
           </div>
