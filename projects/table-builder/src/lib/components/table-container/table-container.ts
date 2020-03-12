@@ -33,6 +33,8 @@ import * as _ from 'lodash';
   _tableId: string;
   @Input() set tableId(value: string) {
     this._tableId = value;
+    this.state.tableId = this._tableId;
+
     if (this._pageSize) {
       this.state.updateState( { pageSize: this._pageSize});
     }
@@ -79,9 +81,6 @@ import * as _ from 'lodash';
 
 
   ngOnInit() {
-    if (this._tableId ) {
-      this.state.tableId = this._tableId;
-    }
     this.InitializeData();
   }
 

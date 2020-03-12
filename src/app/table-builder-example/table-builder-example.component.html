@@ -1,6 +1,6 @@
 <mat-checkbox (change)="Checked($event)" [checked]="isFilterChecked && (isFilterChecked | async)" ></mat-checkbox>
 
-<tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' >
+<tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50">
   <p *customCell="'testCell';let element = element;width:'5%'" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
   <ng-container customCell="symbol" matColumnDef="symbol" [customCellOrder]="4" [customCellWidth]="'5%'">

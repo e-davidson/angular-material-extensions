@@ -32,14 +32,14 @@ export class SaveTableEffects {
         this.store$.pipe(
           map(s => s.fullTableState[tableId]),
           first(),
-          filter( d => d.notInitialized ),
+          filter( d => !d.initialized ),
           map( u => {
             const table = localStorage.getItem(tableId);
             if (table) {
-              return tableActions.updateTableState({ tableId, tableState: {...JSON.parse(table), notInitialized : false} });
+              return tableActions.updateTableState({ tableId, tableState: {...JSON.parse(table), initialized : true} });
             }
             return tableActions.updateTableState(
-              { tableId, tableState: {...{ hiddenKeys: [], pageSize: 20, filters: {}, notInitialized : false }, ...this.config.defaultTableState } }
+              { tableId, tableState: {...{ hiddenKeys: [], pageSize: 20, filters: {}, initialized : true }, ...this.config.defaultTableState } }
             );
           }),
         ))

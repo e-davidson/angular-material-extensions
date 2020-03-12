@@ -8,5 +8,5 @@ export interface TableState {
   pageSize?: number;
   currentPage?: number;
   filters: Dictionary<FilterInfo>;
-  notInitialized : boolean;
+  initialized : boolean;
 }

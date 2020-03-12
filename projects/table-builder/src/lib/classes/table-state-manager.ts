@@ -36,7 +36,7 @@ export class TableStateManager {
     }
 
     get state$(): Observable<TableState> {
-      return this.store.pipe( select(selectTableState, {tableId: this.tableId}) );
+      return this.store.pipe( select(selectTableState, {tableId: this.tableId, key: null}) );
     }
 
     get filters$(): Observable<FilterInfo[]> {
