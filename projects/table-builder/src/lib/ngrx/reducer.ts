@@ -39,7 +39,7 @@ const reducer = createReducer(initialState,
   }),
   on( tableActions.initTable, (state, {tableId}) => {
     if (!state[tableId]) {
-      return {... state , [tableId]: { metaData: [], filters: {}, hiddenKeys: [], notInitialized : true  } };
+      return {... state , [tableId]: { metaData: [], filters: {}, hiddenKeys: [], initialized : false  } };
     }
     return state;
   }),
@@ -68,7 +68,7 @@ export function tableStateReducer(state: fullTableState| undefined, action: Acti
 
 export const selectFullTableState: (any) => fullTableState = (state: any) => state['fullTableState'];
 
-export const selectTableState = createSelector(selectFullTableState, (state: fullTableState, {tableId}  ) => state[tableId] );
+export const selectTableState = createSelector(selectFullTableState, (state: fullTableState, {tableId,key}  ) => state[tableId] );
 
 export const selectMetaData = createSelector(selectTableState, ( d, {key}) =>  d.metaData.find(md => md.key === key) );
 
