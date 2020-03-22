@@ -12,9 +12,6 @@ import {
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { map, shareReplay } from 'rxjs/operators';
-import { createFilterFunc } from '../../classes/filter-info';
-import { DataFilter } from '../../classes/data-filter';
-import { combineArrays } from '../../functions/rxjs-operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
@@ -69,7 +66,7 @@ import * as _ from 'lodash';
   filtersExpanded = false;
   rules$: Observable<Sort[]>;
   FieldType = FieldType;
-  filteredData: DataFilter;
+  filteredData: Observable<any[]>;
 
   myColumns$: Observable<Partial<ColumnInfo>[]>;
 
@@ -89,21 +86,11 @@ import * as _ from 'lodash';
   }
 
   InitializeData() {
-    const filters = [
-      this.state.filters$.pipe(map( fltrs => fltrs.map(filter => createFilterFunc(filter) )))
-    ];
+    this.filteredData = this.state.getFilteredData$(this.tableBuilder.getData$(), this.inputFilters)
+  }
 
-    if (this.inputFilters) {
-      filters.push(this.inputFilters);
-    }
-
-    this.filteredData = new DataFilter(
-      combineArrays( filters ),
-      this.tableBuilder.getData$()
-    );
-
-    this.subscriptions.push( this.filteredData.filteredData$.subscribe(this.data));
-
+  exportToCsv() {
+    this.state.exportToCsv(this.tableBuilder.getData$());
   }
 
   InitializeColumns() {

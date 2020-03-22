@@ -3,7 +3,7 @@
     *ngFor="let column of myColumns$ | async"
     [customCell]="column.customCell"
     [metaData]="column.metaData"
-    [data$]="filteredData.filteredData$"
+    [data$]="filteredData"
     >
   </tb-column-builder>
   <ng-container *ngIf='columns'>
@@ -18,12 +18,15 @@
         <button mat-icon-button (click)="state.resetState();resort$.next({});OnStateReset.next()" matTooltip="Reset table">
           <mat-icon color="primary">autorenew</mat-icon>
         </button>
+        <button mat-icon-button (click)="exportToCsv()" matTooltip="Export Table">
+          <mat-icon color="primary">file_download</mat-icon>
+        </button>
       </div>
     </div>
     <div style="clear: both;">
       <tb-generic-table
       [rows]='customRows'
-      [data$]="filteredData.filteredData$"
+      [data$]="filteredData"
       [IndexColumn]='IndexColumn'
       [SelectionColumn]='SelectionColumn'
       (selection$)='selection$.emit($event)'

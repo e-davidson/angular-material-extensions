@@ -7,8 +7,10 @@ import { TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { map } from 'rxjs/operators';
-import { FilterInfo } from './filter-info';
-import { selectTableState, fullTableState, selectMetaData } from '../ngrx/reducer';
+import { FilterInfo, createFilterFunc } from './filter-info';
+import { selectTableState, fullTableState, selectMetaData, selectVisibleFields } from '../ngrx/reducer';
+import { DataFilter } from './data-filter';
+import { combineArrays } from '../functions/rxjs-operators';
 
 @Injectable()
 export class TableStateManager {
@@ -58,6 +60,10 @@ export class TableStateManager {
       ;
     }
 
+    get visibleFields$(): Observable<string[]> {
+      return this.store.pipe(select(selectVisibleFields, {tableId: this.tableId, key: null }));
+    }
+
   setMetaData(metaData: MetaData[]) {
     this.store.dispatch( tableActions.setMetaData({tableId: this.tableId, metaData}));
   }
@@ -97,6 +103,21 @@ export class TableStateManager {
 
   destroy() {
     this.store.dispatch(tableActions.removeTable({tableId: this.tableId}));
+  }
+
+  getFilteredData$(data$: Observable<any[]>, inputFilters$?: Observable<Array<(val: any) => boolean>>): Observable<any[]> {
+    const filters = [
+      this.filters$.pipe(map(fltrs => fltrs.map(filter => createFilterFunc(filter))))
+    ];
+    if (inputFilters$) {
+      filters.push(inputFilters$);
+    }
+    return new DataFilter(combineArrays(filters),data$).filteredData$;
+  }
+
+  exportToCsv(data$: Observable<any[]>) {
+    const displayData$ = this.getFilteredData$(data$);
+    this.store.dispatch(tableActions.downloadTable({tableId:this.tableId,data$: displayData$}));
   }
 
   constructor(private store: Store<{fullTableState: fullTableState}>,

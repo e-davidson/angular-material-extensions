@@ -72,3 +72,9 @@ export const selectTableState = createSelector(selectFullTableState, (state: ful
 
 export const selectMetaData = createSelector(selectTableState, ( d, {key}) =>  d.metaData.find(md => md.key === key) );
 
+export const selectVisibleFields = createSelector(selectTableState, state =>
+  state.metaData
+  .filter(md => !state.hiddenKeys.includes(md.key))
+  .sort((md1,md2) => md1.order - md2.order)
+  .map(md => md.key)
+);

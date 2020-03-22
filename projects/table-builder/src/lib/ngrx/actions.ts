@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { TableState } from '../classes/TableState';
 import { FilterInfo } from '../classes/filter-info';
 import { MetaData } from '../interfaces/report-def';
+import { Observable } from 'rxjs';
 
 export const initTable = createAction( '[Table State] Init table', props<{tableId: string }>());
 
@@ -23,3 +24,5 @@ export const removeFilter = createAction('[Table State] Remove Filter', props<{t
 export const reset = createAction('[Table State] Reset', props<{tableId: string}>());
 
 export const removeTable = createAction('[Table State] Remove table', props<{tableId: string}>());
+
+export const downloadTable = createAction('[Table State] Download table', props<{tableId: string, data$: Observable<any[]>}>());

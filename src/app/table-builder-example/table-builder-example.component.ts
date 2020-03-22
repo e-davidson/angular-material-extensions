@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
-import { scheduled, Subject, BehaviorSubject, Observable } from 'rxjs';
+import { scheduled, Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { scan, startWith, map } from 'rxjs/operators';
+import { scan, startWith, map, tap, filter } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
@@ -48,7 +48,7 @@ const META_DATA: MetaData[] = [
   templateUrl: './table-builder-example.component.html',
   styleUrls: ['./table-builder-example.component.css']
 })
-export class TableBuilderExampleComponent implements OnInit {
+export class TableBuilderExampleComponent {
   public tableBuilder: TableBuilder;
   newElement$ = new Subject<PeriodicElement>();
   metaData$ = new Subject<MetaData[]>();
@@ -60,29 +60,28 @@ export class TableBuilderExampleComponent implements OnInit {
 
   constructor(private store: Store<any>) {
     const addedElements = this.newElement$.pipe(
-      scan((acc, value ) => {acc.push(value); return acc; }, []),
+      scan((acc, value) => { acc.push(value); return acc; }, []),
       startWith([]),
     );
-    const all = combineArrays([scheduled([ELEMENT_DATA], asap ), addedElements]);
+    const all = combineArrays([scheduled([ELEMENT_DATA], asap), addedElements]);
     setTimeout(() => {
       this.metaData$.next(META_DATA);
     }, 1000);
-    this.tableBuilder = new TableBuilder( all, this.metaData$ );
+    this.tableBuilder = new TableBuilder(all, this.metaData$);
   }
 
-  ngOnInit() {
-  }
+
 
   ngAfterViewInit() {
-    setTimeout( () => {
+    setTimeout(() => {
       this.isFilterChecked = this.tableContainer.state.getFilter$('test')
-      this.isFilterChecked.subscribe( d => console.log(d));
-    },0);
+      this.isFilterChecked.subscribe();
+    }, 0);
   }
 
   addItem() {
     this.newElement$.next({
-      position: 11, name: 'Gold', weight: 196.96657 , symbol: 'Au', gas: false, date: new Date()
+      position: 11, name: 'Gold', weight: 196.96657, symbol: 'Au', gas: false, date: new Date()
     });
 
     this.metaData$.next(META_DATA);
@@ -114,5 +113,4 @@ export class TableBuilderExampleComponent implements OnInit {
       this.tableContainer.state.removeFilter('test');
     }
   }
-
 }
