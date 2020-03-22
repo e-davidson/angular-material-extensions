@@ -75,7 +75,7 @@ export class TableBuilderExampleComponent {
   ngAfterViewInit() {
     setTimeout(() => {
       this.isFilterChecked = this.tableContainer.state.getFilter$('test')
-      this.isFilterChecked.subscribe(d => console.log(d));
+      this.isFilterChecked.subscribe();
     }, 0);
   }
 
