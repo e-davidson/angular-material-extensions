@@ -2,13 +2,15 @@ import { Store, select } from '@ngrx/store';
 import * as tableActions from '../ngrx/actions';
 import { MetaData } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
-import { map } from 'rxjs/operators';
-import { FilterInfo } from './filter-info';
+import { map, startWith, tap } from 'rxjs/operators';
+import { FilterInfo, createFilterFunc } from './filter-info';
 import { selectTableState, fullTableState, selectMetaData } from '../ngrx/reducer';
+import { DataFilter } from './data-filter';
+import { combineArrays } from '../functions/rxjs-operators';
 
 @Injectable()
 export class TableStateManager {
@@ -99,6 +101,56 @@ export class TableStateManager {
     this.store.dispatch(tableActions.removeTable({tableId: this.tableId}));
   }
 
+  getFilteredData$(data$: Observable<any[]>, inputFilters$?: Observable<Array<(val: any) => boolean>>): DataFilter {
+    console.log('getFilteredData$');
+    const filters = [
+      this.filters$.pipe(map(fltrs => fltrs.map(filter => createFilterFunc(filter))))
+    ];
+
+    if (inputFilters$) {
+      filters.push(inputFilters$);
+    }
+    return new DataFilter(combineArrays(filters),data$);
+  }
+
+  getDisplayData$(data$: Observable<any[]>) {
+    console.log('getDisplayData$');
+    const filtredData$ = this.getFilteredData$(data$.pipe(tap(console.log)));
+    return combineLatest([this.state$.pipe(tap(console.log)), filtredData$.filteredData$.pipe(startWith([]),tap(console.log))]).pipe(
+      map(([s, data]) => {
+        const displayCols = s.metaData.filter(md => !s.hiddenKeys.includes(md.key)).sort((md1, md2) => md1.order - md2.order)
+        const res = data.map(row => displayCols.map(dc => row[dc.key] || null));
+        console.log(res);
+        return res;
+      })
+    )
+  }
+
+  exportToCsv(data$: Observable<any[]>): Observable<any> {
+    const displayData$ = this.getDisplayData$(data$);
+    return combineLatest([displayData$,this.state$]).pipe(
+      map(([dd,state]) => {
+        const csv = this.csvData(
+        dd,
+        state.metaData
+        .filter(md => !state.hiddenKeys.includes(md.key))
+        .sort((md1,md2) => md1.order - md2.order)
+        .map(md => md.key))
+        const url = this.typedArrayToURL(csv, 'text/csv');
+        window.open(url, '_self');}
+    ))}
+
+  csvData(data:Array<any>, headers: string[]) {
+    const res = data.map(row => headers.map(field => row[field] || '').join(','))
+    res.unshift(headers.join(','))
+    const r = res.join('\r\n')
+    console.log(r);
+    return r
+  }
+
+  typedArrayToURL(typedArray: string, mimeType:string) {
+    return URL.createObjectURL(new Blob([typedArray], { type: mimeType }))
+  }
   constructor(private store: Store<{fullTableState: fullTableState}>,
               @Inject(TableBuilderConfigToken) private config: TableBuilderConfig) {
   }

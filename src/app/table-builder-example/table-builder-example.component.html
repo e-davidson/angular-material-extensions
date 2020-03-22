@@ -27,3 +27,5 @@
 <button (click)='addItem()'>Add Gold</button>
 <button (click)='emitFilter()'>Filter B</button>
 <button (click)='clearFilter()'>clear filter</button>
+<button (click)='exportDataTrig$.next(true)'>export data</button>
+<div *ngIf="exportData$|async"></div>

@@ -9,6 +9,7 @@ import { TableBuilderExampleComponent } from './table-builder-example/table-buil
 import { MatTableModule } from '@angular/material/table';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools'
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
@@ -25,6 +26,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     EffectsModule.forRoot([]),
     TableBuilderModule.forRoot({ defaultTableState: { pageSize: 20}}),
     MatTableModule,
+    StoreDevtoolsModule.instrument({maxAge:50}),
   ],
   providers: [],
   bootstrap: [AppComponent]

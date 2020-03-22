@@ -18,6 +18,9 @@
         <button mat-icon-button (click)="state.resetState();resort$.next({});OnStateReset.next()" matTooltip="Reset table">
           <mat-icon color="primary">autorenew</mat-icon>
         </button>
+        <button mat-icon-button (click)="state.exportToCsv()" matTooltip="Export Table">
+          <mat-icon color="primary">file_download</mat-icon>
+        </button>
       </div>
     </div>
     <div style="clear: both;">

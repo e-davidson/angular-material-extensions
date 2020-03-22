@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
-import { scheduled, Subject, BehaviorSubject, Observable } from 'rxjs';
+import { scheduled, Subject, BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { asap } from 'rxjs/internal/scheduler/asap';
-import { scan, startWith, map } from 'rxjs/operators';
+import { scan, startWith, map, tap, filter } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
@@ -57,32 +57,44 @@ export class TableBuilderExampleComponent implements OnInit {
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
 
   isFilterChecked: Observable<FilterInfo>;
-
+  exportDataTrig$ = new BehaviorSubject<boolean>(false)
+  exportData$: Observable<any>;
   constructor(private store: Store<any>) {
     const addedElements = this.newElement$.pipe(
-      scan((acc, value ) => {acc.push(value); return acc; }, []),
+      scan((acc, value) => { acc.push(value); return acc; }, []),
       startWith([]),
     );
-    const all = combineArrays([scheduled([ELEMENT_DATA], asap ), addedElements]);
+    const all = combineArrays([scheduled([ELEMENT_DATA], asap), addedElements]);
     setTimeout(() => {
       this.metaData$.next(META_DATA);
     }, 1000);
-    this.tableBuilder = new TableBuilder( all, this.metaData$ );
+    this.tableBuilder = new TableBuilder(all, this.metaData$);
+
+
+    this.exportData$ = combineLatest([this.tableBuilder.getData$(), this.tableBuilder.metaData$, this.exportDataTrig$]).pipe(
+      // tap(console.log),
+      filter(([data, meta, trig]) => trig),
+      tap(([data, meta, trig]) => {
+        const csv = '' // this.csvData(data, meta.map(md => md.key))
+        console.log(csv);
+        const url = this.typedArrayToURL(csv, 'text/csv');
+        window.open(url, '_self');
+      }))
   }
 
   ngOnInit() {
   }
 
   ngAfterViewInit() {
-    setTimeout( () => {
+    setTimeout(() => {
       this.isFilterChecked = this.tableContainer.state.getFilter$('test')
-      this.isFilterChecked.subscribe( d => console.log(d));
-    },0);
+      this.isFilterChecked.subscribe(d => console.log(d));
+    }, 0);
   }
 
   addItem() {
     this.newElement$.next({
-      position: 11, name: 'Gold', weight: 196.96657 , symbol: 'Au', gas: false, date: new Date()
+      position: 11, name: 'Gold', weight: 196.96657, symbol: 'Au', gas: false, date: new Date()
     });
 
     this.metaData$.next(META_DATA);
@@ -114,5 +126,10 @@ export class TableBuilderExampleComponent implements OnInit {
       this.tableContainer.state.removeFilter('test');
     }
   }
+
+  typedArrayToURL(typedArray: string, mimeType:string) {
+    return URL.createObjectURL(new Blob([typedArray], { type: mimeType }))
+  }
+
 
 }

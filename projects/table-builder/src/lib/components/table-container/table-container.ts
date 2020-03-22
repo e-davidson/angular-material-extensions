@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, shareReplay, tap } from 'rxjs/operators';
 import { createFilterFunc } from '../../classes/filter-info';
 import { DataFilter } from '../../classes/data-filter';
 import { combineArrays } from '../../functions/rxjs-operators';
@@ -89,22 +89,16 @@ import * as _ from 'lodash';
   }
 
   InitializeData() {
-    const filters = [
-      this.state.filters$.pipe(map( fltrs => fltrs.map(filter => createFilterFunc(filter) )))
-    ];
-
-    if (this.inputFilters) {
-      filters.push(this.inputFilters);
-    }
-
-    this.filteredData = new DataFilter(
-      combineArrays( filters ),
-      this.tableBuilder.getData$()
-    );
-
-    this.subscriptions.push( this.filteredData.filteredData$.subscribe(this.data));
-
+    this.filteredData = this.state.getFilteredData$(this.tableBuilder.getData$(), this.inputFilters)
+    this.subscriptions.push(this.filteredData.filteredData$.subscribe(this.data));
   }
+s$ :Observable<any>;
+  // afuncion() {
+  //   console.log('a function was called');
+
+  //   this.s$ = this.state.getDisplayData$(this.tableBuilder.getData$().pipe(tap(console.log)));
+  //   this.subscriptions.push(this.s$.subscribe(d=>console.log(d)))
+  // }
 
   InitializeColumns() {
 
