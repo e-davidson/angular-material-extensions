@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { MetaData, FieldType, ReportDef } from '../interfaces/report-def';
-import { first, map, switchMap, shareReplay, tap } from 'rxjs/operators';
+import { first, map, switchMap, shareReplay } from 'rxjs/operators';
 import { mapArray } from '../functions/rxjs-operators';
 
 export class TableBuilder {
