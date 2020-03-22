@@ -48,7 +48,7 @@ const META_DATA: MetaData[] = [
   templateUrl: './table-builder-example.component.html',
   styleUrls: ['./table-builder-example.component.css']
 })
-export class TableBuilderExampleComponent implements OnInit {
+export class TableBuilderExampleComponent {
   public tableBuilder: TableBuilder;
   newElement$ = new Subject<PeriodicElement>();
   metaData$ = new Subject<MetaData[]>();
@@ -57,8 +57,7 @@ export class TableBuilderExampleComponent implements OnInit {
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
 
   isFilterChecked: Observable<FilterInfo>;
-  exportDataTrig$ = new BehaviorSubject<boolean>(false)
-  exportData$: Observable<any>;
+
   constructor(private store: Store<any>) {
     const addedElements = this.newElement$.pipe(
       scan((acc, value) => { acc.push(value); return acc; }, []),
@@ -69,21 +68,9 @@ export class TableBuilderExampleComponent implements OnInit {
       this.metaData$.next(META_DATA);
     }, 1000);
     this.tableBuilder = new TableBuilder(all, this.metaData$);
-
-
-    this.exportData$ = combineLatest([this.tableBuilder.getData$(), this.tableBuilder.metaData$, this.exportDataTrig$]).pipe(
-      // tap(console.log),
-      filter(([data, meta, trig]) => trig),
-      tap(([data, meta, trig]) => {
-        const csv = '' // this.csvData(data, meta.map(md => md.key))
-        console.log(csv);
-        const url = this.typedArrayToURL(csv, 'text/csv');
-        window.open(url, '_self');
-      }))
   }
 
-  ngOnInit() {
-  }
+
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -126,10 +113,4 @@ export class TableBuilderExampleComponent implements OnInit {
       this.tableContainer.state.removeFilter('test');
     }
   }
-
-  typedArrayToURL(typedArray: string, mimeType:string) {
-    return URL.createObjectURL(new Blob([typedArray], { type: mimeType }))
-  }
-
-
 }
