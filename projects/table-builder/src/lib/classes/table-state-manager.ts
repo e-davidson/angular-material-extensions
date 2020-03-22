@@ -120,15 +120,6 @@ export class TableStateManager {
     this.store.dispatch(tableActions.downloadTable({tableId:this.tableId,data$: displayData$}));
   }
 
-  csvData(data:Array<any>, headers: string[]) {
-    const res = data.map(row => headers.map(field => row[field] || '').join(','));
-    res.unshift(headers.join(','));
-    return res.join('\n');
-  }
-
-  typedArrayToURL(typedArray: string, mimeType:string) {
-    return URL.createObjectURL(new Blob([typedArray], { type: mimeType }))
-  }
   constructor(private store: Store<{fullTableState: fullTableState}>,
               @Inject(TableBuilderConfigToken) private config: TableBuilderConfig) {
   }
