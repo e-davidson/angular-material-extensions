@@ -15,7 +15,14 @@
       <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
         <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
           <mat-icon matPrefix class="search-icon">search</mat-icon>
-          <input matInput placeholder="Contains..." name="filterValue" [ngModel]="filter.filterValue" />
+          <input matInput [placeholder]="myFilterType === FilterType.StringDoesNotContain ? 'Does Not Contain...' : 'Contains...'" name="filterValue" [ngModel]="filter.filterValue" />
+          <span matSuffix [matTooltip]="myFilterType === FilterType.StringDoesNotContain ? 'Contains' : 'Does Not Contain'">
+            <button mat-icon-button color="primary" (click)="setStringFilterType()">
+              <mat-icon [ngClass]="{'chosen-icon': myFilterType === FilterType.StringDoesNotContain }">
+                block
+              </mat-icon>
+            </button>
+          </span>
         </mat-form-field>
       </ng-container>
 

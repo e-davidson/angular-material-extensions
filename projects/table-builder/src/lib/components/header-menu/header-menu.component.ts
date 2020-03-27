@@ -50,6 +50,10 @@ export class HeaderMenuComponent {
     }
   }
 
+  setStringFilterType() {
+    this.myFilterType = this.myFilterType === FilterType.StringContains ? FilterType.StringDoesNotContain : FilterType.StringContains;
+  }
+
   setFilterType(filterType: FilterType) {
     if (filterType === this.myFilterType) {
       this.resetFilterType();
