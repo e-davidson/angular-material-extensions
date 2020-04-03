@@ -5,10 +5,10 @@ import { mapArray } from '../functions/rxjs-operators';
 
 export class TableBuilder {
   constructor(private data$: Observable<any[]>, public metaData$?: Observable<MetaData[]> ) {
-    this.data$ = this.data$.pipe(shareReplay(1));
+    this.data$ = this.data$.pipe(shareReplay({refCount: true}));
     this.metaData$ = this.metaData$ ?
-      this.metaData$.pipe(first(),shareReplay(1)) :
-      data$.pipe(first(), map( data => this.createMetaData(data[0]) ),shareReplay(1) );
+      this.metaData$.pipe(first(),shareReplay()) :
+      data$.pipe(first(), map( data => this.createMetaData(data[0]) ),shareReplay() );
   }
 
   getData$(): Observable<any[]> {
@@ -50,6 +50,6 @@ export class TableBuilder {
 }
 
 export const CreateTableBuilder = (reportDef$: Observable<ReportDef> ): TableBuilder => {
-  reportDef$ = reportDef$.pipe(shareReplay(1));
+  reportDef$ = reportDef$.pipe(shareReplay({refCount: true}));
   return new TableBuilder(reportDef$.pipe(map( r => r.data) ), reportDef$.pipe( map ( r => r.metaData) ));
 };

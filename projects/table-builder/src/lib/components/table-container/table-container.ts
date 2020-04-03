@@ -7,7 +7,9 @@ import {
   QueryList,
   ChangeDetectionStrategy,
   ViewChildren,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  ViewChild,
+  TemplateRef
 } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
@@ -15,10 +17,11 @@ import { map, shareReplay } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
-import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
+import { ColumnBuilderComponent, TemplateHolder } from '../column-builder/column-builder.component';
 import { CustomCellDirective } from '../../directives';
 import { TableStateManager } from '../../classes/table-state-manager';
 import * as _ from 'lodash';
+import { Template } from '@angular/compiler/src/render3/r3_ast';
 
 
 @Component({
@@ -61,6 +64,10 @@ import * as _ from 'lodash';
 
   @Output() OnStateReset = new EventEmitter();
   @Output() OnSaveState = new EventEmitter();
+
+  @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
+  @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
+
   hiddenFields: string [] = [];
   columns: MatColumnDef[];
   filtersExpanded = false;
@@ -105,9 +112,13 @@ import * as _ from 'lodash';
           if(metaData.fieldType === FieldType.Hidden){
             this.state.hideColumn(metaData.key);
           }
+          const md = {...metaData, ...customCell?.getMetaData(metaData)};
           return { metaData:{...metaData,...customCell?.getMetaData(metaData)}, customCell };
         })
-        const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
+        const customNotMetas = [...customCellMap.values()]
+          .map( customCell =>({
+            metaData: customCell.getMetaData(),
+            customCell}));
         const fullArr = metas.concat(customNotMetas);
         return fullArr;
       }),
@@ -123,8 +134,9 @@ import * as _ from 'lodash';
   }
 
   ngAfterViewInit() {
+    console.log('after view container');
     setTimeout(() => {
-      this.columns = _.flatten(this.columnBuilders.map( cb => cb.columnDefs.toArray() ));
+      this.columns = this.columnBuilders.map( cb => cb.columnDef );
       this.cdr.markForCheck();
     }, 0);
   }
@@ -159,5 +171,5 @@ function popFromMap(key:string, map: Map<string, CustomCellDirective>){
 
 interface ColumnInfo {
   metaData: MetaData,
-  customCell: CustomCellDirective,
+  customCell: CustomCellDirective
 }

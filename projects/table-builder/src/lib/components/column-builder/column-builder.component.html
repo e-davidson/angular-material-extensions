@@ -1,5 +1,18 @@
 <ng-container [matColumnDef]="metaData.key">
 
+  <ng-template #body let-metaData='metaData' let-element='element' >
+    <mat-cell [style.flex-basis]='metaData.width' >
+        <tb-val-displayer [col]="metaData" [element]="element"></tb-val-displayer>
+    </mat-cell>
+  </ng-template>
+
+  <ng-template #customCellWrapper let-metaData='metaData' let-element='element' >
+    <mat-cell [style.flex-basis]='metaData.width' >
+      <ng-container *ngTemplateOutlet="customCell.TemplateRef ;context: {metaData: metaData, element: element }">
+      </ng-container>
+    </mat-cell>
+  </ng-template>
+
   <ng-template matHeaderCellDef>
 
     <ng-container *ngIf="customCell?.columnDef?.headerCell;else header;">
@@ -24,19 +37,8 @@
 
 
   <ng-container *matCellDef="let element;">
-    <ng-container *ngIf="customCell?.columnDef?.cell;else body">
-      <ng-container *ngTemplateOutlet="customCell.columnDef.cell.template; context: {metaData: metaData, element: element }">
+      <ng-container *ngTemplateOutlet="getTemplate; context: {metaData: metaData, element: element }">
       </ng-container>
-    </ng-container>
-    <ng-template #body>
-      <mat-cell [style.flex-basis]='metaData.width' >
-        <ng-container *ngTemplateOutlet="customCell?.TemplateRef ? customCell.TemplateRef : body2 ;context: {metaData: metaData, element: element }">
-        </ng-container>
-        <ng-template #body2>
-          <tb-val-displayer [col]="metaData" [element]="element"></tb-val-displayer>
-        </ng-template>
-      </mat-cell>
-    </ng-template>
   </ng-container>
 
   <ng-template matFooterCellDef>

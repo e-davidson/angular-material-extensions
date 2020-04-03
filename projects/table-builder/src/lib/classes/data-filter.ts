@@ -6,7 +6,7 @@ export class DataFilter {
   constructor(filters$: Observable< Array< (val: any) => boolean>>, data$: Observable<any[]>) {
     this.filteredData$ = combineLatest([data$, filters$]).pipe(
       map(([data, filters]) => this.filter(data, filters)),
-      shareReplay()
+      shareReplay({refCount : true})
     );
   }
 

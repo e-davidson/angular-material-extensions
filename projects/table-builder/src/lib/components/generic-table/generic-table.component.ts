@@ -77,7 +77,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
       });
     }
     if ( changes.columnBuilders && this.columnBuilders ) {
-        this.columnBuilders.forEach( cb => cb.columnDefs.forEach(cd => this.table.addColumnDef(cd)));
+        this.columnBuilders.forEach( cb => this.table.addColumnDef(cb.columnDef) );
     }
   }
 
@@ -112,7 +112,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
     }
 
     const keysFromColumnBuilder = this.columnBuilders.changes.pipe(
-      map( () => _.flatten(this.columnBuilders.map( cb => cb.columnDefs.toArray() ))),
+      map( () => this.columnBuilders.map( cb => cb.columnDef  )),
       scan( (acc, current) => {
         return { current, previous: acc.current }
       }, {current: [], previous: []}),
