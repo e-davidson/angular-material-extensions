@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { GenericTableComponent } from './components/generic-table/generic-table.component';
 import { CustomCellDirective } from './directives/custom-cell-directive';
 import { GenColDisplayerComponent } from './components/gen-col-displayer/gen-col-displayer.component';
-import { GenValDisplayerComponent } from './components/gen-val-displayer/gen-val-displayer.component';
 import { GenFilterDisplayerComponent } from './components/gen-filter-displayer/gen-filter-displayer.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -41,7 +40,6 @@ import { RouterModule } from '@angular/router';
         TableContainerComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
-        GenValDisplayerComponent,
         GenFilterDisplayerComponent,
         FilterComponent,
         MultiSortDirective
@@ -53,7 +51,6 @@ import { RouterModule } from '@angular/router';
         GenericTableComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
-        GenValDisplayerComponent,
         GenFilterDisplayerComponent,
         DateFilterComponent,
         FilterComponent,

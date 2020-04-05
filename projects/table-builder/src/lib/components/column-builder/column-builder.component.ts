@@ -29,18 +29,24 @@ export class ColumnBuilderComponent {
   @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
   @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
 
-  get getTemplate() {
-    if (this.customCell?.columnDef?.cell) {
-      return this.customCell.columnDef.cell.template;
+  template: TemplateRef<any>;
+
+  getTemplate() {
+      if (this.customCell?.columnDef?.cell) {
+        return this.customCell.columnDef.cell.template;
+      }
+      if (this.customCell) {
+        return this.customCellWrapper;
+      }
+      return this.bodyTemplate;
     }
-    if (this.customCell) {
-      return this.customCellWrapper;
-    }
-    return this.bodyTemplate;
-  }
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
+  }
+
+  ngAfterViewInit() {
+    this.template = this.getTemplate();
   }
 
 }

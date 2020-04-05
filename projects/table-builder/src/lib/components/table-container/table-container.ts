@@ -7,21 +7,19 @@ import {
   QueryList,
   ChangeDetectionStrategy,
   ViewChildren,
-  ChangeDetectorRef,
   ViewChild,
-  TemplateRef
+  TemplateRef,
 } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, publishReplay, refCount } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
-import { ColumnBuilderComponent, TemplateHolder } from '../column-builder/column-builder.component';
+import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { CustomCellDirective } from '../../directives';
 import { TableStateManager } from '../../classes/table-state-manager';
 import * as _ from 'lodash';
-import { Template } from '@angular/compiler/src/render3/r3_ast';
 
 
 @Component({
@@ -39,7 +37,7 @@ import { Template } from '@angular/compiler/src/render3/r3_ast';
       this.state.updateState( { pageSize: this._pageSize});
     }
   }
-  @Input() SaveState: boolean = false;
+  @Input() SaveState = false;
   @Input() tableBuilder: TableBuilder;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
@@ -77,11 +75,8 @@ import { Template } from '@angular/compiler/src/render3/r3_ast';
 
   myColumns$: Observable<Partial<ColumnInfo>[]>;
 
-  constructor(
-      private cdr: ChangeDetectorRef,
-      public state: TableStateManager
-    ) { }
-
+  myColumns2: Observable<ColumnBuilderComponent[]>;
+  constructor( public state: TableStateManager) {}
 
 
   ngOnInit() {
@@ -93,7 +88,8 @@ import { Template } from '@angular/compiler/src/render3/r3_ast';
   }
 
   InitializeData() {
-    this.filteredData = this.state.getFilteredData$(this.tableBuilder.getData$(), this.inputFilters)
+    this.filteredData = this.state.getFilteredData$(this.tableBuilder.getData$(), this.inputFilters);
+    this.subscriptions.push(this.filteredData.subscribe( d => this.data.next(d)));
   }
 
   exportToCsv() {
@@ -112,7 +108,6 @@ import { Template } from '@angular/compiler/src/render3/r3_ast';
           if(metaData.fieldType === FieldType.Hidden){
             this.state.hideColumn(metaData.key);
           }
-          const md = {...metaData, ...customCell?.getMetaData(metaData)};
           return { metaData:{...metaData,...customCell?.getMetaData(metaData)}, customCell };
         })
         const customNotMetas = [...customCellMap.values()]
@@ -122,23 +117,18 @@ import { Template } from '@angular/compiler/src/render3/r3_ast';
         const fullArr = metas.concat(customNotMetas);
         return fullArr;
       }),
-      shareReplay()
+      publishReplay(1),
+      refCount(),
     );
 
     this.subscriptions.push(this.myColumns$.pipe(map(columns => _.orderBy( columns.map( column => column.metaData ), 'order' )   ))
-      .subscribe( columns => {this.state.setMetaData(columns);})
+      .subscribe( (columns: MetaData []) => {
+        this.state.setMetaData(columns);
+      })
     );
 
     this.preSort();
 
-  }
-
-  ngAfterViewInit() {
-    console.log('after view container');
-    setTimeout(() => {
-      this.columns = this.columnBuilders.map( cb => cb.columnDef );
-      this.cdr.markForCheck();
-    }, 0);
   }
 
   preSort() {
@@ -152,7 +142,7 @@ import { Template } from '@angular/compiler/src/render3/r3_ast';
                 .map(( {key, preSort} ) =>
                   ({ active: key, direction: preSort.direction }))
       ),
-      shareReplay());
+      publishReplay(1), refCount());
   }
   resort$ = new Subject<{}>();
   ngOnDestroy() {
@@ -169,7 +159,7 @@ function popFromMap(key:string, map: Map<string, CustomCellDirective>){
   return customCell;
 }
 
-interface ColumnInfo {
+export interface ColumnInfo {
   metaData: MetaData,
   customCell: CustomCellDirective
 }

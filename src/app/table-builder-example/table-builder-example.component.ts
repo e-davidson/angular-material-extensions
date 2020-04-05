@@ -36,7 +36,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 const META_DATA: MetaData[] = [
   {key: 'position', fieldType: FieldType.Currency, order: 2, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', fieldType: FieldType.String },
-  {key: 'name', fieldType: FieldType.String },
+  {key: 'name', fieldType: FieldType.Hidden },
   {key: 'gas', fieldType: FieldType.Boolean },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date', preSort: {direction: SortDirection.asc, precedence: 1 } },
 ];
@@ -51,7 +51,7 @@ const META_DATA: MetaData[] = [
 export class TableBuilderExampleComponent {
   public tableBuilder: TableBuilder;
   newElement$ = new Subject<PeriodicElement>();
-  metaData$ = new BehaviorSubject<MetaData[]>(null);
+  metaData$ = new Subject<MetaData[]>();
   myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
 
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
@@ -64,9 +64,9 @@ export class TableBuilderExampleComponent {
       startWith([]),
     );
     const all = combineArrays([scheduled([ELEMENT_DATA], asap), addedElements]);
-   // setTimeout(() => {
+    setTimeout(() => {
       this.metaData$.next(META_DATA);
-   // }, 1000);
+    }, 1000);
     this.tableBuilder = new TableBuilder(all, this.metaData$);
   }
 

@@ -1,12 +1,13 @@
 import { Observable, combineLatest } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, refCount, publishReplay } from 'rxjs/operators';
 
 export class DataFilter {
   filteredData$: Observable<any[]>;
   constructor(filters$: Observable< Array< (val: any) => boolean>>, data$: Observable<any[]>) {
     this.filteredData$ = combineLatest([data$, filters$]).pipe(
       map(([data, filters]) => this.filter(data, filters)),
-      shareReplay({refCount : true})
+      publishReplay(1),
+      refCount()
     );
   }
 
