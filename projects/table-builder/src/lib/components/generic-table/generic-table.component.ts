@@ -43,7 +43,7 @@ export class GenericTableComponent implements OnInit {
   columnBuilders: ColumnBuilderComponent[];
   @Output() selection$: Observable<any>;
 
-  @Input() cs:ColumnInfo[];
+  @Input() columnInfos:ColumnInfo[];
 
 
   subs: Subscription[] = [];
@@ -86,7 +86,7 @@ export class GenericTableComponent implements OnInit {
         }
       });
     }
-    if ( changes.cs && this.cs ) {
+    if ( changes.cs && this.columnInfos ) {
         this.initColumns();
     }
   }
@@ -116,13 +116,13 @@ export class GenericTableComponent implements OnInit {
   }
   initColumns() {
     const factory = this.componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
-    this.columnBuilders = this.cs.map( column => {
-              const component = this.viewContainer.createComponent(factory);
-             component.instance.customCell = column.customCell;
-             component.instance.metaData = column.metaData;
-             component.instance.data$ = this.data$;
-             return component.instance;
-            });
+    this.columnBuilders = this.columnInfos.map(column => {
+      const component = this.viewContainer.createComponent(factory);
+      component.instance.customCell = column.customCell;
+      component.instance.metaData = column.metaData;
+      component.instance.data$ = this.data$;
+      return component.instance;
+    });
     const staticColumns = [];
     if (this.SelectionColumn) {
       staticColumns.push('select');
