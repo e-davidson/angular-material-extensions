@@ -86,7 +86,7 @@ export class GenericTableComponent implements OnInit {
         }
       });
     }
-    if ( changes.cs && this.columnInfos ) {
+    if ( changes.columnInfos && this.columnInfos ) {
         this.initColumns();
     }
   }
