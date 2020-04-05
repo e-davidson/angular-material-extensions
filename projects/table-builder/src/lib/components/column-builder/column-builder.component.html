@@ -1,6 +1,6 @@
 <ng-container [matColumnDef]="metaData.key">
 
-  <ng-template #body let-metaData='metaData' let-element='element' >
+  <ng-template #body let-element='element' >
     <mat-cell [style.flex-basis]='metaData.width' >
       <span [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Date">
@@ -37,7 +37,7 @@
     </mat-cell>
   </ng-template>
 
-  <ng-template #customCellWrapper let-metaData='metaData' let-element='element' >
+  <ng-template #customCellWrapper let-element='element' >
     <mat-cell [style.flex-basis]='metaData.width' >
       <ng-container *ngTemplateOutlet="customCell.TemplateRef ;context: {metaData: metaData, element: element }">
       </ng-container>
