@@ -2,7 +2,7 @@
 
   <ng-template #body let-element='element' >
     <mat-cell [style.flex-basis]='metaData.width' >
-      <span [ngSwitch]="metaData.fieldType">
+      <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Date">
             {{element[metaData.key] | date }}
         </span>
@@ -32,7 +32,7 @@
             </ng-template>
         </span>
         <span *ngSwitchDefault> {{ element[metaData.key] }} </span>
-    </span>
+      </ng-container>
     <span class="no-val" *ngIf="element[metaData.key]===null || element[metaData.key]===undefined">-</span>
     </mat-cell>
   </ng-template>
