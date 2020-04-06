@@ -10,6 +10,7 @@ import { TableContainerComponent } from '../../../projects/table-builder/src/lib
 import { FilterType } from '../../../projects/table-builder/src/lib/enums/filterTypes';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FilterInfo } from '../../../projects/table-builder/src/lib/classes/filter-info';
+import { MatSelectChange } from '@angular/material/select';
 
 export interface PeriodicElement {
   name: string;
@@ -112,5 +113,18 @@ export class TableBuilderExampleComponent {
     } else {
       this.tableContainer.state.removeFilter('test');
     }
+  }
+
+  multipleValuesTest(change: MatSelectChange) {
+    console.log(change)
+    const fi = {
+      filterId: 'multipleValuesTest',
+      filterType: FilterType.StringsEqual,
+      filterValue: change.value,
+      key: 'name',
+      fieldType: FieldType.String
+    }
+
+    this.tableContainer.state.addFilter(fi);
   }
 }
