@@ -1,5 +1,12 @@
 <mat-checkbox (change)="Checked($event)" [checked]="isFilterChecked && (isFilterChecked | async)" ></mat-checkbox>
 
+<div style="width: 25%;">
+    <mat-select multiple (selectionChange)="multipleValuesTest($event)">
+      <mat-option [value]="'Hydrogen'">Hydrogen</mat-option>
+      <mat-option [value]="'Lithium'">Lithium</mat-option>
+    </mat-select>
+</div>
+
 <tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50">
   <p *customCell="'testCell';let element = element;width:'5%'" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
