@@ -8,22 +8,23 @@
 </div>
 
 <tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50">
-  <p *customCell="'testCell';let element = element;width:'5%'" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
-  <ng-container customCell="symbol" matColumnDef="symbol" [customCellOrder]="4" [customCellWidth]="'5%'">
+  <p *customCell="'testCell';let element = element;" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
+
+  <ng-container customCell="symbol" matColumnDef="symbol" [customCellOrder]="4" >
       <mat-cell *matCellDef="let element = element;" >
           {{element.symbol}}
       </mat-cell>
   </ng-container>
 
-  <ng-container customCell="blue" matColumnDef="blue"  [customCellWidth]="'5%'" >
+  <ng-container customCell="blue" matColumnDef="blue" >
       <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name && element?.name[0] === 'B'">
           Hi {{element?.name}} !
       </mat-cell>
   </ng-container>
 
-  <ng-container customCell="green" matColumnDef="green"  [customCellWidth]="'5%'" >
-      <mat-header-cell *matHeaderCellDef style="color: green;flex-basis:5%"  >Custom header</mat-header-cell>
+  <ng-container customCell="green" matColumnDef="green"  >
+      <mat-header-cell *matHeaderCellDef style="color: green;"  >Custom header</mat-header-cell>
       <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name && element?.name[0] === 'H'">
           F {{element?.name}} !
       </mat-cell>

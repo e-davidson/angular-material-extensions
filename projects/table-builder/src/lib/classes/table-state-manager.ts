@@ -6,9 +6,9 @@ import { Observable } from 'rxjs';
 import { TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
-import { map } from 'rxjs/operators';
+import { map, distinct } from 'rxjs/operators';
 import { FilterInfo, createFilterFunc } from './filter-info';
-import { selectTableState, fullTableState, selectMetaData, selectVisibleFields } from '../ngrx/reducer';
+import { selectTableState, fullTableState, mapVisibleFields } from '../ngrx/reducer';
 import { DataFilter } from './data-filter';
 import { combineArrays } from '../functions/rxjs-operators';
 
@@ -37,8 +37,12 @@ export class TableStateManager {
       this.store.dispatch( tableActions.initTable({tableId: this._tableId}));
     }
 
+    _state$:  Observable<TableState>;
     get state$(): Observable<TableState> {
-      return this.store.pipe( select(selectTableState, {tableId: this.tableId, key: null}) );
+      if (!this._state$) {
+        this._state$ = this.store.pipe( select(selectTableState(), {tableId: this.tableId, key: null}), distinct() );
+      }
+      return this._state$;
     }
 
     get filters$(): Observable<FilterInfo[]> {
@@ -50,7 +54,7 @@ export class TableStateManager {
     }
 
     metaData$(key: string): Observable<MetaData> {
-      return this.store.pipe( select(selectMetaData, {tableId: this.tableId, key}) );
+      return this.state$.pipe( map( state => state.metaData.find( md => md.key === key) ) );
     }
 
     get displayedColumns$(): Observable<string[]> {
@@ -61,7 +65,7 @@ export class TableStateManager {
     }
 
     get visibleFields$(): Observable<string[]> {
-      return this.store.pipe(select(selectVisibleFields, {tableId: this.tableId, key: null }));
+      return this.state$.pipe(map(mapVisibleFields));
     }
 
   setMetaData(metaData: MetaData[]) {

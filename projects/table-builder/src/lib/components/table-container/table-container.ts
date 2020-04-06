@@ -7,11 +7,12 @@ import {
   QueryList,
   ChangeDetectionStrategy,
   ViewChildren,
-  ChangeDetectorRef
+  ViewChild,
+  TemplateRef,
 } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, publishReplay, refCount } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
@@ -36,7 +37,7 @@ import * as _ from 'lodash';
       this.state.updateState( { pageSize: this._pageSize});
     }
   }
-  @Input() SaveState: boolean = false;
+  @Input() SaveState = false;
   @Input() tableBuilder: TableBuilder;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
@@ -61,6 +62,10 @@ import * as _ from 'lodash';
 
   @Output() OnStateReset = new EventEmitter();
   @Output() OnSaveState = new EventEmitter();
+
+  @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
+  @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
+
   hiddenFields: string [] = [];
   columns: MatColumnDef[];
   filtersExpanded = false;
@@ -70,11 +75,8 @@ import * as _ from 'lodash';
 
   myColumns$: Observable<Partial<ColumnInfo>[]>;
 
-  constructor(
-      private cdr: ChangeDetectorRef,
-      public state: TableStateManager
-    ) { }
-
+  myColumns2: Observable<ColumnBuilderComponent[]>;
+  constructor( public state: TableStateManager) {}
 
 
   ngOnInit() {
@@ -86,7 +88,8 @@ import * as _ from 'lodash';
   }
 
   InitializeData() {
-    this.filteredData = this.state.getFilteredData$(this.tableBuilder.getData$(), this.inputFilters)
+    this.filteredData = this.state.getFilteredData$(this.tableBuilder.getData$(), this.inputFilters);
+    this.subscriptions.push(this.filteredData.subscribe( d => this.data.next(d)));
   }
 
   exportToCsv() {
@@ -107,26 +110,25 @@ import * as _ from 'lodash';
           }
           return { metaData:{...metaData,...customCell?.getMetaData(metaData)}, customCell };
         })
-        const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
+        const customNotMetas = [...customCellMap.values()]
+          .map( customCell =>({
+            metaData: customCell.getMetaData(),
+            customCell}));
         const fullArr = metas.concat(customNotMetas);
         return fullArr;
       }),
-      shareReplay()
+      publishReplay(1),
+      refCount(),
     );
 
     this.subscriptions.push(this.myColumns$.pipe(map(columns => _.orderBy( columns.map( column => column.metaData ), 'order' )   ))
-      .subscribe( columns => {this.state.setMetaData(columns);})
+      .subscribe( (columns: MetaData []) => {
+        this.state.setMetaData(columns);
+      })
     );
 
     this.preSort();
 
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.columns = _.flatten(this.columnBuilders.map( cb => cb.columnDefs.toArray() ));
-      this.cdr.markForCheck();
-    }, 0);
   }
 
   preSort() {
@@ -140,7 +142,7 @@ import * as _ from 'lodash';
                 .map(( {key, preSort} ) =>
                   ({ active: key, direction: preSort.direction }))
       ),
-      shareReplay());
+      publishReplay(1), refCount());
   }
   resort$ = new Subject<{}>();
   ngOnDestroy() {
@@ -157,7 +159,7 @@ function popFromMap(key:string, map: Map<string, CustomCellDirective>){
   return customCell;
 }
 
-interface ColumnInfo {
+export interface ColumnInfo {
   metaData: MetaData,
-  customCell: CustomCellDirective,
+  customCell: CustomCellDirective
 }

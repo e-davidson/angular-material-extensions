@@ -1,12 +1,15 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList, TemplateRef, ViewChild } from '@angular/core';
 import { MetaData, FieldType } from '../../interfaces/report-def';
 import { MatColumnDef } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
-import { TableStateManager } from '../../classes/table-state-manager';
-import { map, tap } from 'rxjs/operators';
 
+export interface TemplateHolder {
+  metaData: MetaData;
+  customTemplate?: TemplateRef<any>;
+  template?: TemplateRef<any>;
+}
 
 @Component({
   selector: 'tb-column-builder',
@@ -19,11 +22,31 @@ export class ColumnBuilderComponent {
   filter: FilterInfo;
   @Input() metaData: MetaData;
   @Input() customCell: CustomCellDirective;
-  @Input()data$: Observable<any[]>;
+  @Input() data$: Observable<any[]>;
 
-  @ViewChildren(MatColumnDef) columnDefs: QueryList<MatColumnDef> ;
+  @ViewChild(MatColumnDef) columnDef: MatColumnDef;
+
+  @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
+  @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
+
+  template: TemplateRef<any>;
+
+  getTemplate() {
+      if (this.customCell?.columnDef?.cell) {
+        return this.customCell.columnDef.cell.template;
+      }
+      if (this.customCell) {
+        return this.customCellWrapper;
+      }
+      return this.bodyTemplate;
+    }
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
   }
+
+  ngAfterViewInit() {
+    this.template = this.getTemplate();
+  }
+
 }

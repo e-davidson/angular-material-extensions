@@ -3,6 +3,7 @@ import { TableState } from '../classes/TableState';
 import update from 'immutability-helper';
 import * as tableActions from './actions';
 import { Dictionary } from '../interfaces/dictionary';
+import { FieldType } from '../interfaces/report-def';
 
 export class TableStateAction implements Action {
   type: string;
@@ -57,7 +58,12 @@ const reducer = createReducer(initialState,
   on(tableActions.removeFilter, (state, {tableId, filterId}) => {
     return update(state, {[tableId] : {filters : { $unset : [filterId]}  }});
   }),
-  on(tableActions.reset, (state, {tableId}) => update(state, {[tableId]: {hiddenKeys: {$set: []}, filters: {$set: {}}}})  ),
+  on(tableActions.reset, (state, {tableId}) => {
+    const hiddenColumns = state[tableId].metaData
+       .filter( md => md.fieldType === FieldType.Hidden)
+       .map( md => md.key);
+    return update(state, {[tableId]: {hiddenKeys: {$set: [...hiddenColumns]}, filters: {$set: {}}}})
+  }),
   on(tableActions.removeTable, (state, {tableId}) => update(state, {$unset: [tableId] }))
 );
 
@@ -68,13 +74,11 @@ export function tableStateReducer(state: fullTableState| undefined, action: Acti
 
 export const selectFullTableState: (any) => fullTableState = (state: any) => state['fullTableState'];
 
-export const selectTableState = createSelector(selectFullTableState, (state: fullTableState, {tableId,key}  ) => state[tableId] );
+export const selectTableState = () => createSelector(selectFullTableState, (state: fullTableState, {tableId,key}  ) => state[tableId] );
 
-export const selectMetaData = createSelector(selectTableState, ( d, {key}) =>  d.metaData.find(md => md.key === key) );
+export const mapVisibleFields = (state: TableState) =>  state.metaData
+.filter(md => !state.hiddenKeys.includes(md.key))
+.sort((md1,md2) => md1.order - md2.order)
+.map(md => md.key);
 
-export const selectVisibleFields = createSelector(selectTableState, state =>
-  state.metaData
-  .filter(md => !state.hiddenKeys.includes(md.key))
-  .sort((md1,md2) => md1.order - md2.order)
-  .map(md => md.key)
-);
+export const selectVisibleFields = createSelector(selectTableState(), mapVisibleFields);

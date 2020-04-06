@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { EMPTY, combineLatest } from 'rxjs';
-import { fullTableState, selectTableState, selectVisibleFields  } from './reducer';
+import { fullTableState, selectTableState, selectVisibleFields } from './reducer';
 import { tap, mergeMap, first, map, filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import * as tableActions from './actions';

@@ -16,6 +16,7 @@ export class MatTableObservableDataSource<T> extends  MatTableDataSource<T> {
   disconnect() {
     if (this.subscription) {
       this.subscription.unsubscribe();
+      this.subscription = null;
     }
     super.disconnect();
   }
