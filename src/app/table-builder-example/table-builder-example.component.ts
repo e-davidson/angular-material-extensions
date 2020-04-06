@@ -37,7 +37,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 const META_DATA: MetaData[] = [
   {key: 'position', fieldType: FieldType.Currency, order: 2, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', fieldType: FieldType.String },
-  {key: 'name', fieldType: FieldType.Hidden },
+  {key: 'name', fieldType: FieldType.String },
   {key: 'gas', fieldType: FieldType.Boolean },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date', preSort: {direction: SortDirection.asc, precedence: 1 } },
 ];
@@ -119,7 +119,7 @@ export class TableBuilderExampleComponent {
     console.log(change)
     const fi = {
       filterId: 'multipleValuesTest',
-      filterType: FilterType.StringsEqual,
+      filterType: FilterType.StringIn,
       filterValue: change.value,
       key: 'name',
       fieldType: FieldType.String

@@ -31,5 +31,5 @@ export const NumberFilterFuncs = {
     [FilterType.NumberLessThen]: numberLessThenFunc,
     [FilterType.NumberBetween]: numberBetweenFunc,
     [FilterType.IsNull]: isNull,
-    [FilterType.NumbersEqual]: multipleValuesEqualsFunc,
+    [FilterType.NumberIn]: multipleValuesEqualsFunc,
 };

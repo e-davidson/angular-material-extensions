@@ -36,5 +36,5 @@ export const StringFilterFuncs = {
     [FilterType.StringStartWith]: stringStartsWithFunc,
     [FilterType.StringEndsWith]: stringEndsWithFunc,
     [FilterType.IsNull]: isNull,
-    [FilterType.StringsEqual]: multipleValuesEqualsFunc,
+    [FilterType.StringIn]: multipleValuesEqualsFunc,
 };

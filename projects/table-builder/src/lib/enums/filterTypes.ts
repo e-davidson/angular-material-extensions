@@ -16,8 +16,8 @@ export enum FilterType {
     DateBetween = 'Between',
     BooleanEquals = 'Is',
     IsNull = 'Is Blank',
-    NumbersEqual = 'Equals',
-    StringsEqual = 'Equals',
+    NumberIn = 'In',
+    StringIn = 'In',
 }
 
 export const NumberFilterMap = {
@@ -27,7 +27,7 @@ export const NumberFilterMap = {
     [FilterType.NumberLessThen]: [FilterType.NumberLessThen],
     [FilterType.NumberBetween]: [FilterType.NumberBetween],
     [FilterType.IsNull]: [FilterType.IsNull],
-    [FilterType.NumbersEqual]: [FilterType.NumbersEqual],
+    [FilterType.NumberIn]: [FilterType.NumberIn],
 };
 
 export const StringFilterMap = {
@@ -37,7 +37,7 @@ export const StringFilterMap = {
     [FilterType.StringStartWith]: [FilterType.StringStartWith],
     [FilterType.StringEndsWith]: [FilterType.StringEndsWith],
     [FilterType.IsNull]: [FilterType.IsNull],
-    [FilterType.StringsEqual]: [FilterType.StringsEqual],
+    [FilterType.StringIn]: [FilterType.StringIn],
 };
 
 export const DateFilterMap = {
