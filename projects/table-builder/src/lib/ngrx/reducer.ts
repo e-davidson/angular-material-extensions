@@ -72,9 +72,9 @@ export function tableStateReducer(state: fullTableState| undefined, action: Acti
 }
 
 
-export const selectFullTableState: (any) => fullTableState = (state: any) => state['fullTableState'];
+export const selectFullTableState = (state: {fullTableState: fullTableState}) => state.fullTableState;
 
-export const selectTableState = () => createSelector(selectFullTableState, (state: fullTableState, {tableId,key}  ) => state[tableId] );
+export const selectTableState = () => createSelector(selectFullTableState, (state: fullTableState, {tableId}  ) => state[tableId] );
 
 export const mapVisibleFields = (state: TableState) =>  state.metaData
 .filter(md => !state.hiddenKeys.includes(md.key))

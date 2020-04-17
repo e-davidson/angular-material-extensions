@@ -40,7 +40,7 @@ export class TableStateManager {
     _state$:  Observable<TableState>;
     get state$(): Observable<TableState> {
       if (!this._state$) {
-        this._state$ = this.store.pipe( select(selectTableState(), {tableId: this.tableId, key: null}), distinct() );
+        this._state$ = this.store.pipe( select(selectTableState(), {tableId: this.tableId}), distinct() );
       }
       return this._state$;
     }

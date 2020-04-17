@@ -17,7 +17,7 @@ export class SaveTableEffects {
       ofType(tableActions.saveTableState),
       mergeMap( ({tableId}) =>  this.store$.pipe(
         first(),
-        select(selectTableState, {tableId, key: null} ),
+        select(selectTableState(), {tableId} ),
         map( table => ({tableId, table}))) ),
         tap( ({tableId, table}) => {
         localStorage.setItem(tableId, JSON.stringify(table));
@@ -52,7 +52,7 @@ export class SaveTableEffects {
     mergeMap( ({tableId, data$}) =>
       combineLatest([
         this.store$.pipe(
-          select(selectVisibleFields, {tableId, key:null}),
+          select(selectVisibleFields, {tableId}),
         ),
         data$
       ]).pipe(first())
