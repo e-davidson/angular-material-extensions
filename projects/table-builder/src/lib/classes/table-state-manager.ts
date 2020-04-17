@@ -21,7 +21,7 @@ export class TableStateManager {
   private _tableId: string;
     get tableId(): string {
       if (!this._tableId) {
-        this.tableId = uuid();
+        this._tableId = uuid();
       }
       return this._tableId;
     }
