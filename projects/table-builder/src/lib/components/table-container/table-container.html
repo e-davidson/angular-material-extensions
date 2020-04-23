@@ -5,7 +5,7 @@
         <tb-filter-displayer >
         </tb-filter-displayer>
         <tb-col-displayer></tb-col-displayer>
-        <button *ngIf="_tableId" mat-icon-button (click)="state.saveTable();OnSaveState.next()" matTooltip="Save Table">
+        <button *ngIf="tableId" mat-icon-button (click)="state.saveTable();OnSaveState.next()" matTooltip="Save Table">
           <mat-icon color="primary">save</mat-icon>
         </button>
         <button mat-icon-button (click)="state.resetState();resort$.next({});OnStateReset.next()" matTooltip="Reset table">

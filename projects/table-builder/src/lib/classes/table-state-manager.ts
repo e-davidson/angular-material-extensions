@@ -2,11 +2,11 @@ import { Store, select } from '@ngrx/store';
 import * as tableActions from '../ngrx/actions';
 import { MetaData } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
-import { map, distinct } from 'rxjs/operators';
+import { map, distinct, switchMap } from 'rxjs/operators';
 import { FilterInfo, createFilterFunc } from './filter-info';
 import { selectTableState, fullTableState, mapVisibleFields } from '../ngrx/reducer';
 import { DataFilter } from './data-filter';
@@ -14,6 +14,7 @@ import { combineArrays } from '../functions/rxjs-operators';
 
 @Injectable()
 export class TableStateManager {
+  initialized$ = new ReplaySubject<string>(1);
   saveTable() {
     this.store.dispatch(tableActions.saveTableState({tableId: this.tableId}));
   }
@@ -30,17 +31,21 @@ export class TableStateManager {
         throw new Error(`Cannot reset the table ID after it has already been set. CurrentID: ${this._tableId}. New ID: ${value} `);
       }
       this._tableId = value;
-      this.initializeState();
     }
 
     initializeState() {
-      this.store.dispatch( tableActions.initTable({tableId: this._tableId}));
+      this.store.dispatch( tableActions.initTable({tableId: this.tableId}));
+      this.initialized$.next(this.tableId);
+      this.initialized$.complete();
     }
 
     _state$:  Observable<TableState>;
     get state$(): Observable<TableState> {
       if (!this._state$) {
-        this._state$ = this.store.pipe( select(selectTableState(), {tableId: this.tableId}), distinct() );
+        this._state$ = this.initialized$.pipe(
+          switchMap( tableId => this.store.pipe(select(selectTableState(), {tableId}))),
+          distinct()
+        );
       }
       return this._state$;
     }

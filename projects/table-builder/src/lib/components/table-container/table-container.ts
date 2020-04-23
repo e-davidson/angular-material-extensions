@@ -28,28 +28,14 @@ import * as _ from 'lodash';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TableStateManager]
 }) export class TableContainerComponent {
-  _tableId: string;
-  @Input() set tableId(value: string) {
-    this._tableId = value;
-    this.state.tableId = this._tableId;
-
-    if (this._pageSize) {
-      this.state.updateState( { pageSize: this._pageSize});
-    }
-  }
+  @Input() tableId;
   @Input() SaveState = false;
   @Input() tableBuilder: TableBuilder;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
   @Input() isSticky = true;
-  _pageSize: number;
-  @Input() set pageSize(size: number) {
-    this._pageSize = size;
-    if ( this._tableId ) {
-      this.state.updateState( { pageSize: size});
-    }
-  }
+  @Input() pageSize;
   @Input() inputFilters: Observable<Array<(val: any) => boolean>>;
   @Output() selection$ = new EventEmitter();
   subscriptions: Subscription[] = [];
@@ -81,6 +67,17 @@ import * as _ from 'lodash';
 
   ngOnInit() {
     this.InitializeData();
+    this.InitTableState();
+  }
+
+  InitTableState() {
+    if (this.tableId) {
+      this.state.tableId = this.tableId;
+    }
+    this.state.initializeState();
+    if (this.pageSize) {
+      this.state.updateState( { pageSize: this.pageSize});
+    }
   }
 
   ngAfterContentInit() {
@@ -147,7 +144,7 @@ import * as _ from 'lodash';
   resort$ = new Subject<{}>();
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    if (!this.SaveState || !this._tableId) {
+    if (!this.SaveState || !this.tableId) {
       this.state.destroy();
     }
   }
