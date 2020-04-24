@@ -17,15 +17,15 @@ const initialState: fullTableState = {};
 
 const reducer = createReducer(initialState,
   on(tableActions.setMetaData, ( state, {tableId, metaData} ) => update( state, {[tableId]: { metaData: {$set: metaData} }} )),
-  on(tableActions.setHiddenColumn, ( state, {tableId, column} ) => {
-    const tableState = state[tableId];
-    let hiddenColumns: string[] = [];
-    if (tableState.hiddenKeys.includes(column)) {
-      hiddenColumns = tableState.hiddenKeys.filter( k => k !== column);
-    } else {
-      hiddenColumns = [...tableState.hiddenKeys, column];
+  on(tableActions.setHiddenColumn, ( state, {tableId, column, visible} ) => {
+     const tableState = state[tableId];
+    if(tableState.hiddenKeys.includes(column) !== visible ) {
+      return state;
     }
-    return update( state , {[tableId] : { hiddenKeys: {$set: hiddenColumns}}});
+    const hiddenColumns = visible ?
+      tableState.hiddenKeys.filter( c => c !== column) :
+      [...tableState.hiddenKeys, column];
+    return update( state , {[tableId] : { hiddenKeys: { $set: hiddenColumns }}});
   } ),
   on(tableActions.setHiddenColumns, ( state, {tableId, columns} ) => {
     let hiddenKeys = [...state[tableId].hiddenKeys];

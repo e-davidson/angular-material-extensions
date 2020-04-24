@@ -78,10 +78,14 @@ export class TableStateManager {
   }
 
   hideColumn(key: string) {
-    this.store.dispatch( tableActions.setHiddenColumn( {tableId: this.tableId, column: key}) );
+    this.store.dispatch( tableActions.setHiddenColumn( {tableId: this.tableId, column: key, visible: false}) );
   }
 
-  hideColumns(displayCols: {key: string, visible: boolean}[]) {
+  showColumn(key: string) {
+    this.store.dispatch( tableActions.setHiddenColumn( {tableId: this.tableId, column: key, visible: true}) );
+  }
+
+  setHiddenColumns(displayCols: {key: string, visible: boolean}[]) {
     this.store.dispatch( tableActions.setHiddenColumns( {tableId: this.tableId, columns: displayCols}) );
   }
 
