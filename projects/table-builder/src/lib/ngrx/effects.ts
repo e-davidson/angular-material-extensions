@@ -1,12 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY, combineLatest } from 'rxjs';
-import { fullTableState, selectTableState, selectVisibleFields } from './reducer';
+import { EMPTY} from 'rxjs';
+import { fullTableState, selectTableState} from './reducer';
 import { tap, mergeMap, first, map, filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import * as tableActions from './actions';
 import { TableBuilderConfig, TableBuilderConfigToken } from '../classes/TableBuilderConfig';
-import { downloadData } from '../functions/download-data';
 
 
 @Injectable()
@@ -46,27 +45,6 @@ export class SaveTableEffects {
         ))
     )
   );
-
-  download$ = createEffect(() => this.actions$.pipe(
-    ofType(tableActions.downloadTable),
-    mergeMap( ({tableId, data$}) =>
-      combineLatest([
-        this.store$.pipe(
-          select(selectVisibleFields, {tableId}),
-        ),
-        data$
-      ]).pipe(first())
-    ),
-    map(([fields,data]) => this.csvData(data,fields)),
-    tap(csv => downloadData(csv,'export.csv','text/csv')),
-    mergeMap(_ => EMPTY)
-  ));
-
-  csvData(data:Array<any>, headers: string[]) {
-    const res = data.map(row => headers.map(field => row[field] || '').join(','));
-    res.unshift(headers.join(','));
-    return res.join('\n');
-  }
 
   constructor(
     private actions$: Actions,

@@ -109,7 +109,7 @@ import * as _ from 'lodash';
         })
         const customNotMetas = [...customCellMap.values()]
           .map( customCell =>({
-            metaData: customCell.getMetaData(),
+            metaData: {...customCell.getMetaData(), noExport: true},
             customCell}));
         const fullArr = metas.concat(customNotMetas);
         return fullArr;

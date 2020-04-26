@@ -33,6 +33,7 @@ export interface MetaData {
     preSort?: PreSortDef;
     _internalNotUserDefined?: boolean;
     width?: string;
+    noExport?: boolean;
 }
 
 export interface  ReportDef<DataType = any> {

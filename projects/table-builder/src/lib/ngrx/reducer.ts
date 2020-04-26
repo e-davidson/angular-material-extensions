@@ -76,9 +76,29 @@ export const selectFullTableState = (state: {fullTableState: fullTableState}) =>
 
 export const selectTableState = () => createSelector(selectFullTableState, (state: fullTableState, {tableId}  ) => state[tableId] );
 
-export const mapVisibleFields = (state: TableState) =>  state.metaData
-.filter(md => !state.hiddenKeys.includes(md.key))
-.sort((md1,md2) => md1.order - md2.order)
-.map(md => md.key);
+export const removeFromMetaData = (state: TableState, keysToRemove: string[]) =>
+  state.metaData
+  .filter( md => !keysToRemove.includes(md.key))
+  .sort((md1,md2) => md1.order - md2.order);
+
+export const mapVisibleFields = (state: TableState) =>
+  removeFromMetaData(state, state.hiddenKeys)
+  .map(md => md.key);
 
 export const selectVisibleFields = createSelector(selectTableState(), mapVisibleFields);
+
+export const nonExportableFields = (state: TableState) => state.metaData
+  .filter(md => md.noExport )
+  .map( md => md.key );
+
+export const mapExportableFields = (state: TableState) => {
+  const fieldsToRemove = nonExportableFields(state)
+    .concat(state.hiddenKeys);
+   const metaData = removeFromMetaData(state, fieldsToRemove);
+   return metaData.map( md => md.key);
+}
+
+export const selectExportableFields = createSelector(
+  selectTableState(),
+  mapExportableFields
+);

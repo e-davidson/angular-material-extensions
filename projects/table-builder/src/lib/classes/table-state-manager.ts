@@ -2,15 +2,16 @@ import { Store, select } from '@ngrx/store';
 import * as tableActions from '../ngrx/actions';
 import { MetaData } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
-import { Observable, ReplaySubject } from 'rxjs';
+import { Observable, ReplaySubject, combineLatest } from 'rxjs';
 import { TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
-import { map, distinct, switchMap } from 'rxjs/operators';
+import { map, distinct, switchMap, first } from 'rxjs/operators';
 import { FilterInfo, createFilterFunc } from './filter-info';
-import { selectTableState, fullTableState, mapVisibleFields } from '../ngrx/reducer';
+import { selectTableState, fullTableState, mapVisibleFields, mapExportableFields } from '../ngrx/reducer';
 import { DataFilter } from './data-filter';
 import { combineArrays } from '../functions/rxjs-operators';
+import { downloadData } from '../functions/download-data';
 
 @Injectable()
 export class TableStateManager {
@@ -130,7 +131,20 @@ export class TableStateManager {
 
   exportToCsv(data$: Observable<any[]>) {
     const displayData$ = this.getFilteredData$(data$);
-    this.store.dispatch(tableActions.downloadTable({tableId:this.tableId,data$: displayData$}));
+    const exportableFields$ = this.state$.pipe(
+      map(mapExportableFields)
+    );
+
+    combineLatest([displayData$,exportableFields$]).pipe(
+      first(),
+      map(([data,fields]) => this.csvData(data,fields)),
+    ).subscribe(csv => downloadData(csv,'export.csv','text/csv') );
+  }
+
+  csvData(data:Array<any>, headers: string[]) {
+    const res = data.map(row => headers.map(field => row[field] || '').join(','));
+    res.unshift(headers.join(','));
+    return res.join('\n');
   }
 
   constructor(private store: Store<{fullTableState: fullTableState}>,
