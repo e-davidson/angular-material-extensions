@@ -15,7 +15,7 @@ export class GenFilterDisplayerComponent {
 
   constructor( public tableState: TableStateManager) {
     this.filterCols$ = tableState.metaDatas$.pipe(
-      map(md => md.filter(m => m.fieldType !== FieldType.Hidden)),
+      map(md => md.filter(m => (m.fieldType !== FieldType.Hidden) && (!m.noFilter))),
     );
   }
 

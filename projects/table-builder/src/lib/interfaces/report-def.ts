@@ -34,6 +34,7 @@ export interface MetaData {
     _internalNotUserDefined?: boolean;
     width?: string;
     noExport?: boolean;
+    noFilter?: boolean;
 }
 
 export interface  ReportDef<DataType = any> {
