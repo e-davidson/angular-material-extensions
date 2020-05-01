@@ -25,6 +25,7 @@ import { SaveTableEffects } from './ngrx/effects';
 import { KeyDisplayPipe } from './pipes/key-display';
 import { FormatValuePipe } from './pipes/format-value';
 import { RouterModule } from '@angular/router';
+import { StopPropagationDirective } from './directives/stop-propagation.directive';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import { RouterModule } from '@angular/router';
         GenColDisplayerComponent,
         GenFilterDisplayerComponent,
         FilterComponent,
-        MultiSortDirective
+        MultiSortDirective,
+        StopPropagationDirective,
     ],
     declarations: [
         SpaceCasePipe,
@@ -60,6 +62,7 @@ import { RouterModule } from '@angular/router';
         HeaderMenuComponent,
         KeyDisplayPipe,
         FormatValuePipe,
+        StopPropagationDirective,
     ],
     providers : [SpaceCasePipe, DatePipe]
 })

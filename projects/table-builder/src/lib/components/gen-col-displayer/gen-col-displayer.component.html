@@ -7,44 +7,44 @@
     <mat-menu #menu="matMenu" class="my-mat-menu">
 
         <button mat-menu-item>
-            <span class="pull-right" matTooltip="Close">
+          <div style="display: flex; flex-direction: row-reverse;">
+            <span matTooltip="Close">
                 <button class="filter-button" mat-icon-button>
                     <mat-icon>close</mat-icon>
                 </button>
             </span>
+          </div>
         </button>
-        <!-- stopClickPropagate() is to avoid the default behavior of the mat-menu from closing after the first click
-        this way the user can close it when their ready -->
-        <button mat-menu-item (click)="stopClickPropagate($event)">
-
-            <span class="pull-left" matTooltip="Show all columns" (click)="reset(displayCols)">
-                <button mat-icon-button>
+        <button mat-menu-item stop-propagation>
+          <div style="display: flex; justify-content: space-between;">
+            <span matTooltip="Show all columns">
+                <button mat-icon-button (click)="reset(displayCols)">
                     <mat-icon color="primary">done_all</mat-icon>
                 </button>
             </span>
 
-            <span matTooltip="Hide all columns" class="pull-right" (click)="unset(displayCols)">
-                <button mat-icon-button>
+            <span matTooltip="Hide all columns">
+                <button mat-icon-button (click)="unset(displayCols)">
                     <mat-icon color="primary">cancel</mat-icon>
                 </button>
             </span>
-
+          </div>
         </button>
 
-        <button [class.isHidden]="!col.isVisible" (click)="stopClickPropagate($event)" mat-menu-item
+        <button [class.isHidden]="!col.isVisible" stop-propagation mat-menu-item
             *ngFor="let col of displayCols">
-            <div (click)="col.isVisible = !col.isVisible; emit(displayCols)">
-                <p class="label">
+            <div (click)="col.isVisible = !col.isVisible; emit(displayCols)" stop-propagation style="display: flex; justify-content: space-between;">
+                <p class="label" style="display: flex;">
                     {{col.displayName || (col.key | spaceCase) }}
                 </p>
-                <span matTooltip="Hide Column" class="show-hide pull-right" *ngIf="col.isVisible; else hidden">
+                <span matTooltip="Hide Column" class="show-hide" *ngIf="col.isVisible; else hidden">
                     <button mat-icon-button>
                         <mat-icon color="primary">check_box</mat-icon>
                     </button>
                 </span>
 
                 <ng-template #hidden >
-                    <span matTooltip="Show Column" class="show-hide pull-right">
+                    <span matTooltip="Show Column" class="show-hide">
                         <button mat-icon-button>
                             <mat-icon>indeterminate_check_box</mat-icon>
                         </button>
