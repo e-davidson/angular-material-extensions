@@ -94,8 +94,7 @@ export const nonExportableFields = (state: TableState) => state.metaData
 export const mapExportableFields = (state: TableState) => {
   const fieldsToRemove = nonExportableFields(state)
     .concat(state.hiddenKeys);
-   const metaData = removeFromMetaData(state, fieldsToRemove);
-   return metaData.map( md => md.displayName || md.key);
+   return removeFromMetaData(state, fieldsToRemove);
 }
 
 export const selectExportableFields = createSelector(

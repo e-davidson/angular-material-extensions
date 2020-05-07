@@ -55,4 +55,5 @@ export interface Additional   {
   target?: Target;
   footer?: { type: string };
   useRouterLink?: boolean;
+  export?: any;
 }

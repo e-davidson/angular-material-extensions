@@ -1,6 +1,6 @@
 import { Store, select } from '@ngrx/store';
 import * as tableActions from '../ngrx/actions';
-import { MetaData } from '../interfaces/report-def';
+import { MetaData, FieldType } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
 import { Observable, ReplaySubject, combineLatest } from 'rxjs';
 import { TableState } from './TableState';
@@ -12,14 +12,15 @@ import { selectTableState, fullTableState, mapVisibleFields, mapExportableFields
 import { DataFilter } from './data-filter';
 import { combineArrays } from '../functions/rxjs-operators';
 import { downloadData } from '../functions/download-data';
+import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class TableStateManager {
   initialized$ = new ReplaySubject<string>(1);
   saveTable() {
     this.store.dispatch(tableActions.saveTableState({tableId: this.tableId}));
-    if (this.config.onSave) {
-      this.config.onSave();
+    if (this.config?.export.onSave) {
+      this.config.export.onSave();
     }
   }
 
@@ -144,13 +145,33 @@ export class TableStateManager {
     ).subscribe(csv => downloadData(csv,'export.csv','text/csv') );
   }
 
-  csvData(data:Array<any>, headers: string[]) {
-    const res = data.map(row => headers.map(field => row[field] || '').join(','));
-    res.unshift(headers.join(','));
+  csvData(data:Array<any>, metaData: MetaData[]) {
+    const res = data.map(row => metaData.map(meta => this.metaToField(meta, row)).join(','));
+    res.unshift(metaData.map(meta => meta.displayName || meta.key).join(','));
     return res.join('\n');
   }
 
+  metaToField(meta: MetaData, row: any) {
+    let val = row[meta.key];
+    switch (meta.fieldType) {
+      case FieldType.Date:
+        const dateFormat = meta.additional?.export?.dateFormat || this.config?.export?.dateFormat;
+        val = this.datePipe.transform(val, dateFormat);
+        break;
+      case FieldType.String:
+        const prepend: string = meta.additional?.export?.prepend || '';
+        val = prepend + val;
+        break;
+    }
+    if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
+      val = val.replace('"', '""');
+      val = '"' + val + '"';
+    }
+    return val;
+  }
+
   constructor(private store: Store<{fullTableState: fullTableState}>,
-              @Inject(TableBuilderConfigToken) private config: TableBuilderConfig) {
+              @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
+              private datePipe: DatePipe) {
   }
 }

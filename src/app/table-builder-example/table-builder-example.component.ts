@@ -22,7 +22,7 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', gas: true , date: new Date(2019, 1, 8) },
+  {position: 1, name: 'Hydrogen, blah', weight: 1.0079, symbol: 'H', gas: true , date: new Date(2019, 1, 8) },
   {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', gas: true, date: null },
   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', gas: false, date: new Date(2019, 1, 5) },
   {position: undefined, name: 'Beryllium', weight: 9.0122, symbol: 'Be', gas: false, date: new Date(2019, 1, 4) },
@@ -37,7 +37,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 const META_DATA: MetaData[] = [
   {key: 'position', fieldType: FieldType.Currency, order: 2, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', fieldType: FieldType.String },
-  {key: 'name', fieldType: FieldType.String },
+  {key: 'name', fieldType: FieldType.String, additional: { export: { prepend: "'" } } },
   {key: 'gas', fieldType: FieldType.Boolean },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date', preSort: {direction: SortDirection.asc, precedence: 1 } },
 ];
