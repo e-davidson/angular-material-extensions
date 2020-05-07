@@ -33,7 +33,7 @@
 
         <button [class.isHidden]="!col.isVisible" stop-propagation mat-menu-item
             *ngFor="let col of displayCols">
-            <div (click)="col.isVisible = !col.isVisible; emit(displayCols)" stop-propagation style="display: flex; justify-content: space-between;">
+            <div (click)="col.isVisible = !col.isVisible; emit(displayCols)" stop-propagation style="display: flex; justify-content: space-between; align-items: center;">
                 <p class="label" style="display: flex;">
                     {{col.displayName || (col.key | spaceCase) }}
                 </p>
