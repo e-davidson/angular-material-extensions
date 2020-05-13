@@ -7,7 +7,7 @@
     </mat-select>
 </div>
 
-<tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50">
+<tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50" [SelectionColumn]='true' (selection$)="selectionEvent($event)">
 
   <p *customCell="'testCell';let element = element;" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
