@@ -127,4 +127,8 @@ export class TableBuilderExampleComponent {
 
     this.tableContainer.state.addFilter(fi);
   }
+
+  selectionEvent(a){
+    console.log(a)
+  }
 }

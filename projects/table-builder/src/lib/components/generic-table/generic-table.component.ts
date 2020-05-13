@@ -161,7 +161,7 @@ export class GenericTableComponent implements OnInit {
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
+      this.selection.select(...this.dataSource.data);
   }
 
   ngOnDestroy() {
