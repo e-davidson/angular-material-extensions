@@ -12,81 +12,91 @@
       <input type="hidden" name="key"  [ngModel]="metaData.key" />
       <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType" />
 
-      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array ||
-                                   metaData.fieldType === FieldType.Unknown || metaData.fieldType === FieldType.PhoneNumber">
-        <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
-          <mat-icon matPrefix class="search-icon">search</mat-icon>
-          <input matInput [placeholder]="myFilterType === FilterType.StringDoesNotContain ? 'Does Not Contain...' : 'Contains...'" name="filterValue" [ngModel]="filter.filterValue" />
-          <span matSuffix [matTooltip]="myFilterType === FilterType.StringDoesNotContain ? 'Contains' : 'Does Not Contain'">
-            <button mat-icon-button color="primary" (click)="setStringFilterType()">
-              <mat-icon [ngClass]="{'chosen-icon': myFilterType === FilterType.StringDoesNotContain }">
-                block
-              </mat-icon>
-            </button>
-          </span>
-        </mat-form-field>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
-        <mat-form-field class="auto-width" (click)="stopClickPropagate($event)" style="padding: 0 16px">
-          <input matInput type='number'  name="filterValue" [ngModel]="filter.filterValue" />
-          <span matPrefix>
-            <button mat-icon-button disableRipple>
-              <mat-icon (click)="setFilterType(FilterType.NumberLessThen)" class="suffix-icons"
-                [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberLessThen }">
-                arrow_back_ios</mat-icon>
-            </button>
-            <button mat-icon-button disableRipple>
-              <mat-icon (click)="setFilterType(FilterType.NumberGreaterThen)" class="suffix-icons"
-              [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberGreaterThen }">
-                arrow_forward_ios</mat-icon>
-            </button>
-            <button mat-icon-button disableRipple>
-              <span (click)="setFilterType(FilterType.NumberEquals)" class="suffix-icons"
-              [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberEquals }">
-                =</span>
-            </button>
-          </span>
-        </mat-form-field>
-      </ng-container>
-
-      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Boolean">
-        <div style="padding: 0 16px">
-          <label>
-            <mat-icon class="search-icon">filter_list</mat-icon>
-          </label>
-          <mat-radio-group (click)="stopClickPropagate($event)" #ctrl="matRadioGroup" #boolField='ngModel' class="font" name="filterValue" [ngModel]="myFilterValue" >
-            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = true;" [value]="true">True</mat-radio-button><br/>
-            <mat-radio-button class="filter-radio-button" (click)="myFilterValue = false" [value]="false">False</mat-radio-button><br/>
-          </mat-radio-group>
+      <ng-container *ngIf="metaData.additional?.FilterOptions?.select?.length > 0; else defaultFilter">
+        <input type='hidden' name='filterValue' [ngModel]='myFilterValue' />
+        <div *ngFor='let item of metaData.additional.FilterOptions.select; index as i'>
+          <mat-checkbox stop-propagation (change)='selectChanged($event, item)' >{{item}}</mat-checkbox>
         </div>
       </ng-container>
 
-      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
-        <mat-form-field style="padding: 0 16px" class="font auto-width" (click)="stopClickPropagate($event)">
-          <span matPrefix>
-            <button mat-icon-button disableRipple>
-              <mat-icon (click)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons"
-              [ngClass]="{'chosen-icon': myFilterType === FilterType.DateOnOrAfter }">
-                arrow_forward_ios</mat-icon>
-            </button>
-            <button mat-icon-button disableRipple>
-              <mat-icon (click)="setFilterType(FilterType.DateOnOrBefore)" class="suffix-icons"
-              [ngClass]="{'chosen-icon': myFilterType === FilterType.DateOnOrBefore  }">
-                arrow_back_ios</mat-icon>
-            </button>
-            <button mat-icon-button disableRipple>
-              <span (click)="setFilterType(FilterType.DateIsOn)" class="suffix-icons"
-              [ngClass]="{'chosen-icon': myFilterType === FilterType.DateIsOn }">
-                =</span>
-            </button>
-          </span>
-          <input matInput name="filterValue" [ngModel]="filter.filterValue" [matDatepicker]="calendar"
-            (click)="calendar.open()"/>
-          <mat-datepicker-toggle matSuffix [for]="calendar"></mat-datepicker-toggle>
-          <mat-datepicker #calendar></mat-datepicker>
-        </mat-form-field>
-      </ng-container>
+
+      <ng-template #defaultFilter>
+        <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
+          <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
+            <mat-icon matPrefix class="search-icon">search</mat-icon>
+            <input matInput [placeholder]="myFilterType === FilterType.StringDoesNotContain ? 'Does Not Contain...' : 'Contains...'" name="filterValue" [ngModel]="filter.filterValue" />
+            <span matSuffix [matTooltip]="myFilterType === FilterType.StringDoesNotContain ? 'Contains' : 'Does Not Contain'">
+              <button mat-icon-button color="primary" (click)="setStringFilterType()">
+                <mat-icon [ngClass]="{'chosen-icon': myFilterType === FilterType.StringDoesNotContain }">
+                  block
+                </mat-icon>
+              </button>
+            </span>
+          </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
+          <mat-form-field class="auto-width" (click)="stopClickPropagate($event)" style="padding: 0 16px">
+            <input matInput type='number'  name="filterValue" [ngModel]="filter.filterValue" />
+            <span matPrefix>
+              <button mat-icon-button disableRipple>
+                <mat-icon (click)="setFilterType(FilterType.NumberLessThen)" class="suffix-icons"
+                  [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberLessThen }">
+                  arrow_back_ios</mat-icon>
+              </button>
+              <button mat-icon-button disableRipple>
+                <mat-icon (click)="setFilterType(FilterType.NumberGreaterThen)" class="suffix-icons"
+                [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberGreaterThen }">
+                  arrow_forward_ios</mat-icon>
+              </button>
+              <button mat-icon-button disableRipple>
+                <span (click)="setFilterType(FilterType.NumberEquals)" class="suffix-icons"
+                [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberEquals }">
+                  =</span>
+              </button>
+            </span>
+          </mat-form-field>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Boolean">
+          <div style="padding: 0 16px">
+            <label>
+              <mat-icon class="search-icon">filter_list</mat-icon>
+            </label>
+            <mat-radio-group (click)="stopClickPropagate($event)" #ctrl="matRadioGroup" #boolField='ngModel' class="font" name="filterValue" [ngModel]="myFilterValue" >
+              <mat-radio-button class="filter-radio-button" (click)="myFilterValue = true;" [value]="true">True</mat-radio-button><br/>
+              <mat-radio-button class="filter-radio-button" (click)="myFilterValue = false" [value]="false">False</mat-radio-button><br/>
+            </mat-radio-group>
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
+          <mat-form-field style="padding: 0 16px" class="font auto-width" (click)="stopClickPropagate($event)">
+            <span matPrefix>
+              <button mat-icon-button disableRipple>
+                <mat-icon (click)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons"
+                [ngClass]="{'chosen-icon': myFilterType === FilterType.DateOnOrAfter }">
+                  arrow_forward_ios</mat-icon>
+              </button>
+              <button mat-icon-button disableRipple>
+                <mat-icon (click)="setFilterType(FilterType.DateOnOrBefore)" class="suffix-icons"
+                [ngClass]="{'chosen-icon': myFilterType === FilterType.DateOnOrBefore  }">
+                  arrow_back_ios</mat-icon>
+              </button>
+              <button mat-icon-button disableRipple>
+                <span (click)="setFilterType(FilterType.DateIsOn)" class="suffix-icons"
+                [ngClass]="{'chosen-icon': myFilterType === FilterType.DateIsOn }">
+                  =</span>
+              </button>
+            </span>
+            <input matInput name="filterValue" [ngModel]="filter.filterValue" [matDatepicker]="calendar"
+              (click)="calendar.open()"/>
+            <mat-datepicker-toggle matSuffix [for]="calendar"></mat-datepicker-toggle>
+            <mat-datepicker #calendar></mat-datepicker>
+          </mat-form-field>
+        </ng-container>
+      </ng-template>
+
     <button mat-button (click)="tableState.addFilter(myForm.value)" disableRipple>
       Apply
     </button>

@@ -19,9 +19,7 @@ export class TableStateManager {
   initialized$ = new ReplaySubject<string>(1);
   saveTable() {
     this.store.dispatch(tableActions.saveTableState({tableId: this.tableId}));
-    if (this.config?.export.onSave) {
-      this.config.export.onSave();
-    }
+    this.config?.export?.onSave()
   }
 
   private _tableId: string;

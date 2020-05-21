@@ -18,6 +18,8 @@ export enum FilterType {
     IsNull = 'Is Blank',
     NumberIn = 'In',
     StringIn = 'In',
+    Or = 'Or',
+    And = 'And',
 }
 
 export const NumberFilterMap = {

@@ -26,14 +26,9 @@
             {{element[metaData.key] | currency }}
         </span>
         <span *ngSwitchCase="FieldType.PhoneNumber">
-            {{element[metaData.key] | phone }}
+          {{element[metaData.key] | phone }}
         </span>
-        <span *ngSwitchCase="FieldType.Array">
-            <p class="no-val" *ngIf="element[metaData.key]?.length === 0; else hasVals">-</p>
-            <ng-template #hasVals>
-                <p [class.array-val]="first" *ngFor="let val of element[metaData.key]; let first = first">{{val}}</p>
-            </ng-template>
-        </span>
+        <tb-array-column *ngSwitchCase="FieldType.Array" [array]='element[metaData.key]' ></tb-array-column>
         <span *ngSwitchDefault> {{ element[metaData.key] }} </span>
       </ng-container>
     <span class="no-val" *ngIf="element[metaData.key]===null || element[metaData.key]===undefined">-</span>
