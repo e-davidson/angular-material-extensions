@@ -44,13 +44,21 @@ const additional: ArrayAdditional = {
 const META_DATA: MetaData[] = [
   {key: 'position', fieldType: FieldType.Currency, order: 2, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', fieldType: FieldType.String },
-  {key: 'name', fieldType: FieldType.String, additional: { export: { prepend: "'" },
-    FilterOptions: {select: ['Oxygen', 'Nitrogen','Neon']} } },
-  {key: 'gas', fieldType: FieldType.Boolean },
-  {key: 'date', fieldType: FieldType.Date , displayName: 'The Date', preSort: {direction: SortDirection.asc, precedence: 1}, additional: {dateFormat: 'shortDate'} },
+  {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
+    preSort: {direction: SortDirection.asc, precedence: 1},
+    additional: {dateFormat: 'shortDate'}
+  },
+  {key: 'name', fieldType: FieldType.String, additional: {
+    export: { prepend: "'" },
+    FilterOptions: {select: ['Oxygen', 'Nitrogen','Neon']},
+    styles: { color: 'yellow'  }
+  },
+  },
+  {key: 'gas', fieldType: FieldType.Boolean , additional: {
+    styles: {  flex : '0 0 5%'},
+  } },
   {key: 'phone', fieldType: FieldType.PhoneNumber },
   {key: 'moreInfo', fieldType: FieldType.Array, additional}
-
 ];
 
 

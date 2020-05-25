@@ -1,7 +1,6 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { FilterInfo } from '../../classes/filter-info';
 import { FilterType } from '../../enums/filterTypes';
-import { debounceTime } from 'rxjs/operators';
 import { ControlContainer, NgForm } from '@angular/forms';
 
 @Component({

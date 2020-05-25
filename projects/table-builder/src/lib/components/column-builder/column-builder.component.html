@@ -1,7 +1,7 @@
 <ng-container [matColumnDef]="metaData.key">
 
   <ng-template #body let-element='element' >
-    <mat-cell [style.flex-basis]='metaData.width' >
+    <mat-cell [style.flex-basis]='metaData.width'  [styler]='metaData?.additional?.styles' >
       <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Date">
             {{element[metaData.key] | date: dateFormat }}
@@ -36,7 +36,7 @@
   </ng-template>
 
   <ng-template #customCellWrapper let-element='element' >
-    <mat-cell [style.flex-basis]='metaData.width' >
+    <mat-cell [styler]='metaData?.additional?.styles' >
       <ng-container *ngTemplateOutlet="customCell.TemplateRef ;context: {metaData: metaData, element: element }">
       </ng-container>
     </mat-cell>
@@ -50,7 +50,7 @@
     </ng-container>
 
     <ng-template #header>
-      <mat-header-cell  [style.flex-basis]='metaData.width'  class="f-mat-header-cell">
+      <mat-header-cell  [styler]='metaData?.additional?.styles' >
         <div class="header-container">
           <div *ngIf="!metaData._internalNotUserDefined;" mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
@@ -77,7 +77,7 @@
       </ng-container>
     </ng-container>
     <ng-template #footer>
-      <mat-footer-cell  [style.flex-basis]='metaData.width' >
+      <mat-footer-cell  [styler]='metaData?.additional?.styles' >
         <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
           <span *ngSwitchCase="FieldType.Currency">
             {{ data$ | columnTotal: metaData | async | currency }}

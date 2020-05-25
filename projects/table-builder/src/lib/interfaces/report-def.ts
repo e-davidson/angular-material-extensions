@@ -59,6 +59,7 @@ export interface Additional   {
   export?: any;
   dateFormat?: string;
   FilterOptions?: any;
+  styles?: any;
 }
 
 export enum ArrayStyle {

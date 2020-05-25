@@ -28,6 +28,7 @@ import { FormatValuePipe } from './pipes/format-value';
 import { RouterModule } from '@angular/router';
 import { StopPropagationDirective } from './directives/stop-propagation.directive';
 import { ArrayColumnComponent } from './components/array-column.component';
+import { StylerDirective } from './directives/styler';
 
 @NgModule({
   imports: [
@@ -67,6 +68,7 @@ import { ArrayColumnComponent } from './components/array-column.component';
         PhoneNumberPipe,
         FormatValuePipe,
         StopPropagationDirective,
+        StylerDirective,
     ],
     providers : [SpaceCasePipe, DatePipe]
 })
