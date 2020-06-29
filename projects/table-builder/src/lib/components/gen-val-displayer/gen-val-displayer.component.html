@@ -2,6 +2,9 @@
     <span *ngSwitchCase="FieldType.Date">
         {{element[col.key] | date }}
     </span>
+    <span *ngSwitchCase="FieldType.DateTime">
+      {{element[col.key] | date: 'short' }}
+    </span>
     <span *ngSwitchCase="FieldType.Boolean">
         <mat-icon *ngIf="element[col.key]">check</mat-icon>
     </span>
@@ -20,6 +23,9 @@
     </span>
     <span *ngSwitchCase="FieldType.Currency" [class.negative-currency]="element[col.key] < 0">
         {{element[col.key] | currency }}
+    </span>
+    <span *ngSwitchCase="FieldType.PhoneNumber">
+        {{element[col.key] | phone }}
     </span>
     <span *ngSwitchCase="FieldType.Array">
         <p class="no-val" *ngIf="element[col.key]?.length === 0; else hasVals">-</p>

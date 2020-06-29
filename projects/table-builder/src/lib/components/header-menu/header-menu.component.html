@@ -12,7 +12,8 @@
       <input type="hidden" name="key"  [ngModel]="metaData.key" />
       <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType" />
 
-      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown">
+      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array ||
+                                   metaData.fieldType === FieldType.Unknown || metaData.fieldType === FieldType.PhoneNumber">
         <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
           <mat-icon matPrefix class="search-icon">search</mat-icon>
           <input matInput placeholder="Contains..." name="filterValue" [ngModel]="filter.filterValue" />
@@ -54,7 +55,7 @@
         </div>
       </ng-container>
 
-      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
+      <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date || metaData.fieldType === FieldType.DateTime">
         <mat-form-field style="padding: 0 16px" class="font auto-width" (click)="stopClickPropagate($event)">
           <span matPrefix>
             <button mat-icon-button disableRipple>

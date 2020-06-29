@@ -10,6 +10,8 @@ export enum FieldType {
     Number = 7,
     String = 8,
     Boolean = 9,
+    DateTime = 10,
+    PhoneNumber = 11,
 }
 
 export enum SortDirection {

@@ -33,6 +33,7 @@ export class HeaderMenuComponent {
   resetFilterType() {
     switch (this.metaData.fieldType) {
       case FieldType.String:
+      case FieldType.PhoneNumber:
       case FieldType.Array:
       case FieldType.Unknown:
         this.myFilterType = FilterType.StringContains;
@@ -44,6 +45,7 @@ export class HeaderMenuComponent {
       case FieldType.Boolean:
           this.myFilterType = FilterType.BooleanEquals;
           break;
+      case FieldType.DateTime:
       case FieldType.Date:
           this.myFilterType = FilterType.DateIsOn;
           break;
