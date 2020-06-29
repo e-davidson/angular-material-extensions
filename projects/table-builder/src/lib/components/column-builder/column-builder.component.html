@@ -4,7 +4,7 @@
     <mat-cell [style.flex-basis]='metaData.width' >
       <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Date">
-            {{element[metaData.key] | date: getFormatType(metaData.additional?.datePipeFormat) }}
+            {{element[metaData.key] | date: dateFormat }}
         </span>
         <span *ngSwitchCase="FieldType.Boolean">
             <mat-icon *ngIf="element[metaData.key]">check</mat-icon>

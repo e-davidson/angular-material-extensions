@@ -40,7 +40,7 @@ const META_DATA: MetaData[] = [
   {key: 'symbol', fieldType: FieldType.String },
   {key: 'name', fieldType: FieldType.String, additional: { export: { prepend: "'" } } },
   {key: 'gas', fieldType: FieldType.Boolean },
-  {key: 'date', fieldType: FieldType.Date , displayName: 'The Date', preSort: {direction: SortDirection.asc, precedence: 1}, additional: {datePipeFormat: 'full'} },
+  {key: 'date', fieldType: FieldType.Date , displayName: 'The Date', preSort: {direction: SortDirection.asc, precedence: 1}, additional: {dateFormat: 'shortDate'} },
   {key: 'phone', fieldType: FieldType.PhoneNumber },
 ];
 

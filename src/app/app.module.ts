@@ -27,7 +27,8 @@ import { MatSelectModule } from '@angular/material/select';
     StoreModule.forRoot({}),
     EffectsModule.forRoot([]),
     TableBuilderModule.forRoot({
-      defaultTableState: { pageSize: 20},
+      defaultSettings: { dateFormat: 'short' },
+      defaultTableState: { pageSize: 20 },
     }),
     MatTableModule,
     StoreDevtoolsModule.instrument({maxAge:50}),

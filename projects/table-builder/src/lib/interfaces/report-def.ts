@@ -57,5 +57,5 @@ export interface Additional   {
   footer?: { type: string };
   useRouterLink?: boolean;
   export?: any;
-  datePipeFormat?: string;
+  dateFormat?: string;
 }
