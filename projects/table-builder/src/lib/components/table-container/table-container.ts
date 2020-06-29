@@ -7,14 +7,12 @@ import {
   QueryList,
   ChangeDetectionStrategy,
   ViewChildren,
-  ChangeDetectorRef
+  ViewChild,
+  TemplateRef,
 } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
-import { map, shareReplay } from 'rxjs/operators';
-import { createFilterFunc } from '../../classes/filter-info';
-import { DataFilter } from '../../classes/data-filter';
-import { combineArrays } from '../../functions/rxjs-operators';
+import { map, publishReplay, refCount } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatColumnDef, MatRowDef } from '@angular/material/table';
 import { Sort } from '@angular/material/sort';
@@ -30,26 +28,14 @@ import * as _ from 'lodash';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TableStateManager]
 }) export class TableContainerComponent {
-  _tableId: string;
-  @Input() set tableId(value: string) {
-    this._tableId = value;
-    if (this._pageSize) {
-      this.state.updateState( { pageSize: this._pageSize});
-    }
-  }
-  @Input() SaveState: boolean = false;
+  @Input() tableId;
+  @Input() SaveState = false;
   @Input() tableBuilder: TableBuilder;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
   @Input() trackBy: string;
   @Input() isSticky = true;
-  _pageSize: number;
-  @Input() set pageSize(size: number) {
-    this._pageSize = size;
-    if ( this._tableId ) {
-      this.state.updateState( { pageSize: size});
-    }
-  }
+  @Input() pageSize;
   @Input() inputFilters: Observable<Array<(val: any) => boolean>>;
   @Output() selection$ = new EventEmitter();
   subscriptions: Subscription[] = [];
@@ -62,28 +48,36 @@ import * as _ from 'lodash';
 
   @Output() OnStateReset = new EventEmitter();
   @Output() OnSaveState = new EventEmitter();
+
+  @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
+  @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
+
   hiddenFields: string [] = [];
   columns: MatColumnDef[];
   filtersExpanded = false;
   rules$: Observable<Sort[]>;
   FieldType = FieldType;
-  filteredData: DataFilter;
-  filterCols$: Observable<MetaData[]>;
+  filteredData: Observable<any[]>;
 
   myColumns$: Observable<Partial<ColumnInfo>[]>;
 
-  constructor(
-      private cdr: ChangeDetectorRef,
-      public state: TableStateManager
-    ) { }
-
+  myColumns2: Observable<ColumnBuilderComponent[]>;
+  constructor( public state: TableStateManager) {}
 
 
   ngOnInit() {
-    if (this._tableId ) {
-      this.state.tableId = this._tableId;
-    }
     this.InitializeData();
+    this.InitTableState();
+  }
+
+  InitTableState() {
+    if (this.tableId) {
+      this.state.tableId = this.tableId;
+    }
+    this.state.initializeState();
+    if (this.pageSize) {
+      this.state.updateState( { pageSize: this.pageSize});
+    }
   }
 
   ngAfterContentInit() {
@@ -91,24 +85,12 @@ import * as _ from 'lodash';
   }
 
   InitializeData() {
-    const filters = [
-      this.state.filters$.pipe(map( fltrs => fltrs.map(filter => createFilterFunc(filter) )))
-    ];
+    this.filteredData = this.state.getFilteredData$(this.tableBuilder.getData$(), this.inputFilters);
+    this.subscriptions.push(this.filteredData.subscribe( d => this.data.next(d)));
+  }
 
-    if (this.inputFilters) {
-      filters.push(this.inputFilters);
-    }
-
-    this.filteredData = new DataFilter(
-      combineArrays( filters ),
-      this.tableBuilder.getData$()
-    );
-
-    this.subscriptions.push( this.filteredData.filteredData$.subscribe(this.data));
-
-    this.filterCols$ = this.tableBuilder.metaData$.pipe(
-      map(md => md.filter(m => m.fieldType !== FieldType.Hidden)),
-    );
+  exportToCsv() {
+    this.state.exportToCsv(this.tableBuilder.getData$());
   }
 
   InitializeColumns() {
@@ -125,26 +107,25 @@ import * as _ from 'lodash';
           }
           return { metaData:{...metaData,...customCell?.getMetaData(metaData)}, customCell };
         })
-        const customNotMetas = [...customCellMap.values()].map( customCell =>({metaData: customCell.getMetaData(), customCell}));
+        const customNotMetas = [...customCellMap.values()]
+          .map( customCell =>({
+            metaData: {...customCell.getMetaData(), noExport: true},
+            customCell}));
         const fullArr = metas.concat(customNotMetas);
         return fullArr;
       }),
-      shareReplay()
+      publishReplay(1),
+      refCount(),
     );
 
     this.subscriptions.push(this.myColumns$.pipe(map(columns => _.orderBy( columns.map( column => column.metaData ), 'order' )   ))
-      .subscribe( columns => {this.state.setMetaData(columns);})
+      .subscribe( (columns: MetaData []) => {
+        this.state.setMetaData(columns);
+      })
     );
 
     this.preSort();
 
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      this.columns = _.flatten(this.columnBuilders.map( cb => cb.columnDefs.toArray() ));
-      this.cdr.markForCheck();
-    }, 0);
   }
 
   preSort() {
@@ -158,12 +139,12 @@ import * as _ from 'lodash';
                 .map(( {key, preSort} ) =>
                   ({ active: key, direction: preSort.direction }))
       ),
-      shareReplay());
+      publishReplay(1), refCount());
   }
   resort$ = new Subject<{}>();
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    if (!this.SaveState || !this._tableId) {
+    if (!this.SaveState || !this.tableId) {
       this.state.destroy();
     }
   }
@@ -175,7 +156,7 @@ function popFromMap(key:string, map: Map<string, CustomCellDirective>){
   return customCell;
 }
 
-interface ColumnInfo {
+export interface ColumnInfo {
   metaData: MetaData,
-  customCell: CustomCellDirective,
+  customCell: CustomCellDirective
 }

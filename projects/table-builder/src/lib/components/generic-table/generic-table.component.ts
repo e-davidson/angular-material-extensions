@@ -3,11 +3,12 @@ import {
   ViewChild,
   Input,
   ChangeDetectionStrategy,
-  AfterContentInit,
   Output,
   SimpleChanges,
   OnInit,
   QueryList,
+  ComponentFactoryResolver,
+  ViewContainerRef,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -20,7 +21,9 @@ import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { orderBy } from 'lodash';
 import { combineArrays } from '../../functions/rxjs-operators';
 import { TableStateManager } from '../../classes/table-state-manager';
-import { tap, scan, map, distinct } from 'rxjs/operators';
+import { tap,  map, distinct } from 'rxjs/operators';
+import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
+import { ColumnInfo } from '../table-container/table-container';
 
 @Component({
   selector: 'tb-generic-table',
@@ -28,7 +31,7 @@ import { tap, scan, map, distinct } from 'rxjs/operators';
   styleUrls: ['./generic-table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GenericTableComponent implements AfterContentInit, OnInit {
+export class GenericTableComponent implements OnInit {
 
   @Input() data$: Observable<any[]>;
   @Input() IndexColumn = false;
@@ -37,8 +40,11 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   @Input() rows: QueryList<MatRowDef<any>>;
   @Input() isSticky = false;
   @Input() pageSize: number;
-  @Input() columnDefs: QueryList<MatColumnDef>;
+  columnBuilders: ColumnBuilderComponent[];
   @Output() selection$: Observable<any>;
+
+  @Input() columnInfos:ColumnInfo[];
+
 
   subs: Subscription[] = [];
 
@@ -50,9 +56,15 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   dataSource: MatTableObservableDataSource<any>;
   keys$: Observable<string[]>;
 
-  constructor(private sort: MatSort, public state: TableStateManager) {
+  constructor(
+    private sort: MatSort,
+    public state: TableStateManager,
+    private componentFactoryResolver: ComponentFactoryResolver,
+    private viewContainer: ViewContainerRef,
+    ) {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
+
   }
 
   trackByFunction = (index, item) => {
@@ -74,17 +86,13 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
         }
       });
     }
-    if ( changes.columnDefs && this.columnDefs ) {
-      this.columnDefs.forEach( cd => this.table.addColumnDef(cd));
+    if ( changes.columnInfos && this.columnInfos ) {
+        this.initColumns();
     }
   }
 
   ngOnInit() {
     this.createDataSource();
-  }
-
-  ngAfterContentInit() {
-    this.initColumns();
   }
 
   createDataSource() {
@@ -99,8 +107,22 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
       this.state.updateState( { pageSize: size});
     }));
   }
-
+  init = false;
+  ngAfterContentChecked() {
+    if ( this.init) {
+      this.init = false;
+      this.columnBuilders.forEach( cb => this.table.addColumnDef(cb.columnDef));
+    }
+  }
   initColumns() {
+    const factory = this.componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
+    this.columnBuilders = this.columnInfos.map(column => {
+      const component = this.viewContainer.createComponent(factory);
+      component.instance.customCell = column.customCell;
+      component.instance.metaData = column.metaData;
+      component.instance.data$ = this.data$;
+      return component.instance;
+    });
     const staticColumns = [];
     if (this.SelectionColumn) {
       staticColumns.push('select');
@@ -108,11 +130,14 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
     if (this.IndexColumn) {
       staticColumns.push('index');
     }
+    this.init = true;
+
+    const keys = this.columnBuilders.map( cb => cb.metaData.key );
 
     this.keys$ = combineArrays(
       [
-        of(staticColumns),
-        this.state.displayedColumns$,
+        of(staticColumns) ,
+        this.state.displayedColumns$.pipe(map( dc =>  dc.filter( c => keys.includes(c))))
       ]
     ).pipe(
       tap(d => {
@@ -122,7 +147,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
             r => r.columns = d
           );
         }
-      }),
+      })
     );
   }
 
@@ -136,7 +161,7 @@ export class GenericTableComponent implements AfterContentInit, OnInit {
   masterToggle() {
     this.isAllSelected() ?
       this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
+      this.selection.select(...this.dataSource.data);
   }
 
   ngOnDestroy() {

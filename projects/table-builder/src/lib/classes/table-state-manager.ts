@@ -1,25 +1,33 @@
 import { Store, select } from '@ngrx/store';
 import * as tableActions from '../ngrx/actions';
-import { MetaData } from '../interfaces/report-def';
+import { MetaData, FieldType } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject, combineLatest } from 'rxjs';
 import { TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
-import { map } from 'rxjs/operators';
-import { FilterInfo } from './filter-info';
-import { selectTableState, fullTableState, selectMetaData } from '../ngrx/reducer';
+import { map, distinct, switchMap, first } from 'rxjs/operators';
+import { FilterInfo, createFilterFunc } from './filter-info';
+import { selectTableState, fullTableState, mapVisibleFields, mapExportableFields } from '../ngrx/reducer';
+import { DataFilter } from './data-filter';
+import { combineArrays } from '../functions/rxjs-operators';
+import { downloadData } from '../functions/download-data';
+import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class TableStateManager {
+  initialized$ = new ReplaySubject<string>(1);
   saveTable() {
     this.store.dispatch(tableActions.saveTableState({tableId: this.tableId}));
+    if (this.config?.export.onSave) {
+      this.config.export.onSave();
+    }
   }
 
   private _tableId: string;
     get tableId(): string {
       if (!this._tableId) {
-        this.tableId = uuid();
+        this._tableId = uuid();
       }
       return this._tableId;
     }
@@ -28,15 +36,23 @@ export class TableStateManager {
         throw new Error(`Cannot reset the table ID after it has already been set. CurrentID: ${this._tableId}. New ID: ${value} `);
       }
       this._tableId = value;
-      this.initializeState();
     }
 
     initializeState() {
-      this.store.dispatch( tableActions.initTable({tableId: this._tableId}));
+      this.store.dispatch( tableActions.initTable({tableId: this.tableId}));
+      this.initialized$.next(this.tableId);
+      this.initialized$.complete();
     }
 
+    _state$:  Observable<TableState>;
     get state$(): Observable<TableState> {
-      return this.store.pipe( select(selectTableState, {tableId: this.tableId}) );
+      if (!this._state$) {
+        this._state$ = this.initialized$.pipe(
+          switchMap( tableId => this.store.pipe(select(selectTableState(), {tableId}))),
+          distinct()
+        );
+      }
+      return this._state$;
     }
 
     get filters$(): Observable<FilterInfo[]> {
@@ -48,7 +64,7 @@ export class TableStateManager {
     }
 
     metaData$(key: string): Observable<MetaData> {
-      return this.store.pipe( select(selectMetaData, {tableId: this.tableId, key}) );
+      return this.state$.pipe( map( state => state.metaData.find( md => md.key === key) ) );
     }
 
     get displayedColumns$(): Observable<string[]> {
@@ -58,15 +74,23 @@ export class TableStateManager {
       ;
     }
 
+    get visibleFields$(): Observable<string[]> {
+      return this.state$.pipe(map(mapVisibleFields));
+    }
+
   setMetaData(metaData: MetaData[]) {
     this.store.dispatch( tableActions.setMetaData({tableId: this.tableId, metaData}));
   }
 
   hideColumn(key: string) {
-    this.store.dispatch( tableActions.setHiddenColumn( {tableId: this.tableId, column: key}) );
+    this.store.dispatch( tableActions.setHiddenColumn( {tableId: this.tableId, column: key, visible: false}) );
   }
 
-  hideColumns(displayCols: {key: string, visible: boolean}[]) {
+  showColumn(key: string) {
+    this.store.dispatch( tableActions.setHiddenColumn( {tableId: this.tableId, column: key, visible: true}) );
+  }
+
+  setHiddenColumns(displayCols: {key: string, visible: boolean}[]) {
     this.store.dispatch( tableActions.setHiddenColumns( {tableId: this.tableId, columns: displayCols}) );
   }
 
@@ -99,7 +123,55 @@ export class TableStateManager {
     this.store.dispatch(tableActions.removeTable({tableId: this.tableId}));
   }
 
+  getFilteredData$(data$: Observable<any[]>, inputFilters$?: Observable<Array<(val: any) => boolean>>): Observable<any[]> {
+    const filters = [
+      this.filters$.pipe(map(fltrs => fltrs.map(filter => createFilterFunc(filter))))
+    ];
+    if (inputFilters$) {
+      filters.push(inputFilters$);
+    }
+    return new DataFilter(combineArrays(filters),data$).filteredData$;
+  }
+
+  exportToCsv(data$: Observable<any[]>) {
+    const displayData$ = this.getFilteredData$(data$);
+    const exportableFields$ = this.state$.pipe(
+      map(mapExportableFields)
+    );
+
+    combineLatest([displayData$,exportableFields$]).pipe(
+      first(),
+      map(([data,fields]) => this.csvData(data,fields)),
+    ).subscribe(csv => downloadData(csv,'export.csv','text/csv') );
+  }
+
+  csvData(data:Array<any>, metaData: MetaData[]) {
+    const res = data.map(row => metaData.map(meta => this.metaToField(meta, row)).join(','));
+    res.unshift(metaData.map(meta => meta.displayName || meta.key).join(','));
+    return res.join('\n');
+  }
+
+  metaToField(meta: MetaData, row: any) {
+    let val = row[meta.key];
+    switch (meta.fieldType) {
+      case FieldType.Date:
+        const dateFormat = meta.additional?.export?.dateFormat || this.config?.export?.dateFormat;
+        val = this.datePipe.transform(val, dateFormat);
+        break;
+      case FieldType.String:
+        const prepend: string = meta.additional?.export?.prepend || '';
+        val = prepend + val;
+        break;
+    }
+    if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
+      val = val.replace('"', '""');
+      val = '"' + val + '"';
+    }
+    return val;
+  }
+
   constructor(private store: Store<{fullTableState: fullTableState}>,
-              @Inject(TableBuilderConfigToken) private config: TableBuilderConfig) {
+              @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
+              private datePipe: DatePipe) {
   }
 }

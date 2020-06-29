@@ -7,7 +7,8 @@ export const initTable = createAction( '[Table State] Init table', props<{tableI
 
 export const setMetaData = createAction('[Table State] Set MetaData', props<{tableId: string, metaData: MetaData[]}>());
 
-export const setHiddenColumn = createAction('[Table State] Set Hidden Column', props<{tableId: string, column: string}>());
+export const setHiddenColumn = createAction('[Table State] Set Hidden Column',
+  props<{tableId: string, column: string, visible: boolean}>());
 
 export const setHiddenColumns = createAction('[Table State] Set Hidden Columns',
   props<{tableId: string, columns: {key: string, visible: boolean}[]}>());

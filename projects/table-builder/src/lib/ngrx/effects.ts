@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY } from 'rxjs';
-import { fullTableState, selectTableState  } from './reducer';
+import { EMPTY} from 'rxjs';
+import { fullTableState, selectTableState} from './reducer';
 import { tap, mergeMap, first, map, filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 import * as tableActions from './actions';
@@ -16,7 +16,7 @@ export class SaveTableEffects {
       ofType(tableActions.saveTableState),
       mergeMap( ({tableId}) =>  this.store$.pipe(
         first(),
-        select(selectTableState, {tableId} ),
+        select(selectTableState(), {tableId} ),
         map( table => ({tableId, table}))) ),
         tap( ({tableId, table}) => {
         localStorage.setItem(tableId, JSON.stringify(table));
@@ -32,14 +32,14 @@ export class SaveTableEffects {
         this.store$.pipe(
           map(s => s.fullTableState[tableId]),
           first(),
-          filter( d => !d ),
+          filter( d => !d.initialized ),
           map( u => {
             const table = localStorage.getItem(tableId);
             if (table) {
-              return tableActions.updateTableState({ tableId, tableState: JSON.parse(table) });
+              return tableActions.updateTableState({ tableId, tableState: {...JSON.parse(table), initialized : true} });
             }
             return tableActions.updateTableState(
-              { tableId, tableState: {...{ hiddenKeys: [], pageSize: 20, filters: {} }, ...this.config.defaultTableState } }
+              { tableId, tableState: {...{ hiddenKeys: [], pageSize: 20, filters: {}, initialized : true }, ...this.config.defaultTableState } }
             );
           }),
         ))

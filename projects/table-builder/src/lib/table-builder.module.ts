@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { GenericTableComponent } from './components/generic-table/generic-table.component';
 import { CustomCellDirective } from './directives/custom-cell-directive';
 import { GenColDisplayerComponent } from './components/gen-col-displayer/gen-col-displayer.component';
-import { GenValDisplayerComponent } from './components/gen-val-displayer/gen-val-displayer.component';
 import { GenFilterDisplayerComponent } from './components/gen-filter-displayer/gen-filter-displayer.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -27,6 +26,7 @@ import { KeyDisplayPipe } from './pipes/key-display';
 import { PhoneNumberPipe } from './pipes/phone.pipe';
 import { FormatValuePipe } from './pipes/format-value';
 import { RouterModule } from '@angular/router';
+import { StopPropagationDirective } from './directives/stop-propagation.directive';
 
 @NgModule({
   imports: [
@@ -42,10 +42,10 @@ import { RouterModule } from '@angular/router';
         TableContainerComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
-        GenValDisplayerComponent,
         GenFilterDisplayerComponent,
         FilterComponent,
-        MultiSortDirective
+        MultiSortDirective,
+        StopPropagationDirective,
     ],
     declarations: [
         SpaceCasePipe,
@@ -54,7 +54,6 @@ import { RouterModule } from '@angular/router';
         GenericTableComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
-        GenValDisplayerComponent,
         GenFilterDisplayerComponent,
         DateFilterComponent,
         FilterComponent,
@@ -65,6 +64,7 @@ import { RouterModule } from '@angular/router';
         KeyDisplayPipe,
         PhoneNumberPipe,
         FormatValuePipe,
+        StopPropagationDirective,
     ],
     providers : [SpaceCasePipe, DatePipe]
 })

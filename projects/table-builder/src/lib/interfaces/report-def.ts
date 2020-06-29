@@ -10,8 +10,7 @@ export enum FieldType {
     Number = 7,
     String = 8,
     Boolean = 9,
-    DateTime = 10,
-    PhoneNumber = 11,
+    PhoneNumber = 10,
 }
 
 export enum SortDirection {
@@ -35,6 +34,8 @@ export interface MetaData {
     preSort?: PreSortDef;
     _internalNotUserDefined?: boolean;
     width?: string;
+    noExport?: boolean;
+    noFilter?: boolean;
 }
 
 export interface  ReportDef<DataType = any> {
@@ -55,4 +56,6 @@ export interface Additional   {
   target?: Target;
   footer?: { type: string };
   useRouterLink?: boolean;
+  export?: any;
+  datePipeFormat?: string;
 }

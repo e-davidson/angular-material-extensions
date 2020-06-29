@@ -1,13 +1,14 @@
 import { Observable } from 'rxjs';
 import { MetaData, FieldType, ReportDef } from '../interfaces/report-def';
-import { first, map, switchMap, shareReplay } from 'rxjs/operators';
+import { first, map, switchMap, shareReplay, publishReplay, refCount } from 'rxjs/operators';
 import { mapArray } from '../functions/rxjs-operators';
 
 export class TableBuilder {
   constructor(private data$: Observable<any[]>, public metaData$?: Observable<MetaData[]> ) {
+    this.data$ = this.data$.pipe(publishReplay(1),refCount());
     this.metaData$ = this.metaData$ ?
-      this.metaData$.pipe(first()) :
-      data$.pipe(first(), map( data => this.createMetaData(data[0]) ) );
+      this.metaData$.pipe(first(),shareReplay()) :
+      data$.pipe(first(), map( data => this.createMetaData(data[0]) ),shareReplay() );
   }
 
   getData$(): Observable<any[]> {
@@ -33,7 +34,6 @@ export class TableBuilder {
       case FieldType.Number:
         const num = Number( val );
         return isNaN(num) ? null : num;
-      case FieldType.DateTime:
       case FieldType.Date:
         const date = Date.parse(val);
         return isNaN(date) ? null : new Date(date);
@@ -50,6 +50,6 @@ export class TableBuilder {
 }
 
 export const CreateTableBuilder = (reportDef$: Observable<ReportDef> ): TableBuilder => {
-  reportDef$ = reportDef$.pipe(shareReplay(1));
+  reportDef$ = reportDef$.pipe(publishReplay(1),refCount());
   return new TableBuilder(reportDef$.pipe(map( r => r.data) ), reportDef$.pipe( map ( r => r.metaData) ));
 };

@@ -1,5 +1,6 @@
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
+import { multipleValuesEqualsFunc } from './multiple-values-filter-function';
 
 function numberEqalsFunc(filterVal: number, val: number): boolean {
     return  val === filterVal;
@@ -30,4 +31,5 @@ export const NumberFilterFuncs = {
     [FilterType.NumberLessThen]: numberLessThenFunc,
     [FilterType.NumberBetween]: numberBetweenFunc,
     [FilterType.IsNull]: isNull,
+    [FilterType.NumberIn]: multipleValuesEqualsFunc,
 };

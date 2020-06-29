@@ -45,11 +45,14 @@ export class HeaderMenuComponent {
       case FieldType.Boolean:
           this.myFilterType = FilterType.BooleanEquals;
           break;
-      case FieldType.DateTime:
       case FieldType.Date:
           this.myFilterType = FilterType.DateIsOn;
           break;
     }
+  }
+
+  setStringFilterType() {
+    this.myFilterType = this.myFilterType === FilterType.StringContains ? FilterType.StringDoesNotContain : FilterType.StringContains;
   }
 
   setFilterType(filterType: FilterType) {

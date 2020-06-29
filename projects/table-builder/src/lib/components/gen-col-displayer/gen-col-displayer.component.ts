@@ -36,6 +36,6 @@ export class GenColDisplayerComponent {
   }
 
   emit(displayCols: DisplayCol[]) {
-    this.tableState.hideColumns(displayCols.map( c => ({key: c.key, visible: c.isVisible})));
+    this.tableState.setHiddenColumns(displayCols.map( c => ({key: c.key, visible: c.isVisible})));
   }
 }
