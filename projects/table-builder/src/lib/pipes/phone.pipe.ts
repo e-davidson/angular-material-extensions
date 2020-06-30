@@ -5,6 +5,7 @@ export class PhoneNumberPipe implements PipeTransform {
 
   transform(phoneNum: string): any {
     if (phoneNum) {
+      phoneNum = phoneNum.replace(/\D/g,'');
       if(phoneNum[0] === '1') {
         phoneNum = phoneNum.substring(1);
       }

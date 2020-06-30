@@ -14,14 +14,15 @@ export class SaveTableEffects {
   saveTable$ = createEffect(
     () => this.actions$.pipe(
       ofType(tableActions.saveTableState),
-      mergeMap( ({tableId}) =>  this.store$.pipe(
-        first(),
-        select(selectTableState(), {tableId} ),
-        map( table => ({tableId, table}))) ),
-        tap( ({tableId, table}) => {
-        localStorage.setItem(tableId, JSON.stringify(table));
-      }),
-      mergeMap( _ => EMPTY )
+      // mergeMap( ({tableId}) =>  this.store$.pipe(
+      //   first(),
+      //   select(selectTableState(), {tableId} ),
+      //   map( table => ({tableId, table})))
+      // ),
+      // tap( ({tableId, table}) => {
+      //   localStorage.setItem(tableId, JSON.stringify(table));
+      // }),
+      // mergeMap( _ => EMPTY )
     )
   );
 

@@ -53,9 +53,4 @@ export class ColumnBuilderComponent implements OnInit {
   ngAfterViewInit() {
     this.template = this.getTemplate();
   }
-
-  getFormatType(datePipeFormat: string): string {
-    return datePipeFormat ? datePipeFormat : 'shortDate';
-  }
-
 }
