@@ -4,7 +4,7 @@
     <mat-cell [style.flex-basis]='metaData.width' >
       <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Date">
-            {{element[metaData.key] | date }}
+            {{element[metaData.key] | date: dateFormat }}
         </span>
         <span *ngSwitchCase="FieldType.Boolean">
             <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
@@ -24,6 +24,9 @@
         </span>
         <span *ngSwitchCase="FieldType.Currency" [class.negative-currency]="element[metaData.key] < 0">
             {{element[metaData.key] | currency }}
+        </span>
+        <span *ngSwitchCase="FieldType.PhoneNumber">
+            {{element[metaData.key] | phone }}
         </span>
         <span *ngSwitchCase="FieldType.Array">
             <p class="no-val" *ngIf="element[metaData.key]?.length === 0; else hasVals">-</p>

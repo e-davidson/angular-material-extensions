@@ -23,6 +23,7 @@ import { HeaderMenuComponent } from './components/header-menu/header-menu.compon
 import { EffectsModule } from '@ngrx/effects';
 import { SaveTableEffects } from './ngrx/effects';
 import { KeyDisplayPipe } from './pipes/key-display';
+import { PhoneNumberPipe } from './pipes/phone.pipe';
 import { FormatValuePipe } from './pipes/format-value';
 import { RouterModule } from '@angular/router';
 import { StopPropagationDirective } from './directives/stop-propagation.directive';
@@ -61,6 +62,7 @@ import { StopPropagationDirective } from './directives/stop-propagation.directiv
         ColumnBuilderComponent,
         HeaderMenuComponent,
         KeyDisplayPipe,
+        PhoneNumberPipe,
         FormatValuePipe,
         StopPropagationDirective,
     ],

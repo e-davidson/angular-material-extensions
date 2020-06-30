@@ -33,6 +33,7 @@ export class HeaderMenuComponent {
   resetFilterType() {
     switch (this.metaData.fieldType) {
       case FieldType.String:
+      case FieldType.PhoneNumber:
       case FieldType.Array:
       case FieldType.Unknown:
         this.myFilterType = FilterType.StringContains;

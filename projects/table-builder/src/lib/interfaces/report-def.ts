@@ -10,6 +10,7 @@ export enum FieldType {
     Number = 7,
     String = 8,
     Boolean = 9,
+    PhoneNumber = 10,
 }
 
 export enum SortDirection {
@@ -56,4 +57,5 @@ export interface Additional   {
   footer?: { type: string };
   useRouterLink?: boolean;
   export?: any;
+  dateFormat?: string;
 }

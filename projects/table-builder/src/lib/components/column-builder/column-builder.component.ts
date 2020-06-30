@@ -1,9 +1,10 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChildren, QueryList, TemplateRef, ViewChild, Inject, OnInit } from '@angular/core';
 import { MetaData, FieldType } from '../../interfaces/report-def';
 import { MatColumnDef } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
+import { TableBuilderConfig, TableBuilderConfigToken } from '../../classes/TableBuilderConfig';
 
 export interface TemplateHolder {
   metaData: MetaData;
@@ -17,9 +18,10 @@ export interface TemplateHolder {
   styleUrls: ['./column-builder.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ColumnBuilderComponent {
+export class ColumnBuilderComponent implements OnInit {
   FieldType = FieldType;
   filter: FilterInfo;
+  dateFormat: string;
   @Input() metaData: MetaData;
   @Input() customCell: CustomCellDirective;
   @Input() data$: Observable<any[]>;
@@ -30,6 +32,8 @@ export class ColumnBuilderComponent {
   @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
 
   template: TemplateRef<any>;
+
+  constructor(@Inject(TableBuilderConfigToken) private config: TableBuilderConfig) { }
 
   getTemplate() {
       if (this.customCell?.columnDef?.cell) {
@@ -43,10 +47,10 @@ export class ColumnBuilderComponent {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
+    this.dateFormat = this.metaData.additional?.dateFormat ?? this.config.defaultSettings?.dateFormat ?? 'shortDate';
   }
 
   ngAfterViewInit() {
     this.template = this.getTemplate();
   }
-
 }
