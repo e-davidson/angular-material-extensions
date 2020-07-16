@@ -5,7 +5,8 @@ import { map } from 'rxjs/operators';
 import { FieldType } from '../interfaces/report-def';
 import { DatePipe } from '@angular/common';
 import { FilterType } from '../enums/filterTypes';
-import { FilterInfo } from 'dist/mx-table-builder/lib/classes/filter-info';
+import { FilterInfo } from '../classes/filter-info';
+
 
 @Pipe({name: 'formatValue'})
 export class FormatValuePipe implements PipeTransform {
