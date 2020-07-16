@@ -11,11 +11,13 @@ import { DateFilterComponent } from '../date-filter/date-filter.component';
 import { TableContainerComponent } from './table-container';
 import { GenFilterDisplayerComponent } from '../gen-filter-displayer/gen-filter-displayer.component';
 import { GenericTableComponent } from '../generic-table/generic-table.component';
-import { GenValDisplayerComponent } from '../gen-val-displayer/gen-val-displayer.component';
 import { GenColDisplayerComponent } from '../gen-col-displayer/gen-col-displayer.component';
 import { ColumnTotalPipe } from '../../pipes/column-total.pipe';
 import { TableBuilder } from '../../classes/table-builder';
 import { MultiSortDirective } from '../../directives/multi-sort.directive';
+import { TableBuilderModule } from '../../table-builder.module';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
 
 
 const data = [
@@ -62,7 +64,6 @@ describe('table container', () => {
         TableContainerComponent,
         FilterComponent,
         GenFilterDisplayerComponent,
-        GenValDisplayerComponent,
         GenericTableComponent,
         GenColDisplayerComponent,
         SpaceCasePipe,
@@ -70,8 +71,16 @@ describe('table container', () => {
         DateFilterComponent,
         MultiSortDirective
       ],
-      providers: [  ],
-      imports: [ NoopAnimationsModule, MaterialModule, CommonModule, FormsModule ]
+      providers: [],
+      imports: [
+        NoopAnimationsModule,
+        MaterialModule,
+        CommonModule,
+        FormsModule,
+        TableBuilderModule.forRoot({ defaultTableState: {}  }),
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([])
+      ]
     })
     .compileComponents();
     fixture = TestBed.createComponent(TableContainerComponent);
@@ -79,6 +88,7 @@ describe('table container', () => {
   });
 
   it('can create component', () => {
+    component.tableId = 'test-id';
     component.tableBuilder = new TableBuilder(of(data));
     fixture.detectChanges();
     expect(component).toBeDefined();

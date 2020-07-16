@@ -16,6 +16,7 @@ describe('NumberFilterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NumberFilterComponent);
     component = fixture.componentInstance;
+    component.info = {};
     fixture.detectChanges();
   });
 

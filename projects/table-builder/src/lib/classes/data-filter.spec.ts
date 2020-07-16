@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { map, skip } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { DataFilter } from './data-filter';
 
 
@@ -52,7 +52,7 @@ describe('Filter', () => {
       const filter = new DataFilter(of([
         d => d.name.includes('o')
       ]), service.getObservableValue());
-      filter.filteredData$.pipe(skip(1)).subscribe(d => {
+      filter.filteredData$.subscribe(d => {
         expect(d.length).toBe(2);
         done();
       });
@@ -64,7 +64,7 @@ describe('Filter', () => {
         d => d.name.includes('o'),
         d => d.age > 10
       ]), service.getObservableValue());
-      filter.filteredData$.pipe(skip(1)).subscribe(d => {
+      filter.filteredData$.subscribe(d => {
         expect(d.length).toBe(1);
         done();
       });
