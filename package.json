@@ -21,7 +21,6 @@
     "@angular/platform-browser": "10.0.4",
     "@angular/platform-browser-dynamic": "10.0.4",
     "@angular/router": "10.0.4",
-    "@ngrx/component": "github:ngrx/component-builds",
     "@ngrx/effects": "^9.2.0",
     "@ngrx/store": "^9.2.0",
     "@ngrx/store-devtools": "^9.2.0",
