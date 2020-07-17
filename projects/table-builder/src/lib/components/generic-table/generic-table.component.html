@@ -30,9 +30,9 @@
 
       </ng-container>
 
-  <mat-header-row *matHeaderRowDef="keys$ | async; sticky: isSticky"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: keys$ | async; let i = index"></mat-row>
-  <mat-footer-row *matFooterRowDef="keys$ | async"></mat-footer-row>
+  <mat-header-row *matHeaderRowDef="keys; sticky: isSticky"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: keys; let i = index"></mat-row>
+  <mat-footer-row *matFooterRowDef="keys"></mat-footer-row>
 
 </mat-table>
 

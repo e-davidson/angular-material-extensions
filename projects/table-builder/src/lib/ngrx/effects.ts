@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY} from 'rxjs';
+import { EMPTY, of} from 'rxjs';
 import { fullTableState, selectTableState} from './reducer';
 import { tap, mergeMap, first, map, filter } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
@@ -21,8 +21,7 @@ export class SaveTableEffects {
         tap( ({tableId, table}) => {
         localStorage.setItem(tableId, JSON.stringify(table));
       }),
-      mergeMap( _ => EMPTY )
-    )
+    ), { dispatch: false }
   );
 
   initTable$ = createEffect(
