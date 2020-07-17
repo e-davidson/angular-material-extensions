@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { skip, map } from 'rxjs/operators';
+import { skip } from 'rxjs/operators';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { GenFilterDisplayerComponent } from './gen-filter-displayer.component';
 import { MaterialModule } from '../../material.module';
@@ -8,28 +8,33 @@ import { FilterComponent } from '../filter/filter.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FieldType } from '../../interfaces/report-def';
-import {By} from '@angular/platform-browser';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { DataFilter } from '../../classes/data-filter';
 import { DateFilterComponent } from '../date-filter/date-filter.component';
 import { FilterType } from '../../enums/filterTypes';
+import { TableBuilderModule } from '../../table-builder.module';
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { TableStateManager } from '../../classes/table-state-manager';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatButtonHarness } from '@angular/material/button/testing';
 
 
 function getMetaData() {
-  return of( [
+  return of([
     {
       key: 'name',
       displayName: 'first name',
       fieldType: FieldType.String,
       additional: {},
-      order : 1
+      order: 1
     },
     {
       key: 'last',
       displayName: 'last name',
       fieldType: FieldType.String,
       additional: {},
-      order : 2
+      order: 2
     }
   ]);
 }
@@ -39,7 +44,7 @@ describe('generic filter displayer', () => {
   let component: GenFilterDisplayerComponent;
 
   const clickFilter = (idx: number) => {
-    const btn = fixture.debugElement.query(By.css('.filter-button')).nativeElement ;
+    const btn = fixture.debugElement.query(By.css('.filter-button')).nativeElement;
 
     btn.click();
     fixture.detectChanges();
@@ -56,13 +61,21 @@ describe('generic filter displayer', () => {
         FilterComponent,
         DateFilterComponent,
       ],
-      providers: [  ],
-      imports: [ NoopAnimationsModule, MaterialModule, CommonModule, FormsModule ]
+      providers: [TableStateManager],
+      imports: [
+        NoopAnimationsModule,
+        MaterialModule,
+        CommonModule,
+        FormsModule,
+        TableBuilderModule.forRoot({ defaultTableState: {} }),
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([])]
     })
-    .compileComponents();
+      .compileComponents();
     fixture = TestBed.createComponent(GenFilterDisplayerComponent);
     component = fixture.componentInstance;
     component.filterCols$ = getMetaData();
+    component.tableState.initializeState();
     fixture.detectChanges();
   });
 
@@ -79,57 +92,68 @@ describe('generic filter displayer', () => {
   });
 
   it('should emit filter',
-    (done: DoneFn) => {
-
-      component.filters$.subscribe(
+    async (done: DoneFn) => {
+      component.tableState.filters$.subscribe(
         () => done()
       );
+
+
+      clickFilter(0);
+      expect(fixture.componentInstance.currentFilters.length).toBe(1);
+      const filter = fixture.debugElement.queryAll(By.directive(FilterComponent))[0].componentInstance as FilterComponent;
+      const loader = TestbedHarnessEnvironment.loader(fixture);
+      const button = await loader.getHarness<MatButtonHarness>(MatButtonHarness.with({ text: 'Apply' }));
+      filter.currentFilterType = FilterType.StringEquals;
+      filter.filter = {
+        key: 'key',
+        fieldType: FieldType.String,
+        filterValue: 'a',
+        filterType: FilterType.StringEquals
+      };
+
+      await button.click();
+
+    });
+
+  it('should emit valid filter that filters data',
+    async (done: DoneFn) => {
+
+      const fltr = component.tableState.getFilteredData$(of([{
+        name: 'bob',
+        age: 10
+      },
+      {
+        name: 'john',
+        age: 11
+      },
+      {
+        name: 'sally',
+        age: 12
+      }
+      ]))
+
+
+      fltr.pipe(skip(1)).subscribe(d => {
+        expect(d.length).toBe(1);
+        done();
+      });
 
       clickFilter(0);
 
       const filter = fixture.debugElement.queryAll(By.directive(FilterComponent))[0].componentInstance as FilterComponent;
 
-      filter.info.filterValue = 'a';
-      filter.info.filterType = FilterType.StringEquals;
-      filter.change$.emit();
+      filter.currentFilterType = FilterType.StringEquals;
+      filter.filter = {
+        key: 'name',
+        fieldType: FieldType.String,
+        filterValue: 'bob',
+        filterType: FilterType.StringEquals
+      };
 
-      return;
+      const loader = TestbedHarnessEnvironment.loader(fixture);
+      const button = await loader.getHarness<MatButtonHarness>(MatButtonHarness.with({ text: 'Apply' }));
 
-  });
-
-  it('should emit valid filter that filters data',
-  (done: DoneFn) => {
-
-    const fltr = new DataFilter( component.filters$.pipe(map( fltrs => fltrs.map(f => f.getFunc() ) )) ,  of([{
-      name: 'bob',
-      age: 10
-    },
-    {
-      name: 'john',
-      age: 11
-    },
-    {
-      name: 'sally',
-      age: 12
-    }
-    ]));
-
-
-
-    fltr.filteredData$.pipe(skip(2)).subscribe( d => {
-        expect(d.length).toBe(1);
-        done();
-      });
-
-    clickFilter(0);
-
-    const filter = fixture.debugElement.queryAll(By.directive(FilterComponent))[0].componentInstance as FilterComponent;
-
-    filter.info.filterValue = 'bob';
-    filter.info.filterType = FilterType.StringEquals;
-    filter.change$.emit();
-
-    return;
-});
+      await button.click();
+    });
 
 });

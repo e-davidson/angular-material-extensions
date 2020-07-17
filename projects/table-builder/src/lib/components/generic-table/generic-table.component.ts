@@ -54,7 +54,7 @@ export class GenericTableComponent implements OnInit {
   currentColumns: string[];
   selection: SelectionModel<any>;
   dataSource: MatTableObservableDataSource<any>;
-  keys$: Observable<string[]>;
+  keys: string [] = [];
 
   constructor(
     private sort: MatSort,
@@ -132,12 +132,12 @@ export class GenericTableComponent implements OnInit {
     }
     this.init = true;
 
-    const keys = this.columnBuilders.map( cb => cb.metaData.key );
+    const _keys = this.columnBuilders.map( cb => cb.metaData.key );
 
-    this.keys$ = combineArrays(
+    const keys$ = combineArrays(
       [
         of(staticColumns) ,
-        this.state.displayedColumns$.pipe(map( dc =>  dc.filter( c => keys.includes(c))))
+        this.state.displayedColumns$.pipe(map( dc =>  dc.filter( c => _keys.includes(c))))
       ]
     ).pipe(
       tap(d => {
@@ -149,6 +149,8 @@ export class GenericTableComponent implements OnInit {
         }
       })
     );
+
+    this.subs.push(keys$.subscribe( k => this.keys = k));
   }
 
   isAllSelected() {

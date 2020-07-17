@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MetaData, FieldType } from '../../interfaces/report-def';
 import { Observable } from 'rxjs';
 import { TableStateManager } from '../../classes/table-state-manager';

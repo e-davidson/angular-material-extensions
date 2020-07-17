@@ -94,7 +94,6 @@ import * as _ from 'lodash';
   }
 
   InitializeColumns() {
-
     this.myColumns$ = this.tableBuilder.metaData$.pipe(
       map( metaDatas => {
 
@@ -105,10 +104,10 @@ import * as _ from 'lodash';
           if(metaData.fieldType === FieldType.Hidden){
             this.state.hideColumn(metaData.key);
           }
-          return { metaData:{...metaData,...customCell?.getMetaData(metaData)}, customCell };
+          return { metaData: {...metaData, ...customCell?.getMetaData(metaData)}, customCell };
         })
         const customNotMetas = [...customCellMap.values()]
-          .map( customCell =>({
+          .map( customCell => ({
             metaData: {...customCell.getMetaData(), noExport: true},
             customCell}));
         const fullArr = metas.concat(customNotMetas);
@@ -150,13 +149,13 @@ import * as _ from 'lodash';
   }
 }
 
-function popFromMap(key:string, map: Map<string, CustomCellDirective>){
+function popFromMap(key: string, map: Map<string, CustomCellDirective>){
   const customCell = map.get(key);
   map.delete(key);
   return customCell;
 }
 
 export interface ColumnInfo {
-  metaData: MetaData,
-  customCell: CustomCellDirective
+  metaData: MetaData;
+  customCell: CustomCellDirective;
 }
