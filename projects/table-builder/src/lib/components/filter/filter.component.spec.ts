@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { MaterialModule } from '../../material.module';
 import { FilterComponent } from '../filter/filter.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FieldType } from '../../interfaces/report-def';
 import { By } from '@angular/platform-browser';
@@ -10,16 +10,15 @@ import { SpaceCasePipe } from '../../pipes/space-case.pipes';
 import { DateFilterComponent } from '../date-filter/date-filter.component';
 import { FilterType } from '../../enums/filterTypes';
 import { TableStateManager } from '../../classes/table-state-manager';
-import { TableBuilderModule } from '../../table-builder.module';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {MatButtonHarness} from '@angular/material/button/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { OptionHarnessFilters } from '@angular/material/core/testing';
+import { TableBuilderConfigToken } from '../../classes/TableBuilderConfig';
+import { provideMockStore } from '@ngrx/store/testing';
 
-function fillInput<T>(fixture : ComponentFixture<T>, name: string, value: string) {
+function fillInput<T>(fixture: ComponentFixture<T>, name: string, value: string) {
   const input = fixture.debugElement.query(By.css('input[name=' + name + ']')).nativeElement as HTMLInputElement;
   input.value = value;
   input.dispatchEvent(new Event('input'));
@@ -34,22 +33,21 @@ async function setSelect(loader: HarnessLoader, filter: Pick<OptionHarnessFilter
 
 describe('filter component', () => {
 
-
   beforeEach(() => {
 
     TestBed.configureTestingModule({
-      declarations: [FilterComponent, SpaceCasePipe, DateFilterComponent],
+      declarations: [FilterComponent, DatePipe, SpaceCasePipe, DateFilterComponent],
       providers: [
+        DatePipe,
         TableStateManager,
+        { provide : TableBuilderConfigToken , useValue: {defaultTableState: { }}},
+        provideMockStore({ initialState: {} }),
       ],
       imports: [
         NoopAnimationsModule,
         MaterialModule,
         CommonModule,
         FormsModule,
-        TableBuilderModule.forRoot({ defaultTableState: {}  }),
-        StoreModule.forRoot({}),
-        EffectsModule.forRoot([])
       ]
     })
       .compileComponents();

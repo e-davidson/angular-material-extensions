@@ -8,7 +8,7 @@ import { FilterComponent } from '../filter/filter.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FieldType } from '../../interfaces/report-def';
-import {By} from '@angular/platform-browser';
+import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DateFilterComponent } from '../date-filter/date-filter.component';
 import { FilterType } from '../../enums/filterTypes';
@@ -21,20 +21,20 @@ import { MatButtonHarness } from '@angular/material/button/testing';
 
 
 function getMetaData() {
-  return of( [
+  return of([
     {
       key: 'name',
       displayName: 'first name',
       fieldType: FieldType.String,
       additional: {},
-      order : 1
+      order: 1
     },
     {
       key: 'last',
       displayName: 'last name',
       fieldType: FieldType.String,
       additional: {},
-      order : 2
+      order: 2
     }
   ]);
 }
@@ -44,7 +44,7 @@ describe('generic filter displayer', () => {
   let component: GenFilterDisplayerComponent;
 
   const clickFilter = (idx: number) => {
-    const btn = fixture.debugElement.query(By.css('.filter-button')).nativeElement ;
+    const btn = fixture.debugElement.query(By.css('.filter-button')).nativeElement;
 
     btn.click();
     fixture.detectChanges();
@@ -61,17 +61,17 @@ describe('generic filter displayer', () => {
         FilterComponent,
         DateFilterComponent,
       ],
-      providers: [ TableStateManager ],
+      providers: [TableStateManager],
       imports: [
         NoopAnimationsModule,
         MaterialModule,
         CommonModule,
         FormsModule,
-        TableBuilderModule.forRoot({ defaultTableState: {}  }),
+        TableBuilderModule.forRoot({ defaultTableState: {} }),
         StoreModule.forRoot({}),
-        EffectsModule.forRoot([]) ]
+        EffectsModule.forRoot([])]
     })
-    .compileComponents();
+      .compileComponents();
     fixture = TestBed.createComponent(GenFilterDisplayerComponent);
     component = fixture.componentInstance;
     component.filterCols$ = getMetaData();
@@ -102,7 +102,7 @@ describe('generic filter displayer', () => {
       expect(fixture.componentInstance.currentFilters.length).toBe(1);
       const filter = fixture.debugElement.queryAll(By.directive(FilterComponent))[0].componentInstance as FilterComponent;
       const loader = TestbedHarnessEnvironment.loader(fixture);
-      const button = await loader.getHarness<MatButtonHarness>(MatButtonHarness.with( {text: 'Apply'}));
+      const button = await loader.getHarness<MatButtonHarness>(MatButtonHarness.with({ text: 'Apply' }));
       filter.currentFilterType = FilterType.StringEquals;
       filter.filter = {
         key: 'key',
@@ -113,9 +113,9 @@ describe('generic filter displayer', () => {
 
       await button.click();
 
-  });
+    });
 
-    it('should emit valid filter that filters data',
+  it('should emit valid filter that filters data',
     async (done: DoneFn) => {
 
       const fltr = component.tableState.getFilteredData$(of([{
@@ -130,13 +130,13 @@ describe('generic filter displayer', () => {
         name: 'sally',
         age: 12
       }
-      ]) )
+      ]))
 
 
-      fltr.pipe(skip(1)).subscribe( d => {
-          expect(d.length).toBe(1);
-          done();
-        });
+      fltr.pipe(skip(1)).subscribe(d => {
+        expect(d.length).toBe(1);
+        done();
+      });
 
       clickFilter(0);
 
@@ -151,9 +151,9 @@ describe('generic filter displayer', () => {
       };
 
       const loader = TestbedHarnessEnvironment.loader(fixture);
-      const button = await loader.getHarness<MatButtonHarness>(MatButtonHarness.with( {text: 'Apply'}));
+      const button = await loader.getHarness<MatButtonHarness>(MatButtonHarness.with({ text: 'Apply' }));
 
       await button.click();
-  });
+    });
 
 });

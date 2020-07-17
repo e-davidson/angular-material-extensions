@@ -46,21 +46,11 @@ export class ColumnBuilderComponent implements OnInit {
     }
 
   ngOnInit() {
-    console.log('column builder on init');
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
     this.dateFormat = this.metaData.additional?.dateFormat ?? this.config.defaultSettings?.dateFormat ?? 'shortDate';
   }
 
   ngAfterViewInit() {
-    console.log('column builder after view init', this.columnDef );
     this.template = this.getTemplate();
-  }
-
-  ngAfterViewChecked() {
-    console.log('column builder after view checked', this.columnDef );
-  }
-
-  ngOnDestroy() {
-    console.log('column builder on destroy', this.columnDef );
   }
 }
