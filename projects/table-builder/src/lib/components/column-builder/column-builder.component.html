@@ -1,7 +1,7 @@
 <ng-container [matColumnDef]="metaData.key">
 
   <ng-template #body let-element='element' >
-    <mat-cell [style.flex-basis]='metaData.width'  [styler]='metaData?.additional?.styles' >
+    <mat-cell [styler]='metaData?.additional?.styles' >
       <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Date">
             {{element[metaData.key] | date: dateFormat }}
