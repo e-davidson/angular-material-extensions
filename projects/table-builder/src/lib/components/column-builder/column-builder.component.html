@@ -1,47 +1,60 @@
 <ng-container [matColumnDef]="metaData.key">
 
-  <ng-template #body let-element='element' >
-    <mat-cell [style.flex-basis]='metaData.width' >
+  <ng-template #body let-element='element'>
+    <mat-cell>
       <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Date">
-            {{element[metaData.key] | date: dateFormat }}
+          {{element[metaData.key] | date: dateFormat }}
         </span>
         <span *ngSwitchCase="FieldType.Boolean">
-            <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
+          <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
         </span>
         <span *ngSwitchCase="FieldType.Link">
-          <a *ngIf="metaData.additional.useRouterLink; else hrefLink" target="{{metaData.additional?.target || '_blank'}}" [routerLink]="[metaData.additional.base, metaData.additional.urlKey ? element[metaData.additional.urlKey] : element[metaData.key]]">
-              {{element[metaData.key]}}
+          <a *ngIf="metaData.additional.useRouterLink; else hrefLink"
+            target="{{metaData.additional?.target || '_blank'}}"
+            [routerLink]="[metaData.additional.base, metaData.additional.urlKey ? element[metaData.additional.urlKey] : element[metaData.key]]">
+            {{element[metaData.key]}}
           </a>
           <ng-template #hrefLink>
-            <a target="{{metaData.additional?.target || '_blank'}}" href="{{metaData.additional.base}}{{metaData.additional.urlKey? element[metaData.additional.urlKey] : element[metaData.key]}}">
-                {{element[metaData.key]}}
+            <a target="{{metaData.additional?.target || '_blank'}}"
+              href="{{metaData.additional.base}}{{metaData.additional.urlKey? element[metaData.additional.urlKey] : element[metaData.key]}}">
+              {{element[metaData.key]}}
             </a>
           </ng-template>
         </span>
         <span *ngSwitchCase="FieldType.ImageUrl">
-            <img src="{{element[metaData.key]}}" height="75px" width="75px" />
+          <img src="{{element[metaData.key]}}" height="75px" width="75px" />
         </span>
         <span *ngSwitchCase="FieldType.Currency" [class.negative-currency]="element[metaData.key] < 0">
-            {{element[metaData.key] | currency }}
+          {{element[metaData.key] | currency }}
         </span>
         <span *ngSwitchCase="FieldType.PhoneNumber">
-            {{element[metaData.key] | phone }}
+          {{element[metaData.key] | phone }}
         </span>
         <span *ngSwitchCase="FieldType.Array">
-            <p class="no-val" *ngIf="element[metaData.key]?.length === 0; else hasVals">-</p>
-            <ng-template #hasVals>
-                <p [class.array-val]="first" *ngFor="let val of element[metaData.key]; let first = first">{{val}}</p>
-            </ng-template>
+          <p class="no-val" *ngIf="element[metaData.key]?.length === 0; else hasVals">-</p>
+          <ng-template #hasVals>
+            <p [class.array-val]="first" *ngFor="let val of element[metaData.key]; let first = first">{{val}}</p>
+          </ng-template>
         </span>
         <span *ngSwitchDefault> {{ element[metaData.key] }} </span>
       </ng-container>
-    <span class="no-val" *ngIf="element[metaData.key]===null || element[metaData.key]===undefined">-</span>
+      <span class="no-val" *ngIf="element[metaData.key]===null || element[metaData.key]===undefined">-</span>
     </mat-cell>
   </ng-template>
 
-  <ng-template #customCellWrapper let-element='element' >
-    <mat-cell [style.flex-basis]='metaData.width' >
+  <ng-template #footer>
+    <mat-footer-cell>
+      <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
+        <span *ngSwitchCase="FieldType.Currency">
+          {{ data$ | columnTotal: metaData | async | currency }}
+        </span>
+      </span>
+    </mat-footer-cell>
+  </ng-template>
+
+  <ng-template #customCellWrapper let-element='element'>
+    <mat-cell [style.flex-basis]='metaData.width'>
       <ng-container *ngTemplateOutlet="customCell.TemplateRef ;context: {metaData: metaData, element: element }">
       </ng-container>
     </mat-cell>
@@ -55,7 +68,7 @@
     </ng-container>
 
     <ng-template #header>
-      <mat-header-cell  [style.flex-basis]='metaData.width'  class="f-mat-header-cell">
+      <mat-header-cell>
         <div class="header-container">
           <div *ngIf="!metaData._internalNotUserDefined;" mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
@@ -63,7 +76,8 @@
           <div *ngIf="metaData._internalNotUserDefined;" style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
           </div>
-          <tb-header-menu *ngIf="(!metaData._internalNotUserDefined) && (!metaData.noFilter)" #menu [metaData]='metaData' [filter]='filter' ></tb-header-menu>
+          <tb-header-menu *ngIf="(!metaData._internalNotUserDefined) && (!metaData.noFilter)" #menu
+            [metaData]='metaData' [filter]='filter'></tb-header-menu>
         </div>
       </mat-header-cell>
     </ng-template>
@@ -71,24 +85,13 @@
 
 
   <ng-container *matCellDef="let element;">
-      <ng-container *ngTemplateOutlet="template; context: {metaData: metaData, element: element }">
-      </ng-container>
+    <ng-container *ngTemplateOutlet="template; context: {metaData: metaData, element: element }">
+    </ng-container>
   </ng-container>
 
-  <ng-template matFooterCellDef>
-    <ng-container *ngIf="customCell?.columnDef?.footerCell;else footer">
-      <ng-container
-        *ngTemplateOutlet="customCell.columnDef.footerCell.template;context: {metaData: metaData, data: data$ }">
-      </ng-container>
+  <ng-container *matFooterCellDef>
+    <ng-container *ngTemplateOutlet="templateFooter; context: {metaData: metaData, data: data$ }">
     </ng-container>
-    <ng-template #footer>
-      <mat-footer-cell  [style.flex-basis]='metaData.width' >
-        <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
-          <span *ngSwitchCase="FieldType.Currency">
-            {{ data$ | columnTotal: metaData | async | currency }}
-          </span>
-        </span>
-      </mat-footer-cell>
-    </ng-template>
-  </ng-template>
+  </ng-container>
+
 </ng-container>
