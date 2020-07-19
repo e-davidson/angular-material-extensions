@@ -42,6 +42,6 @@ export class ArrayColumnComponent {
   }
 
   ngOnInit() {
-    this.array = (this.array ?? []).slice(0,3);
+    this.array = (this.array ?? []).slice(0, this.limit);
   }
 }
