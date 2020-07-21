@@ -31,6 +31,10 @@ export class HeaderMenuComponent {
   }
 
   resetFilterType() {
+    if(this.metaData.additional?.FilterOptions?.select) {
+      this.myFilterType = FilterType.Or;
+      return;
+    }
     switch (this.metaData.fieldType) {
       case FieldType.String:
       case FieldType.PhoneNumber:
@@ -66,6 +70,23 @@ export class HeaderMenuComponent {
   stopClickPropagate(event: any) {
     event.stopPropagation();
     event.preventDefault();
+  }
+
+  selectedFilters = [];
+
+  selectFilterChanged($event, val) {
+    if($event.checked) {
+      this.selectedFilters.push(val);
+    } else {
+      this.selectedFilters = this.selectedFilters.filter( item => item !== val);
+    }
+
+    this.myFilterValue = this.selectedFilters.map<FilterInfo>( it => ({
+      fieldType: this.metaData.fieldType,
+      filterValue: it,
+      key: this.metaData.key,
+      filterType: FilterType.StringEquals
+    }) );
   }
 
 }

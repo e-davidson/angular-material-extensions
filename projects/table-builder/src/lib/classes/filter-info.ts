@@ -17,6 +17,19 @@ export const filterTypeMap: { [key: string]: { [key: string]: FilterType[]}  } =
   [FieldType.Unknown] : StringFilterMap,
 };
 
+
+
+const filterFactoryMap = {
+  [FilterType.Or] : (filter: FilterInfo ): (obj: any) => boolean =>  {
+    const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
+    return (obj: any) : boolean => filters.some( f => f(obj));
+  },
+  [FilterType.And] : (filter: FilterInfo ): (obj: any) => boolean =>  {
+    const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
+    return (obj: any) : boolean => filters.every( f => f(obj));
+  }
+};
+
 const filterTypeFuncMap = {
   [FieldType.String] : StringFilterFuncs,
   [FieldType.Array] : StringFilterFuncs,
@@ -39,9 +52,12 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
   if (filter.filterValue === undefined) {
     return () => true;
   }
+  if(filterFactoryMap[filter.filterType]){
+    return filterFactoryMap[filter.filterType](filter);
+  }
   const func = filterTypeFuncMap[filter.fieldType][filter.filterType];
-  return (val) => {
-    const obj = val[filter.key];
-    return ((obj === null || obj === undefined) && filter.filterType !== FilterType.IsNull) ? false : func(filter.filterValue, obj);
+  return (obj) => {
+    const prop = obj[filter.key];
+    return ((prop === null || prop === undefined) && filter.filterType !== FilterType.IsNull) ? false : func(filter.filterValue, prop);
   };
 }

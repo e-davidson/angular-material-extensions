@@ -2,7 +2,7 @@
 
     <ng-container matColumnDef="select">
 
-        <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" style="width:20px;" >
+        <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" style="flex: 0 0 30px;" >
 
           <mat-checkbox (change)="$event ? masterToggle() : null"
                         [checked]="selection.hasValue() && isAllSelected()"
@@ -11,14 +11,14 @@
 
         </mat-header-cell>
 
-        <mat-cell *matCellDef="let row" style="width:20px;">
+        <mat-cell *matCellDef="let row" style="flex: 0 0 30px;">
           <mat-checkbox (click)="$event.stopPropagation()"
                         (change)="$event ? selection.toggle(row) : null"
                         [checked]="selection.isSelected(row)">
           </mat-checkbox>
         </mat-cell>
 
-        <mat-footer-cell *matFooterCellDef>
+        <mat-footer-cell *matFooterCellDef style="flex: 0 0 30px;">
           {{ selection.selected.length }} selected
         </mat-footer-cell>
       </ng-container>
