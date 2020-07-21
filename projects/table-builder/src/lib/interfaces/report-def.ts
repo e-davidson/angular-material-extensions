@@ -50,6 +50,10 @@ export interface PreSortDef {
     precedence?: number;
 }
 
+export interface FilterOptions {
+  FilterableValues : string[]
+}
+
 export interface Additional   {
   base?: string;
   urlKey?: string;
@@ -58,7 +62,7 @@ export interface Additional   {
   useRouterLink?: boolean;
   export?: any;
   dateFormat?: string;
-  FilterOptions?: any;
+  FilterOptions?: FilterOptions;
   styles?: any;
 }
 

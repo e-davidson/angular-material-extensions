@@ -71,15 +71,17 @@ export class HeaderMenuComponent {
     event.stopPropagation();
     event.preventDefault();
   }
-  checkedItems = [];
-  selectChanged($event, val) {
+
+  selectedFilters = [];
+
+  selectFilterChanged($event, val) {
     if($event.checked) {
-      this.checkedItems.push(val);
+      this.selectedFilters.push(val);
     } else {
-      this.checkedItems = this.checkedItems.filter( item => item !== val);
+      this.selectedFilters = this.selectedFilters.filter( item => item !== val);
     }
 
-    this.myFilterValue = this.checkedItems.map<FilterInfo>( it => ({
+    this.myFilterValue = this.selectedFilters.map<FilterInfo>( it => ({
       fieldType: this.metaData.fieldType,
       filterValue: it,
       key: this.metaData.key,
