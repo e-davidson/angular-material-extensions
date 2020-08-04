@@ -13,6 +13,7 @@ import { DataFilter } from './data-filter';
 import { combineArrays } from '../functions/rxjs-operators';
 import { downloadData } from '../functions/download-data';
 import { DatePipe } from '@angular/common';
+import { SortDirection } from '@angular/material/sort';
 
 @Injectable()
 export class TableStateManager {
@@ -166,6 +167,10 @@ export class TableStateManager {
       val = '"' + val + '"';
     }
     return val;
+  }
+
+  setSort(key: string, direction?: SortDirection) {
+    this.store.dispatch(tableActions.sortBy({tableId: this.tableId, key, direction}));
   }
 
   constructor(private store: Store<{fullTableState: fullTableState}>,
