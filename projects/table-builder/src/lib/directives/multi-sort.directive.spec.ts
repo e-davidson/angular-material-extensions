@@ -116,13 +116,8 @@ describe('MultiSortDirective', () => {
             const originalLength = directive.rules.length;
             const sort: MatSortable = { id: 'a', start: 'asc', disableClear: false };
             directive.sort({...sort});
-
-            directive.sort({...sort});
             directive.sort({...sort});
             expect(directive.rules.length).toBe(originalLength - 1, 'updated rules length should be one smaller than original');
         });
     });
-
-
-
 });

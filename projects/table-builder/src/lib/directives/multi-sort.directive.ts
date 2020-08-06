@@ -21,13 +21,16 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
     super();
   }
 
+  first = true;
+
   ngOnInit() {
     this.SubRef = this.state.state$.pipe(
       map( state => state.sorted ),
       distinctUntilChanged(),
     ).subscribe( rules => {
       this.rules = rules;
-      if(rules.length > 0) {
+      if(rules?.length > 0 && this.first) {
+        this.first = false;
         this.active = this.rules[0].active;
         this.direction = this.rules[0].direction;
       }
