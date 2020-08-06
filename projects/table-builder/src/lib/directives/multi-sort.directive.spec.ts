@@ -100,7 +100,6 @@ describe('MultiSortDirective', () => {
             const originalLength = directive.rules.length;
             const sort: MatSortable = { id: 'd', start: 'asc', disableClear: false };
             directive.sort(sort);
-            directive.sort(sort);
             expect(directive.rules.length).toBe(originalLength + 1, 'updated rules length should be one larger than original');
             expect(directive.rules[0].active).toBe(sort.id);
         });
@@ -108,7 +107,6 @@ describe('MultiSortDirective', () => {
         it('should remove old rule for the column of new rule and replace it with new rule', () => {
             const originalLength = directive.rules.length;
             const sort: MatSortable = { id: 'a', start: 'asc', disableClear: false };
-            directive.sort(sort);
             directive.sort(sort);
             expect(directive.rules.length).toBe(originalLength, 'updated rules length should be same as original');
             expect(directive.rules[0].direction).toBe('desc');
