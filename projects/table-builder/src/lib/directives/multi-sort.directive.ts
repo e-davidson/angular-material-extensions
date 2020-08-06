@@ -27,6 +27,10 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
       distinctUntilChanged(),
     ).subscribe( rules => {
       this.rules = rules;
+      if(rules.length > 0) {
+        this.active = this.rules[0].active;
+        this.direction = this.rules[0].direction;
+      }
       this.multiSortChange.emit(this.rules);
     });
     super.ngOnInit();
