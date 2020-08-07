@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatRowDef, MatTable, MatColumnDef } from '@angular/material/table';
+import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable, Subscription, of } from 'rxjs';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';

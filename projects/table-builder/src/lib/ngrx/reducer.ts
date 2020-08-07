@@ -4,6 +4,7 @@ import update from 'immutability-helper';
 import * as tableActions from './actions';
 import { Dictionary } from '../interfaces/dictionary';
 import { FieldType } from '../interfaces/report-def';
+import { SortDirection, Sort } from '@angular/material/sort';
 
 export class TableStateAction implements Action {
   type: string;
@@ -16,7 +17,22 @@ export interface fullTableState extends  Dictionary<TableState> {
 const initialState: fullTableState = {};
 
 const reducer = createReducer(initialState,
-  on(tableActions.setMetaData, ( state, {tableId, metaData} ) => update( state, {[tableId]: { metaData: {$set: metaData} }} )),
+  on(tableActions.setMetaData, ( state, {tableId, metaData} ) => {
+    let tableState = update( state[tableId], { metaData: {$set: metaData}});
+
+    if( !tableState.sorted?.length ) {
+      const sorted = metaData
+      .filter(( metaData ) => metaData.preSort)
+      .sort(
+        ({  preSort: ps1  }, { preSort: ps2 } ) =>  (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
+      )
+      .map(( {key, preSort} ) =>
+        ({ active: key, direction: preSort.direction }));
+      tableState = update(tableState, {sorted: {$set: sorted} });
+    }
+    return update( state, {[tableId]: { $set: tableState  }} );
+  }
+  ),
   on(tableActions.setHiddenColumn, ( state, {tableId, column, visible} ) => {
      const tableState = state[tableId];
     if(tableState.hiddenKeys.includes(column) !== visible ) {
@@ -39,8 +55,15 @@ const reducer = createReducer(initialState,
     return update( state , {[tableId] : { hiddenKeys: {$set: hiddenKeys}}});
   }),
   on( tableActions.initTable, (state, {tableId}) => {
+    const defaultTableState : TableState = {
+      metaData: [],
+      filters: {},
+      hiddenKeys: [],
+      initialized : false,
+      sorted: []
+    };
     if (!state[tableId]) {
-      return {... state , [tableId]: { metaData: [], filters: {}, hiddenKeys: [], initialized : false  } };
+      return {... state , [tableId]: defaultTableState };
     }
     return state;
   }),
@@ -64,7 +87,14 @@ const reducer = createReducer(initialState,
        .map( md => md.key);
     return update(state, {[tableId]: {hiddenKeys: {$set: [...hiddenColumns]}, filters: {$set: {}}}})
   }),
-  on(tableActions.removeTable, (state, {tableId}) => update(state, {$unset: [tableId] }))
+  on(tableActions.removeTable, (state, {tableId}) => update(state, {$unset: [tableId] })),
+  on(tableActions.sortBy, (state, {tableId, key, direction}) => {
+    const sortArray = state[tableId].sorted.filter( s => s.active !== key );
+    if(direction) {
+      sortArray.unshift({active: key, direction});
+    }
+    return update( state, {[tableId]: {sorted : {$set: sortArray }}});
+  } )
 );
 
 export function tableStateReducer(state: fullTableState| undefined, action: Action) {

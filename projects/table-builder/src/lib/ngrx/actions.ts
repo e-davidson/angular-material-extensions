@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { TableState } from '../classes/TableState';
 import { FilterInfo } from '../classes/filter-info';
 import { MetaData } from '../interfaces/report-def';
+import { SortDirection } from '@angular/material/sort';
 
 export const initTable = createAction( '[Table State] Init table', props<{tableId: string }>());
 
@@ -24,3 +25,5 @@ export const removeFilter = createAction('[Table State] Remove Filter', props<{t
 export const reset = createAction('[Table State] Reset', props<{tableId: string}>());
 
 export const removeTable = createAction('[Table State] Remove table', props<{tableId: string}>());
+
+export const sortBy = createAction('[Table State] Sort By', props<{tableId: string, key: string, direction?: SortDirection}>());

@@ -1,6 +1,6 @@
 import { Directive, TemplateRef, Input, AfterContentInit, Optional } from '@angular/core';
 import { CdkColumnDef } from '@angular/cdk/table';
-import { PreSortDef, MetaData, FieldType } from '../interfaces/report-def';
+import { SortDef, MetaData, FieldType } from '../interfaces/report-def';
 
 // here is how to use it
 // <generic-table [report]="report">
@@ -13,7 +13,7 @@ import { PreSortDef, MetaData, FieldType } from '../interfaces/report-def';
 export class CustomCellDirective implements AfterContentInit {
     @Input() customCell: string;
     @Input() displayName: string;
-    @Input() preSort: PreSortDef;
+    @Input() preSort: SortDef;
     @Input() TemplateRef: TemplateRef<any>;
     @Input() customCellOrder: number;
     @Input() customCellWidth: string;

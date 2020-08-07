@@ -31,7 +31,7 @@ export interface MetaData {
     fieldType: FieldType;
     additional?: Additional;
     order?: number;
-    preSort?: PreSortDef;
+    preSort?: SortDef;
     _internalNotUserDefined?: boolean;
     width?: string;
     noExport?: boolean;
@@ -45,7 +45,7 @@ export interface  ReportDef<DataType = any> {
     count: number;
 }
 
-export interface PreSortDef {
+export interface SortDef {
     direction: SortDirection;
     precedence?: number;
 }

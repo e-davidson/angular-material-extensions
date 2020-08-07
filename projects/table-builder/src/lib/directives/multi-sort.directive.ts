@@ -1,7 +1,8 @@
-import { Directive, EventEmitter, Output, Input, OnInit, OnDestroy } from '@angular/core';
+import { Directive, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
 import { MatSort, Sort, MatSortable } from '@angular/material/sort';
-import { Subject, Subscription, Observable } from 'rxjs';
-import { scan, filter, map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
+import { TableStateManager } from '../classes/table-state-manager';
 
 @Directive({
   selector: '[multiSort]',
@@ -12,38 +13,30 @@ import { scan, filter, map } from 'rxjs/operators';
   ]
 })
 export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
-  @Output() readonly multiSortChange: EventEmitter<Sort[]> = new EventEmitter<Sort[]>();
-
-  @Input() rules$: Observable<Sort[]> = new Subject();
-
-  @Input() set  reSort (val){
-    this.initRules();
-  } 
   rules: Sort[] = [];
-  preSortRules: Sort[] = [];
   private SubRef: Subscription;
 
+  constructor(private state: TableStateManager) {
+    super();
+  }
+
+  first = true;
+
   ngOnInit() {
-    this.SubRef = this.rules$.pipe(
-      scan((acc,curr)=>({prev: acc.curr, curr }),{prev: null, curr: null} as {prev: Sort[], curr: Sort[]}),
-      filter(acc => !acc.prev || acc.curr.some(sort => !acc.prev.some(prevSort => sort.active === prevSort.active && sort.direction === prevSort.direction))),
-      map(acc => acc.curr)
+    this.SubRef = this.state.state$.pipe(
+      map( state => state.sorted ),
+      distinctUntilChanged(),
     ).subscribe( rules => {
-      this.preSortRules = rules;
-      this.initRules();
+      this.rules = rules;
+      if(rules?.length > 0 && this.first) {
+        this.first = false;
+        this.active = this.rules[0].active;
+        this.direction = this.rules[0].direction;
+      }
     });
     super.ngOnInit();
   }
 
-  initRules(){
-    if (this.preSortRules.length ) {
-      this.active = null;
-      const initRules = [...this.preSortRules];
-      const firstRule = initRules.shift();
-      this.rules = initRules;
-      this.sort({id: firstRule.active, start: firstRule.direction || 'asc', disableClear: false});
-    }
-  }
 
   ngOnDestroy() {
     this.SubRef.unsubscribe();
@@ -51,18 +44,8 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
   }
 
   sort(sortable: MatSortable): void {
-
-    this.rules = this.rules.filter(r => r.active !== sortable.id);
-
-    if (this.active !== sortable.id) {
-      this.rules.unshift({ active: sortable.id, direction: sortable.start ? sortable.start : this.start });
-    } else {
-      const newDirection = this.getNextSortDirection(sortable);
-      if (newDirection) {
-        this.rules.unshift({ active: this.active, direction: newDirection });
-      }
-    }
+    const direction = this.active !== sortable.id ?  sortable.start ?? this.start : this.getNextSortDirection(sortable);
+    this.state.setSort(sortable.id,direction);
     super.sort(sortable);
-    this.multiSortChange.emit(this.rules);
   }
 }

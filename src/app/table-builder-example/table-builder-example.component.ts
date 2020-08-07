@@ -50,7 +50,7 @@ const META_DATA: MetaData[] = [
   },
   {key: 'name', fieldType: FieldType.String, additional: {
     export: { prepend: "'" },
-    FilterOptions: {select: ['Oxygen', 'Nitrogen','Neon']},
+    FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
     styles: { color: 'yellow'  }
   },
   },
