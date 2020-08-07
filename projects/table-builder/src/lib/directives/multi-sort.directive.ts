@@ -13,7 +13,6 @@ import { TableStateManager } from '../classes/table-state-manager';
   ]
 })
 export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
-  @Output() readonly multiSortChange: EventEmitter<Sort[]> = new EventEmitter<Sort[]>();
   rules: Sort[] = [];
   private SubRef: Subscription;
 
@@ -34,7 +33,6 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
         this.active = this.rules[0].active;
         this.direction = this.rules[0].direction;
       }
-      this.multiSortChange.emit(this.rules);
     });
     super.ngOnInit();
   }

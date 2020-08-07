@@ -101,7 +101,7 @@ export class GenericTableComponent implements OnInit {
     );
     this.dataSource.sort = this.sort;
     this.dataSource.sortData = (data: {}[], sort: MultiSortDirective) =>
-      orderBy(data, sort.rules?.map(r => r.active), sort.rules?.map(r => r.direction as direc ));
+      orderBy(data, sort.rules.map(r => r.active), sort.rules.map(r => r.direction as direc ));
     this.dataSource.paginator = this.paginator;
     this.subs.push(this.paginator.page.pipe(map( e => e.pageSize ), distinct()).subscribe( size => {
       this.state.updateState( { pageSize: size});

@@ -67,7 +67,7 @@ describe('generic filter displayer', () => {
         MaterialModule,
         CommonModule,
         FormsModule,
-        TableBuilderModule.forRoot({ defaultTableState: {} }),
+        TableBuilderModule.forRoot({ defaultTableState: { sorted: []} }),
         StoreModule.forRoot({}),
         EffectsModule.forRoot([])]
     })
