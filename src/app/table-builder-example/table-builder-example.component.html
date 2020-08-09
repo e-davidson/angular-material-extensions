@@ -16,6 +16,11 @@
           {{element.symbol}}
       </mat-cell>
   </ng-container>
+  <ng-container customCell="date" matColumnDef="date"   >
+    <mat-footer-cell *matFooterCellDef  >
+        date the date
+    </mat-footer-cell>
+</ng-container>
 
   <ng-container customCell="blue" matColumnDef="blue" >
       <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name && element?.name[0] === 'B'">
