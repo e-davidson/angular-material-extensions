@@ -1,3 +1,4 @@
+import { PipeTransform } from '@angular/core';
 
 export enum FieldType {
     Unknown = 0,
@@ -11,6 +12,7 @@ export enum FieldType {
     String = 8,
     Boolean = 9,
     PhoneNumber = 10,
+    Expression = 11,
 }
 
 export enum SortDirection {
@@ -36,6 +38,8 @@ export interface MetaData {
     width?: string;
     noExport?: boolean;
     noFilter?: boolean;
+    tranform?: ( (o: any, ...args: any[])=> any ) | PipeTransform;
+    click?: (element: any, key: string ) => void;
 }
 
 export interface  ReportDef<DataType = any> {

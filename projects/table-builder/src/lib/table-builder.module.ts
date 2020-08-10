@@ -5,7 +5,7 @@ import { CustomCellDirective } from './directives/custom-cell-directive';
 import { GenColDisplayerComponent } from './components/gen-col-displayer/gen-col-displayer.component';
 import { GenFilterDisplayerComponent } from './components/gen-filter-displayer/gen-filter-displayer.component';
 import { FilterComponent } from './components/filter/filter.component';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SpaceCasePipe } from './pipes/space-case.pipes';
 import { MaterialModule } from './material.module';
@@ -24,6 +24,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { SaveTableEffects } from './ngrx/effects';
 import { KeyDisplayPipe } from './pipes/key-display';
 import { PhoneNumberPipe } from './pipes/phone.pipe';
+import { FunctionPipe } from './pipes/function.pipe';
 import { FormatValuePipe } from './pipes/format-value';
 import { RouterModule } from '@angular/router';
 import { StopPropagationDirective } from './directives/stop-propagation.directive';
@@ -66,11 +67,12 @@ import { StylerDirective } from './directives/styler';
         HeaderMenuComponent,
         KeyDisplayPipe,
         PhoneNumberPipe,
+        FunctionPipe,
         FormatValuePipe,
         StopPropagationDirective,
         StylerDirective,
     ],
-    providers : [SpaceCasePipe, DatePipe]
+    providers : [SpaceCasePipe, DatePipe, CurrencyPipe, PhoneNumberPipe]
 })
 export class TableBuilderModule {
   static forRoot(config: TableBuilderConfig): ModuleWithProviders {
