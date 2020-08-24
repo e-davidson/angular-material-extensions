@@ -135,7 +135,6 @@ export class TableBuilderExampleComponent {
   }
 
   multipleValuesTest(change: MatSelectChange) {
-    console.log(change)
     const fi = {
       filterId: 'multipleValuesTest',
       filterType: FilterType.StringIn,

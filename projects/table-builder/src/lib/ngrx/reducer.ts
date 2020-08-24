@@ -4,7 +4,7 @@ import update from 'immutability-helper';
 import * as tableActions from './actions';
 import { Dictionary } from '../interfaces/dictionary';
 import { FieldType } from '../interfaces/report-def';
-import { SortDirection, Sort } from '@angular/material/sort';
+import { InTypes } from '../enums/filterTypes';
 
 export class TableStateAction implements Action {
   type: string;
@@ -76,6 +76,10 @@ const reducer = createReducer(initialState,
   }),
   on(tableActions.addFilter, (state, {tableId, filter}) => {
     const filterId = filter.filterId;
+    if(InTypes.includes(filter.filterType)){
+      const replace = filter.filterValue ? (filter.filterValue as string).split(',').map(string => string.trim().toLowerCase()) : [];
+      filter = {...filter,filterValue: replace};
+    } 
     return update( state , { [tableId] : {filters : { [filterId] : { $set: filter } }}} );
   } ),
   on(tableActions.removeFilter, (state, {tableId, filterId}) => {
