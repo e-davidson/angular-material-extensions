@@ -89,4 +89,17 @@ export class HeaderMenuComponent {
     }) );
   }
 
+  onEnter(filter: FilterInfo, event) {
+    console.log('object')
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (filter.filterValue && filter.filterType) {
+      this.tableState.addFilter(filter);
+    }
+  }
+
+  doNothing(){
+    return false;
+  }
 }

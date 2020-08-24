@@ -1,5 +1,5 @@
 <mat-card class="mat-elevation-z5" *ngIf="filter">
-  <form #form="ngForm">
+  <form #form="ngForm"  (keydown.enter)="onEnter(form.value,$event)" (keydown.escape)="close.emit()">
     <input type="hidden" name="filterId" [ngModel]="filter.filterId" />
     <input type="hidden" name="key" [ngModel]="filter.key" />
     <input type="hidden" name="fieldType" [ngModel]="filter.fieldType" />
@@ -40,7 +40,7 @@
         </mat-radio-group>
 
     </div>
-    <button mat-button (click)="state.addFilter(form.value)" disableRipple>
+    <button mat-button (click)="state.addFilter(form.value)" disableRipple [disabled]="!form.value.filterValue || !form.value.filterType">
       Apply
     </button>
 
