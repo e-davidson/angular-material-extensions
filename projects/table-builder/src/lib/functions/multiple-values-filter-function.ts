@@ -1,5 +1,4 @@
 export function multipleValuesEqualsFunc(filterVal: string[], val: string): boolean {
-  console.log(filterVal)
   return filterVal.includes(val?.toLowerCase());
 }
 
@@ -9,7 +8,6 @@ export function multipleValuesEqualsNumFunc(filterVal: string[], val: any): bool
 }
 
 export function multipleValuesNotEqualsFunc(filterVal: string[], val: string): boolean {
-  console.log(filterVal)
   return !filterVal.includes(val?.toLowerCase());
 }
 
