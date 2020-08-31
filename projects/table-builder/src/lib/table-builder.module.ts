@@ -29,6 +29,7 @@ import { RouterModule } from '@angular/router';
 import { StopPropagationDirective } from './directives/stop-propagation.directive';
 import { ArrayColumnComponent } from './components/array-column.component';
 import { StylerDirective } from './directives/styler';
+import { PreventEnterDirective } from './directives/prevent-enter.directive';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import { StylerDirective } from './directives/styler';
         FilterComponent,
         MultiSortDirective,
         StopPropagationDirective,
+        PreventEnterDirective,
     ],
     declarations: [
         SpaceCasePipe,
@@ -69,6 +71,7 @@ import { StylerDirective } from './directives/styler';
         FormatValuePipe,
         StopPropagationDirective,
         StylerDirective,
+        PreventEnterDirective,
     ],
     providers : [SpaceCasePipe, DatePipe]
 })

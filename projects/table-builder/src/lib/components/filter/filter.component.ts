@@ -23,9 +23,7 @@ export class FilterComponent {
     this.currentFilterType = this.filter.filterType;
   }
   onEnter(filter: FilterInfo, event) {
-    event.stopPropagation();
     event.preventDefault();
-
     if (filter.filterValue && filter.filterType) {
       this.state.addFilter(filter);
     }
