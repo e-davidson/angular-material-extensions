@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { FilterType } from '../../enums/filterTypes';
 import { FilterInfo } from '../../classes/filter-info';
 import { TableStateManager } from '../../classes/table-state-manager';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'tb-header-menu',
@@ -19,7 +20,7 @@ export class HeaderMenuComponent {
   @Input() filter: FilterInfo;
 
   @Input() metaData: MetaData;
-
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   constructor( public tableState: TableStateManager) {}
 
   hideField(key) {
@@ -89,4 +90,10 @@ export class HeaderMenuComponent {
     }) );
   }
 
+  onEnter(filter: FilterInfo) {
+    if (filter.filterValue && filter.filterType) {
+      this.tableState.addFilter(filter);
+      this.trigger.closeMenu();
+    }
+  }
 }
