@@ -11,19 +11,19 @@ function isPipe(o : any ): o is PipeTransform {
 @Injectable({
   providedIn:  'root'
 })
-export class TranformCreator{
+export class TransformCreator{
   constructor(
     private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe,
     private phonePipe: PhoneNumberPipe,
     @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
   ) {}
-  createTranformer(metaData: MetaData) {
-    if(metaData.tranform) {
-      if(isPipe(metaData.tranform)){
-        return metaData.tranform.transform;
+  createTransformer(metaData: MetaData) {
+    if(metaData.transform) {
+      if(isPipe(metaData.transform)){
+        return metaData.transform.transform;
       }
-      return metaData.tranform
+      return metaData.transform
     }
         switch(metaData.fieldType) {
           case FieldType.Date:

@@ -54,7 +54,7 @@ const META_DATA: MetaData[] = [
     FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
     styles: { color: 'yellow'  },
   },
-  tranform: (o: string) => o + ' #'
+  transform: (o: string) => o + ' #'
   },
   {key: 'gas', fieldType: FieldType.Boolean , additional: {
     styles: {  flex : '0 0 5%'},
@@ -63,7 +63,7 @@ const META_DATA: MetaData[] = [
   {key: 'moreInfo', fieldType: FieldType.Array, additional},
   {
     key:'expression', fieldType: FieldType.Expression,
-    tranform: (o: PeriodicElement) => o.symbol + ' my symbol ' + o.name,
+    transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + o.name,
     additional: {
       styles: {color: 'green', flex: '0 0 200px'}
     },
@@ -93,7 +93,7 @@ export class TableBuilderExampleComponent {
       scan((acc, value) => { acc.push(value); return acc; }, []),
       startWith([]),
     );
-    META_DATA[1].tranform = lcp;
+    META_DATA[1].transform = lcp;
     const all = combineArrays([of(ELEMENT_DATA), addedElements]);
     setTimeout(() => {
       this.metaData$.next(META_DATA);

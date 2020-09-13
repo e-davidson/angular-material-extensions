@@ -4,7 +4,7 @@ import { MatColumnDef } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
-import { TranformCreator } from '../../services/tranform-creator';
+import { TransformCreator } from '../../services/tranform-creator';
 
 
 @Component({
@@ -26,9 +26,9 @@ export class ColumnBuilderComponent implements OnInit {
   @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
 
   template: TemplateRef<any>;
-  tranform: (o: any, ...args: any[])=> any ;
+  transform: (o: any, ...args: any[])=> any ;
 
-  constructor( private tranformCreator: TranformCreator) { }
+  constructor( private transformCreator: TransformCreator) { }
 
   getTemplate() {
     if (this.customCell?.columnDef) {
@@ -46,7 +46,7 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
-    this.tranform = this.tranformCreator.createTranformer(this.metaData);
+    this.transform = this.transformCreator.createTransformer(this.metaData);
   }
 
   ngAfterViewInit() {

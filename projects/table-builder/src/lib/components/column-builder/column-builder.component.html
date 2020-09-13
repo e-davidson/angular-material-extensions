@@ -23,8 +23,8 @@
             {{element[metaData.key] | currency }}
         </span>
         <tb-array-column *ngSwitchCase="FieldType.Array" [array]='element[metaData.key]' ></tb-array-column>
-        <span *ngSwitchCase='FieldType.Expression'>{{element | func : tranform }}</span>
-        <span *ngSwitchDefault> {{ element[metaData.key] | func: tranform  }} </span>
+        <span *ngSwitchCase='FieldType.Expression'>{{element | func : transform }}</span>
+        <span *ngSwitchDefault> {{ element[metaData.key] | func: transform  }} </span>
       </ng-container>
     <span class="no-val" *ngIf="metaData.fieldType !== FieldType.Expression && ( element[metaData.key]===null || element[metaData.key]===undefined)">-</span>
     </mat-cell>
