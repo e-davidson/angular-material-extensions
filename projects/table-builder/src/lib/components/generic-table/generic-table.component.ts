@@ -9,6 +9,7 @@ import {
   QueryList,
   ComponentFactoryResolver,
   ViewContainerRef,
+  ElementRef,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -50,6 +51,7 @@ export class GenericTableComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
+  @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
 
   currentColumns: string[];
   selection: SelectionModel<any>;
@@ -65,6 +67,10 @@ export class GenericTableComponent implements OnInit {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
 
+  }
+
+  paginatorChange(): void {
+    setTimeout(() => this.tableElRef?.nativeElement?.scrollIntoView(), 0);
   }
 
   trackByFunction = (index, item) => {
