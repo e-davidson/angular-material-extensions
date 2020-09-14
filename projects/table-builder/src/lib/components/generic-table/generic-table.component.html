@@ -36,5 +36,5 @@
 
 </mat-table>
 
-<mat-paginator [pageSize]="(state.state$ | async).pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons (page)="paginatorChange()">
+<mat-paginator class="sticky" [pageSize]="(state.state$ | async).pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons (page)="paginatorChange()">
 </mat-paginator>
