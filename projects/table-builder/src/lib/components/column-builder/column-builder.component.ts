@@ -4,7 +4,7 @@ import { MatColumnDef } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
-import { TransformCreator } from '../../services/tranform-creator';
+import { TransformCreator } from '../../services/transform-creator';
 
 
 @Component({
