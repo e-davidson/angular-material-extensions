@@ -1,10 +1,10 @@
 # Material Extensions - Table Builder
 
-## Example usage
+## Example Usage
 
 Installation `npm i -s mx-table-builder`
 
-Add to the imports section of NgModule
+Add to the imports section of NgModule:
 
 ```ts
 @NgModule({

@@ -5,11 +5,11 @@
         <tb-filter-displayer >
         </tb-filter-displayer>
         <tb-col-displayer></tb-col-displayer>
-        <button *ngIf="tableId" mat-icon-button (click)="state.saveTable();OnSaveState.next()" matTooltip="Save Table">
-          <mat-icon color="primary">save</mat-icon>
-        </button>
         <button mat-icon-button (click)="state.resetState();resort$.next({});OnStateReset.next()" matTooltip="Reset table">
           <mat-icon color="primary">autorenew</mat-icon>
+        </button>
+        <button *ngIf="tableId" mat-icon-button (click)="state.saveTable();OnSaveState.next()" matTooltip="Save Table">
+          <mat-icon color="primary">save</mat-icon>
         </button>
         <button mat-icon-button (click)="exportToCsv()" matTooltip="Export Table">
           <mat-icon color="primary">file_download</mat-icon>
