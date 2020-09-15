@@ -1,11 +1,8 @@
 <ng-container [matColumnDef]="metaData.key">
 
   <ng-template #body let-element='element' >
-    <mat-cell [styler]='metaData?.additional?.styles' >
+    <mat-cell [styler]='metaData?.additional?.styles'  (click)='cellClicked(metaData.key, element)' >
       <ng-container [ngSwitch]="metaData.fieldType">
-        <span *ngSwitchCase="FieldType.Date">
-            {{element[metaData.key] | date: dateFormat }}
-        </span>
         <span *ngSwitchCase="FieldType.Boolean">
             <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
         </span>
@@ -25,18 +22,16 @@
         <span *ngSwitchCase="FieldType.Currency" [class.negative-currency]="element[metaData.key] < 0">
             {{element[metaData.key] | currency }}
         </span>
-        <span *ngSwitchCase="FieldType.PhoneNumber">
-          {{element[metaData.key] | phone }}
-        </span>
         <tb-array-column *ngSwitchCase="FieldType.Array" [array]='element[metaData.key]' ></tb-array-column>
-        <span *ngSwitchDefault> {{ element[metaData.key] }} </span>
+        <span *ngSwitchCase='FieldType.Expression'>{{element | func : transform }}</span>
+        <span *ngSwitchDefault> {{ element[metaData.key] | func: transform  }} </span>
       </ng-container>
-    <span class="no-val" *ngIf="element[metaData.key]===null || element[metaData.key]===undefined">-</span>
+    <span class="no-val" *ngIf="metaData.fieldType !== FieldType.Expression && ( element[metaData.key]===null || element[metaData.key]===undefined)">-</span>
     </mat-cell>
   </ng-template>
 
   <ng-template #customCellWrapper let-element='element' >
-    <mat-cell [styler]='metaData?.additional?.styles' >
+    <mat-cell [styler]='metaData?.additional?.styles'  (click)='cellClicked(metaData.key, element)' >
       <ng-container *ngTemplateOutlet="customCell.TemplateRef ;context: {metaData: metaData, element: element }">
       </ng-container>
     </mat-cell>
