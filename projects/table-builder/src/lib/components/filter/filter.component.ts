@@ -22,4 +22,10 @@ export class FilterComponent {
   ngOnInit() {
     this.currentFilterType = this.filter.filterType;
   }
+  onEnter(filter: FilterInfo, event) {
+    event.preventDefault();
+    if (filter.filterValue && filter.filterType) {
+      this.state.addFilter(filter);
+    }
+  }
 }
