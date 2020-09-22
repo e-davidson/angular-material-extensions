@@ -3,6 +3,7 @@ import { DisplayCol } from '../../classes/display-col';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TableStateManager } from '../../classes/table-state-manager';
+import { FieldType } from '../../interfaces/report-def';
 
 @Component({
   selector: 'tb-col-displayer',
@@ -15,8 +16,14 @@ export class GenColDisplayerComponent {
   constructor( private tableState: TableStateManager) {
     this.columns$ = this.tableState.state$.pipe(
       map( state =>
-        state.metaData.map( md =>
-          ({key: md.key, displayName: md.displayName, isVisible: !state.hiddenKeys.includes(md.key) })) ),
+        state.metaData
+          .filter( md => md.fieldType !== FieldType.Hidden )
+          .map( md => ({
+            key: md.key,
+            displayName: md.displayName,
+            isVisible: !state.hiddenKeys.includes(md.key)
+          }))
+      ),
     );
   }
 

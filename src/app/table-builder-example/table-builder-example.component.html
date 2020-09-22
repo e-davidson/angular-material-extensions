@@ -11,11 +11,11 @@
 
   <p *customCell="'testCell';let element = element;" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
-  <ng-container customCell="symbol" matColumnDef="symbol" [customCellOrder]="4" >
-      <mat-cell *matCellDef="let element = element;" >
-          {{element.symbol}}
-      </mat-cell>
-  </ng-container>
+  <ng-container customCell='date' matColumnDef="date"   >
+    <mat-footer-cell *matFooterCellDef  >
+        date footer
+    </mat-footer-cell>
+</ng-container>
 
   <ng-container customCell="blue" matColumnDef="blue" >
       <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name && element?.name[0] === 'B'">
