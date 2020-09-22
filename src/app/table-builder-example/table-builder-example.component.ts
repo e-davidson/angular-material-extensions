@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
-import { scheduled, Subject, Observable } from 'rxjs';
-import { asap } from 'rxjs/internal/scheduler/asap';
-import { scan, startWith, map, tap, filter } from 'rxjs/operators';
+import { Subject, Observable, of } from 'rxjs';
+import { scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType, ArrayAdditional, ArrayStyle } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
@@ -11,6 +10,7 @@ import { FilterType } from '../../../projects/table-builder/src/lib/enums/filter
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { FilterInfo } from '../../../projects/table-builder/src/lib/classes/filter-info';
 import { MatSelectChange } from '@angular/material/select';
+import { LowerCasePipe } from '@angular/common';
 
 export interface PeriodicElement {
   name: string;
@@ -46,19 +46,29 @@ const META_DATA: MetaData[] = [
   {key: 'symbol', fieldType: FieldType.String },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
-    additional: {dateFormat: 'shortDate'}
+    additional: {dateFormat: 'shortDate'},
+    click: (element, key) => console.log(key,element)
   },
   {key: 'name', fieldType: FieldType.String, additional: {
     export: { prepend: "'" },
     FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
-    styles: { color: 'yellow'  }
+    styles: { color: 'yellow'  },
   },
+  transform: (o: string) => o + ' #'
   },
   {key: 'gas', fieldType: FieldType.Boolean , additional: {
     styles: {  flex : '0 0 5%'},
   } },
   {key: 'phone', fieldType: FieldType.PhoneNumber },
-  {key: 'moreInfo', fieldType: FieldType.Array, additional}
+  {key: 'moreInfo', fieldType: FieldType.Array, additional},
+  {
+    key:'expression', fieldType: FieldType.Expression,
+    transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + o.name,
+    additional: {
+      styles: {color: 'green', flex: '0 0 200px'}
+    },
+    click: (element, key) => console.log(key,element)
+  }
 ];
 
 
@@ -78,12 +88,13 @@ export class TableBuilderExampleComponent {
 
   isFilterChecked: Observable<FilterInfo>;
 
-  constructor(private store: Store<any>) {
+  constructor(private store: Store<any>, lcp:  LowerCasePipe) {
     const addedElements = this.newElement$.pipe(
       scan((acc, value) => { acc.push(value); return acc; }, []),
       startWith([]),
     );
-    const all = combineArrays([scheduled([ELEMENT_DATA], asap), addedElements]);
+    META_DATA[1].transform = lcp;
+    const all = combineArrays([of(ELEMENT_DATA), addedElements]);
     setTimeout(() => {
       this.metaData$.next(META_DATA);
     }, 1000);

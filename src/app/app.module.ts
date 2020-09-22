@@ -12,6 +12,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools'
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
+import { LowerCasePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatTableModule,
     StoreDevtoolsModule.instrument({maxAge:50}),
   ],
-  providers: [],
+  providers: [LowerCasePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
