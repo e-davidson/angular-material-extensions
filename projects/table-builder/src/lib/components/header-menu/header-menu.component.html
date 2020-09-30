@@ -97,7 +97,7 @@
         </ng-container>
       </ng-template>
 
-    <button mat-button (click)="onEnter(myForm.value)" [disabled]="!myForm.value.filterValue && myForm.value.filterValue != false" disableRipple>
+    <button mat-button (click)="onEnter(myForm.value)" [disabled]="!myForm.value.filterValue && myForm.value.filterValue !== false" disableRipple>
       Apply
     </button>
   </ng-form>
