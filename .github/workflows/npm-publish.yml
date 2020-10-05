@@ -16,8 +16,7 @@ jobs:
         node-version: 14.0.0
     - run: npm install
     - run: ./node_modules/@angular/cli/bin/ng build mx-table-builder --prod
-    - run: cd dist/mx-table-builder && npm publish
+    - run: cd dist/mx-table-builder && npm publish --access public
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-        NPM_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
