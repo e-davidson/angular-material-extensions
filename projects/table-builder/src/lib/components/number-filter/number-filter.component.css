@@ -5,3 +5,6 @@
 .my-filter {
     margin-right: 15px;
 }
+.inline{
+  display: inline-block;
+}

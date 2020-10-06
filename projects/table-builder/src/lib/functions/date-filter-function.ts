@@ -26,7 +26,7 @@ function dateBetweenFunc(filterVal: any, val: Date): boolean {
     return  val >= new Date(filterVal.Start ) &&    val <= new Date( filterVal.End);
 }
 
-export const DateFilterFuncs = {
+export const DateFilterFuncs : Partial<{[key in FilterType]: (filterVal:Date | boolean, val: Date)=> boolean}> = {
     [FilterType.DateIsOn]: dateIsOnFunc,
     [FilterType.DateIsNotOn]: dateIsNotOnFunc,
     [FilterType.DateOnOrAfter]: dateIsOnOrAfterFunc,

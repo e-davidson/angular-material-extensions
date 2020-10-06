@@ -1,32 +1,35 @@
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
-import { multipleValuesEqualsFunc } from './multiple-values-filter-function';
 
 
 function stringEqualFunc(filterVal: string, val: any): boolean  {
-    const equelsVal = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase() === equelsVal ;
+    const equelsVal = prepareForStringCompare(filterVal);
+    return prepareForStringCompare(val) === equelsVal ;
 }
 
 function stringContainsFunc(filterVal: string, val: any): boolean {
-    const containsVal = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase().includes(containsVal);
+    const containsVal = prepareForStringCompare(filterVal);
+    return prepareForStringCompare(val).includes(containsVal);
 }
 
 function stringDoesNotContainFunc(filterVal: string, val: any): boolean {
-  const cleanfilterVal = filterVal.toString().trim().toLowerCase();
-  const cleanVal = val.toString().trim().toLowerCase();
+  const cleanfilterVal = prepareForStringCompare(filterVal);
+  const cleanVal = prepareForStringCompare(val);
   return !cleanVal.includes(cleanfilterVal);
 }
 
 function stringStartsWithFunc(filterVal: string, val: any): boolean {
-    const startsWith = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase().startsWith(startsWith);
+    const startsWith = prepareForStringCompare(filterVal);
+    return prepareForStringCompare(val).startsWith(startsWith);
 }
 
 function stringEndsWithFunc(filterVal: string, val: any): boolean {
-    const endsWith = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase().endsWith(endsWith);
+    const endsWith = prepareForStringCompare(filterVal);
+    return prepareForStringCompare(val).endsWith(endsWith);
+}
+
+export function multipleStringValuesEqualsFunc(filterVal: any[], val: any): boolean {
+  return filterVal.some(({value}) => prepareForStringCompare(val) === prepareForStringCompare(value));
 }
 
 export const StringFilterFuncs = {
@@ -36,5 +39,7 @@ export const StringFilterFuncs = {
     [FilterType.StringStartWith]: stringStartsWithFunc,
     [FilterType.StringEndsWith]: stringEndsWithFunc,
     [FilterType.IsNull]: isNull,
-    [FilterType.StringIn]: multipleValuesEqualsFunc,
+    [FilterType.StringIn]: multipleStringValuesEqualsFunc,
 };
+
+export const prepareForStringCompare = (val : any) => val?.toString().trim().toLowerCase();

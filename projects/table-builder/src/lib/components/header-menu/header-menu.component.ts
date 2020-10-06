@@ -91,7 +91,7 @@ export class HeaderMenuComponent {
   }
 
   onEnter(filter: FilterInfo) {
-    if ((filter.filterValue || filter.filterValue === false) && filter.filterType) {
+    if (filter.filterValue != undefined && filter.filterType) {
       this.tableState.addFilter(filter);
       this.trigger.closeMenu();
     }

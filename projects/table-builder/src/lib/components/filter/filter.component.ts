@@ -24,7 +24,7 @@ export class FilterComponent {
   }
   onEnter(filter: FilterInfo, event) {
     event.preventDefault();
-    if (filter.filterValue && filter.filterType) {
+    if (filter.filterValue != null && filter.filterType) {
       this.state.addFilter(filter);
     }
   }

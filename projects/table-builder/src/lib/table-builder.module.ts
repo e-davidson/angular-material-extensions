@@ -31,6 +31,7 @@ import { StopPropagationDirective } from './directives/stop-propagation.directiv
 import { ArrayColumnComponent } from './components/array-column.component';
 import { StylerDirective } from './directives/styler';
 import { PreventEnterDirective } from './directives/prevent-enter.directive';
+import { InFilterComponent } from './components/in-filter/in-filter.component';
 
 @NgModule({
   imports: [
@@ -74,6 +75,7 @@ import { PreventEnterDirective } from './directives/prevent-enter.directive';
         StopPropagationDirective,
         StylerDirective,
         PreventEnterDirective,
+        InFilterComponent,
     ],
     providers : [SpaceCasePipe, DatePipe, CurrencyPipe, PhoneNumberPipe]
 })
