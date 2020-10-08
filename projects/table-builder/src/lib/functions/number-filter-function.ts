@@ -1,4 +1,4 @@
-import { BetweenInfo, FilterFunc, FilterInfo } from '../classes/filter-info';
+import { Range, FilterFunc, FilterInfo } from '../classes/filter-info';
 import { FilterInput } from '../components/in-filter/in-filter.component';
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
@@ -21,7 +21,7 @@ const numberLessThenFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => 
     return val < filterInfo.filterValue;
 }
 
-const  numberBetweenFunc:FilterFunc<BetweenInfo<number>,number> = (filterInfo : FilterInfo<BetweenInfo<number>>) => {
+const  numberBetweenFunc:FilterFunc<Range<number>,number> = (filterInfo : FilterInfo<Range<number>>) => {
   const startVal = Number(filterInfo.filterValue.Start);
   const endVal = Number(filterInfo.filterValue.End);
   return ((val)=>(val > startVal) && (val < endVal));

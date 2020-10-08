@@ -35,7 +35,7 @@ export class InFilterComponent implements OnInit {
     }
   }
 
-  recordValue(inputs:FilterInput[],i:number,value: number | string){
+  onValueChange(inputs:FilterInput[],i:number,value: number | string){
     this._backingStore = [...inputs];
     this._backingStore[i] = {...this._backingStore[i],value};
     this.Inputs$.next([...this._backingStore]);

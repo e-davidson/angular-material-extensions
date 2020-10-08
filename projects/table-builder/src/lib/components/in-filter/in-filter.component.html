@@ -3,15 +3,15 @@
     <div *ngFor="let input of inputs;index as i">
       <mat-form-field>
         <input *ngIf="info.fieldType === FieldType.Number || info.fieldType === FieldType.Currency" 
-          matInput [ngModel]="inputs[i].value" (ngModelChange)="recordValue(inputs,i,$event)"
+          matInput [ngModel]="inputs[i].value" (ngModelChange)="onValueChange(inputs,i,$event)"
           [readonly]="i+1 < inputs.length" type="number" [ngModelOptions]="{standalone:true}"
-          #input/> 
+          #input appAutoFocus/> 
         <input *ngIf="info.fieldType !== FieldType.Number && info.fieldType !== FieldType.Currency" 
-          matInput [(ngModel)]="inputs[i].value"
+          matInput [ngModel]="inputs[i].value" (ngModelChange)="onValueChange(inputs,i,$event)"
           [readonly]="i+1 < inputs.length" type="string" [ngModelOptions]="{standalone:true}"
-          #input/> 
+          #input appAutoFocus/> 
       </mat-form-field>
-      <button (click)="removeInput(i)">-</button>
+      <button *ngIf="inputs.length > 1" (click)="removeInput(i)">-</button>
       <button *ngIf="i === inputs.length - 1" [disabled]="input.value == undefined || input.value === ''" (click)="addInput()">+</button>
     </div>
     <input type="hidden" [ngModel]="Inputs$ | async" name="filterValue"/>

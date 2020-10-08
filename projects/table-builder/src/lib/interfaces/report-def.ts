@@ -27,8 +27,8 @@ export enum Target {
   Top = '_top'
 }
 
-export interface MetaData {
-    key: string;
+export interface MetaData<T = any> {
+    key: keyof T & string;
     displayName?: string;
     fieldType: FieldType;
     additional?: Additional;

@@ -32,6 +32,7 @@ import { ArrayColumnComponent } from './components/array-column.component';
 import { StylerDirective } from './directives/styler';
 import { PreventEnterDirective } from './directives/prevent-enter.directive';
 import { InFilterComponent } from './components/in-filter/in-filter.component';
+import {AutoFocusDirective} from './directives/auto-focus.directive'
 
 @NgModule({
   imports: [
@@ -76,6 +77,7 @@ import { InFilterComponent } from './components/in-filter/in-filter.component';
         StylerDirective,
         PreventEnterDirective,
         InFilterComponent,
+        AutoFocusDirective,
     ],
     providers : [SpaceCasePipe, DatePipe, CurrencyPipe, PhoneNumberPipe]
 })
