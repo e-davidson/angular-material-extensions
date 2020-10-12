@@ -10,7 +10,6 @@
     "immutability-helper": "^3.0.1",
     "rxjs": "6.6.0",
     "uuid4": "^1.1.4",
-    "@ngrx/component-store": "^10.0.0"
   },
   "dependencies": {
     "tslib": "^2.0.0"
