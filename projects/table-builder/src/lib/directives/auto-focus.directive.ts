@@ -1,18 +1,21 @@
-import { Directive, ElementRef, AfterViewInit } from '@angular/core';
+import { Directive, ElementRef, AfterViewInit, Input } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Directive({
-  selector: '[appAutoFocus]'
+  selector: '[autoFocus]'
 })
 export class AutoFocusDirective implements AfterViewInit {
 
+  @Input() autoFocus = true;
   sub: Subscription;
   constructor(private elementRef: ElementRef) { }
 
   ngAfterViewInit() {
-    setTimeout(() => {
-      this.elementRef.nativeElement.focus();
-    });
+    if(this.autoFocus){
+      setTimeout(() => {
+        this.elementRef.nativeElement.focus();
+      });
+    }
   }
 
 }

@@ -1,17 +1,15 @@
 <div class=inline>
   <ng-container *ngIf="Inputs$ | async as inputs">
     <div *ngFor="let input of inputs;index as i">
-      <mat-form-field>
-        <input *ngIf="info.fieldType === FieldType.Number || info.fieldType === FieldType.Currency" 
-          matInput [ngModel]="inputs[i].value" (ngModelChange)="onValueChange(inputs,i,$event)"
-          [readonly]="i+1 < inputs.length" type="number" [ngModelOptions]="{standalone:true}"
-          #input appAutoFocus/> 
-        <input *ngIf="info.fieldType !== FieldType.Number && info.fieldType !== FieldType.Currency" 
-          matInput [ngModel]="inputs[i].value" (ngModelChange)="onValueChange(inputs,i,$event)"
-          [readonly]="i+1 < inputs.length" type="string" [ngModelOptions]="{standalone:true}"
-          #input appAutoFocus/> 
-      </mat-form-field>
-      <button *ngIf="inputs.length > 1" (click)="removeInput(i)">-</button>
+      <input *ngIf="info.fieldType === FieldType.Number || info.fieldType === FieldType.Currency" 
+        [ngModel]="inputs[i].value" (ngModelChange)="onValueChange(inputs,i,$event)"
+        [readonly]="i+1 < inputs.length" type="number" [ngModelOptions]="{standalone:true}"
+        #input [autoFocus]="i === inputs.length - 1"/> 
+      <input *ngIf="info.fieldType !== FieldType.Number && info.fieldType !== FieldType.Currency" 
+        [ngModel]="inputs[i].value" (ngModelChange)="onValueChange(inputs,i,$event)"
+        [readonly]="i+1 < inputs.length" type="string" [ngModelOptions]="{standalone:true}"
+        #input [autoFocus]="i === inputs.length - 1"/> 
+      <button [disabled]="inputs.length <= 1" (click)="removeInput(i)">-</button>
       <button *ngIf="i === inputs.length - 1" [disabled]="input.value == undefined || input.value === ''" (click)="addInput()">+</button>
     </div>
     <input type="hidden" [ngModel]="Inputs$ | async" name="filterValue"/>
