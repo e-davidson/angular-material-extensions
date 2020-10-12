@@ -46,9 +46,12 @@
 
 
 <ng-template #String>
-  <mat-form-field class="my-filter" *ngIf="currentFilterType !== FilterType.IsNull">
+  <mat-form-field class="my-filter" *ngIf="currentFilterType !== FilterType.IsNull && currentFilterType !== FilterType.StringIn">
     <input matInput name="filterValue" [ngModel]="filter.filterValue" />
   </mat-form-field>
+  <ng-container *ngIf="currentFilterType === FilterType.StringIn">
+    <lib-in-filter [type]="FieldType.String" [info]="filter"></lib-in-filter>
+  </ng-container>
 </ng-template>
 
 <ng-template #Boolean >

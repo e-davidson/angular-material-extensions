@@ -1,29 +1,32 @@
+import { FilterFunc, FilterInfo, Range } from '../classes/filter-info';
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
 
 
-function dateIsOnFunc(filterVal: Date, val: Date): boolean {
-    const isOnVal = new Date( filterVal).getTime();
-    return  val.getTime()  === isOnVal;
+const dateIsOnFunc:FilterFunc<Date> = (filterInfo:FilterInfo<Date>) => {
+  const isOnVal = new Date( filterInfo.filterValue).getTime();
+  return ((val)=>val.getTime()  === isOnVal);
+} 
+
+const dateIsNotOnFunc:FilterFunc<Date> = (filterInfo:FilterInfo<Date>) => {
+  const isNotOnVal = new Date( filterInfo.filterValue).getTime();
+  return ((val)=>val.getTime()  !== isNotOnVal);
 }
 
-function dateIsNotOnFunc(filterVal: Date, val: Date): boolean {
-  const isNotOnVal = new Date( filterVal).getTime();
-  return  val.getTime()  !== isNotOnVal;
+const dateIsOnOrAfterFunc:FilterFunc<Date> = (filterInfo:FilterInfo<Date>) => {
+  const afterVal = new Date( filterInfo.filterValue).getTime();
+  return ((val)=>val.getTime()  >= afterVal);
 }
 
-function dateIsOnOrAfterFunc(filterVal: Date, val: Date): boolean {
-    const afterVal = new Date( filterVal);
-    return  val >= afterVal;
+const dateIsOnOrBeforeFunc:FilterFunc<Date> = (filterInfo:FilterInfo<Date>) => {
+  const beforeVal = new Date( filterInfo.filterValue).getTime();
+  return ((val)=>val.getTime()  <= beforeVal);
 }
 
-function dateIsOnOrBeforeFunc(filterVal: Date, val: Date): boolean {
-    const beforeVal = new Date( filterVal);
-    return val <= beforeVal;
-}
-
-function dateBetweenFunc(filterVal: any, val: Date): boolean {
-    return  val >= new Date(filterVal.Start ) &&    val <= new Date( filterVal.End);
+const dateBetweenFunc:FilterFunc<Range<Date>,Date> = (filterInfo:FilterInfo<Range<Date>>) => {
+  const startVal = new Date(filterInfo.filterValue.Start);
+  const endVal = new Date(filterInfo.filterValue.End);
+  return ((val)=>val>=startVal && val <= endVal);
 }
 
 export const DateFilterFuncs = {

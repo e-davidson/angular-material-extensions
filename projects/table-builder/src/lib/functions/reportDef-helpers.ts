@@ -60,3 +60,4 @@ export const GenerateReportDef$ = (data$: Observable<any[]>, metaData$: Observab
     ))
   );
 };
+

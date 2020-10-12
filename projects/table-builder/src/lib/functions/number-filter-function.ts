@@ -1,27 +1,34 @@
+import { Range, FilterFunc, FilterInfo } from '../classes/filter-info';
+import { FilterInput } from '../components/in-filter/in-filter.component';
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
-import { multipleValuesEqualsFunc } from './multiple-values-filter-function';
 
-function numberEqalsFunc(filterVal: number, val: number): boolean {
-    return  val === filterVal;
+type NumberFilterFunc = FilterFunc<number>
+
+const numberEqalsFunc:NumberFilterFunc = (filterInfo : FilterInfo<number>) => (val: number): boolean  =>{
+    return  val === filterInfo.filterValue;
 }
 
-function numberNotEqualFunc(filterVal: number, val: number): boolean {
-  return val !== filterVal;
+const numberNotEqualFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => (val: number): boolean  =>{
+  return val !== filterInfo.filterValue;
 }
 
-function numberGreaterThenFunc(filterVal: number, val: number): boolean {
-    return val > filterVal;
+const  numberGreaterThenFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => (val: number): boolean  => {
+    return val > filterInfo.filterValue;
 }
 
-function numberLessThenFunc(filterVal: number, val: number): boolean {
-    return val < filterVal;
+const numberLessThenFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => (val: number): boolean  => {
+    return val < filterInfo.filterValue;
 }
 
-function numberBetweenFunc(filterVal: any, val: number): boolean {
-    const startVal = Number(filterVal.Start);
-    const endVal = Number(filterVal.End);
-    return  (val > startVal) && (val < endVal);
+const  numberBetweenFunc:FilterFunc<Range<number>,number> = (filterInfo : FilterInfo<Range<number>>) => {
+  const startVal = Number(filterInfo.filterValue.Start);
+  const endVal = Number(filterInfo.filterValue.End);
+  return ((val)=>(val > startVal) && (val < endVal));
+}
+
+const multipleNumberValuesEqualsFunc:FilterFunc<FilterInput[],number> = (filterInfo:FilterInfo<FilterInput[]>) => {
+  return ((val)=>filterInfo.filterValue.some(({value}) => val === value));
 }
 
 export const NumberFilterFuncs = {
@@ -31,5 +38,5 @@ export const NumberFilterFuncs = {
     [FilterType.NumberLessThen]: numberLessThenFunc,
     [FilterType.NumberBetween]: numberBetweenFunc,
     [FilterType.IsNull]: isNull,
-    [FilterType.NumberIn]: multipleValuesEqualsFunc,
+    [FilterType.NumberIn]: multipleNumberValuesEqualsFunc,
 };

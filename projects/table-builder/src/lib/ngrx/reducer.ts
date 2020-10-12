@@ -4,7 +4,6 @@ import update from 'immutability-helper';
 import * as tableActions from './actions';
 import { Dictionary } from '../interfaces/dictionary';
 import { FieldType } from '../interfaces/report-def';
-import { SortDirection, Sort } from '@angular/material/sort';
 
 export class TableStateAction implements Action {
   type: string;

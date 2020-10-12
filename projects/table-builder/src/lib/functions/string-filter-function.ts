@@ -1,32 +1,37 @@
+import { FilterFunc, FilterInfo } from '../classes/filter-info';
+import { FilterInput } from '../components/in-filter/in-filter.component';
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
-import { multipleValuesEqualsFunc } from './multiple-values-filter-function';
 
 
-function stringEqualFunc(filterVal: string, val: any): boolean  {
-    const equelsVal = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase() === equelsVal ;
+const stringEqualFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) => {
+  const equelsVal = prepareForStringCompare(filterInfo.filterValue);
+  return ((val)=>prepareForStringCompare(val) === equelsVal );
 }
 
-function stringContainsFunc(filterVal: string, val: any): boolean {
-    const containsVal = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase().includes(containsVal);
+const stringContainsFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) => {
+  const containsVal = prepareForStringCompare(filterInfo.filterValue);
+  return ((val)=>prepareForStringCompare(val).includes(containsVal));
 }
 
-function stringDoesNotContainFunc(filterVal: string, val: any): boolean {
-  const cleanfilterVal = filterVal.toString().trim().toLowerCase();
-  const cleanVal = val.toString().trim().toLowerCase();
-  return !cleanVal.includes(cleanfilterVal);
+const stringDoesNotContainFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) => {
+  const doesNotContainVal = prepareForStringCompare(filterInfo.filterValue);
+  return ((val)=>!prepareForStringCompare(val).includes(doesNotContainVal));
 }
 
-function stringStartsWithFunc(filterVal: string, val: any): boolean {
-    const startsWith = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase().startsWith(startsWith);
+const stringStartsWithFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) => {
+  const startsWith = prepareForStringCompare(filterInfo.filterValue);
+  return ((val)=>prepareForStringCompare(val).startsWith(startsWith));
 }
 
-function stringEndsWithFunc(filterVal: string, val: any): boolean {
-    const endsWith = filterVal.toString().trim().toLowerCase();
-    return val.toString().trim().toLowerCase().endsWith(endsWith);
+const stringEndsWithFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) => {
+  const startsWith = prepareForStringCompare(filterInfo.filterValue);
+  return ((val)=>prepareForStringCompare(val).endsWith(startsWith));
+}
+
+const multipleStringValuesEqualsFunc:FilterFunc<FilterInput[],string> = (filterInfo:FilterInfo<FilterInput[]>) => {
+  const filterVals = filterInfo.filterValue.map(v => prepareForStringCompare(v.value));
+  return ((val)=> filterVals.some((s) => prepareForStringCompare(val) === s));
 }
 
 export const StringFilterFuncs = {
@@ -36,5 +41,7 @@ export const StringFilterFuncs = {
     [FilterType.StringStartWith]: stringStartsWithFunc,
     [FilterType.StringEndsWith]: stringEndsWithFunc,
     [FilterType.IsNull]: isNull,
-    [FilterType.StringIn]: multipleValuesEqualsFunc,
+    [FilterType.StringIn]: multipleStringValuesEqualsFunc,
 };
+
+export const prepareForStringCompare = (val : any):string => val?.toString().trim().toLowerCase();

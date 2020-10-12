@@ -1,8 +1,9 @@
+import { FilterFunc, FilterInfo } from '../classes/filter-info';
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
 
-function booleanEqualsFunc(filterVal: string, val: any): boolean {
-    return filterVal === val;
+const  booleanEqualsFunc : FilterFunc<boolean> = (filterInfo:FilterInfo<boolean>) => (val): boolean  => {
+    return filterInfo.filterValue === val;
 }
 
 export const BooleanFilterFuncs = {

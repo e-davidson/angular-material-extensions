@@ -20,6 +20,9 @@ export class FormatValuePipe implements PipeTransform {
           const res =  filters.reduce( (prev,curr) => prev  + curr.filterValue + ' or ' ,'');
           return res.substr(0, res.length - 4);
         }
+        if(value && (filterType === FilterType.NumberIn || filterType === FilterType.StringIn)){
+          return (value as {value:any}[]).map(v => v.value).join(', ') ?? value;
+        }
         if(filterType === FilterType.NumberBetween){
           if(md.fieldType === FieldType.Date){
             value = this.datePipe.transform(value.Start, 'MM/dd/yy')+ ' - ' + this.datePipe.transform(value.End, 'MM/dd/yy');

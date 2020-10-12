@@ -1,4 +1,4 @@
-<ng-container *ngIf="CurrentFilterType !== FilterType.NumberBetween && CurrentFilterType !== FilterType.IsNull">
+<ng-container *ngIf="CurrentFilterType !== FilterType.NumberBetween && CurrentFilterType !== FilterType.IsNull && CurrentFilterType !== FilterType.NumberIn">
   <mat-form-field class="my-filter">
     <input matInput name="filterValue" [ngModel]="info.filterValue" type="number"/>
   </mat-form-field>
@@ -15,3 +15,7 @@
     </mat-form-field>
   </ng-container>
 </ng-container>
+
+<div class="inline" *ngIf="CurrentFilterType === FilterType.NumberIn">
+  <lib-in-filter [type]="FieldType.Number" [info]="info"></lib-in-filter>
+</div>

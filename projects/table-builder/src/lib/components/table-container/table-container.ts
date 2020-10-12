@@ -44,24 +44,16 @@ import * as _ from 'lodash';
   @ContentChildren(MatRowDef) customRows: QueryList<MatRowDef<any>>;
   @ContentChildren(CustomCellDirective) customCells: QueryList<CustomCellDirective>;
 
-  @ViewChildren(ColumnBuilderComponent) columnBuilders: QueryList<ColumnBuilderComponent>;
 
   @Output() OnStateReset = new EventEmitter();
   @Output() OnSaveState = new EventEmitter();
 
-  @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
-  @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
 
-  hiddenFields: string [] = [];
-  columns: MatColumnDef[];
-  filtersExpanded = false;
   rules$: Observable<Sort[]>;
-  FieldType = FieldType;
   filteredData: Observable<any[]>;
 
   myColumns$: Observable<Partial<ColumnInfo>[]>;
 
-  myColumns2: Observable<ColumnBuilderComponent[]>;
   constructor( public state: TableStateManager) {}
 
 
