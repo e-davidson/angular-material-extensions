@@ -1,7 +1,7 @@
 <ng-container [matColumnDef]="metaData.key">
 
   <ng-template #body let-element='element' >
-    <mat-cell [styler]='metaData?.additional?.styles'  (click)='cellClicked(metaData.key, element)' >
+    <mat-cell [styler]='metaData?.additional?.styles'  (click)='cellClicked(element, metaData.key)' >
       <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Boolean">
             <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
@@ -31,7 +31,7 @@
   </ng-template>
 
   <ng-template #customCellWrapper let-element='element' >
-    <mat-cell [styler]='metaData?.additional?.styles'  (click)='cellClicked(metaData.key, element)' >
+    <mat-cell [styler]='metaData?.additional?.styles'  (click)='cellClicked(element, metaData.key)' >
       <ng-container *ngTemplateOutlet="customCell.TemplateRef ;context: {metaData: metaData, element: element }">
       </ng-container>
     </mat-cell>

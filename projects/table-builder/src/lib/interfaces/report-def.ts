@@ -38,8 +38,8 @@ export interface MetaData<T = any> {
     width?: string;
     noExport?: boolean;
     noFilter?: boolean;
-    transform?: ( (o: any, ...args: any[])=> any ) | PipeTransform;
-    click?: (element: any, key: string ) => void;
+    transform?: ( (o: T, ...args: any[])=> any ) | PipeTransform;
+    click?: (element: T, key: string ) => void;
 }
 
 export interface  ReportDef<DataType = any> {
