@@ -47,9 +47,10 @@ const META_DATA: MetaData[] = [
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
     additional: {dateFormat: 'shortDate'},
-    click: (element, key) => console.log(key,element)
+    click: (element, key) => console.log(element,key)
   },
-  {key: 'name', fieldType: FieldType.String, additional: {
+  {key: 'name', fieldType: FieldType.String,
+  additional: {
     export: { prepend: "'" },
     FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
     styles: { color: 'yellow'  },
@@ -67,7 +68,7 @@ const META_DATA: MetaData[] = [
     additional: {
       styles: {color: 'green', flex: '0 0 200px'}
     },
-    click: (element, key) => console.log(key,element)
+    click: (element, key) => console.log(element,key)
   }
 ];
 
