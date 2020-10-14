@@ -38,7 +38,7 @@ export interface MetaData<T = any> {
     width?: string;
     noExport?: boolean;
     noFilter?: boolean;
-    transform?: ( (o: T, ...args: any[])=> any ) | PipeTransform;
+    transform?: ( (o: T | string, ...args: any[])=> any ) | PipeTransform;
     click?: (element: T, key: string ) => void;
 }
 

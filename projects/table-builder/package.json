@@ -1,6 +1,6 @@
 {
   "name": "mx-table-builder",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "peerDependencies": {
     "@angular/common": "~10.0.0",
     "@angular/core": "~10.0.0",
