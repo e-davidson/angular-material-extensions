@@ -33,7 +33,7 @@ export class TableBuilder {
       case FieldType.Currency:
       case FieldType.Number:
         const num = Number( val );
-        return isNaN(num) ? null : num;
+        return isNaN(num) || val == null ? null : num;
       case FieldType.Date:
         const date = Date.parse(val);
         return isNaN(date) ? null : new Date(date);

@@ -1,12 +1,13 @@
 import { InjectionToken } from '@angular/core';
 import { TableState } from './TableState';
 import { DefaultSettings } from './DefaultSettings';
-import { ArrayAdditional } from '../interfaces/report-def';
+import { ArrayAdditional, FieldType } from '../interfaces/report-def';
 export interface TableBuilderConfig {
   defaultTableState: Partial<TableState>;
-  export?: TableBuilderExport
+  export?: TableBuilderExport;
   defaultSettings?: DefaultSettings;
-  arrayInfo?: ArrayAdditional
+  arrayInfo?: ArrayAdditional;
+  transformers?: { [key in keyof typeof FieldType]: any }
 }
 
 export interface TableBuilderExport {

@@ -1,3 +1,5 @@
+import { FilterFunc } from '../classes/filter-info';
+
 export enum FilterType {
     NumberEquals = 'Equals',
     NumberNotEqual = 'Does Not Equal',
@@ -17,12 +19,12 @@ export enum FilterType {
     BooleanEquals = 'Is',
     IsNull = 'Is Blank',
     NumberIn = 'In',
-    StringIn = 'In',
+    StringIn = 'Is In',
     Or = 'Or',
     And = 'And',
 }
 
-export const NumberFilterMap = {
+export const NumberFilterMap:FilterToFiltersMap = {
     [FilterType.NumberEquals]: [FilterType.NumberEquals],
     [FilterType.NumberNotEqual]: [FilterType.NumberNotEqual],
     [FilterType.NumberGreaterThen]: [FilterType.NumberGreaterThen],
@@ -32,7 +34,7 @@ export const NumberFilterMap = {
     [FilterType.NumberIn]: [FilterType.NumberIn],
 };
 
-export const StringFilterMap = {
+export const StringFilterMap:FilterToFiltersMap = {
     [FilterType.StringEquals]: [FilterType.StringEquals],
     [FilterType.StringContains]: [FilterType.StringContains],
     [FilterType.StringDoesNotContain]: [FilterType.StringDoesNotContain],
@@ -42,7 +44,7 @@ export const StringFilterMap = {
     [FilterType.StringIn]: [FilterType.StringIn],
 };
 
-export const DateFilterMap = {
+export const DateFilterMap:FilterToFiltersMap = {
     [FilterType.DateIsOn]: [FilterType.DateIsOn],
     [FilterType.DateIsNotOn]: [FilterType.DateIsNotOn],
     [FilterType.DateOnOrAfter]: [FilterType.DateOnOrAfter],
@@ -51,7 +53,9 @@ export const DateFilterMap = {
     [FilterType.IsNull]: [FilterType.IsNull],
 };
 
-export const BooleanFilterMap = {
+export const BooleanFilterMap :FilterToFiltersMap = {
     [FilterType.BooleanEquals]: [FilterType.BooleanEquals],
     [FilterType.IsNull]: [FilterType.IsNull],
 };
+
+export type FilterToFiltersMap = Partial<{[key in FilterType]: FilterType[]}>;

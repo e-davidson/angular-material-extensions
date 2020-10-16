@@ -27,8 +27,8 @@ export enum Target {
   Top = '_top'
 }
 
-export interface MetaData {
-    key: string;
+export interface MetaData<T = any> {
+    key: keyof T & string;
     displayName?: string;
     fieldType: FieldType;
     additional?: Additional;
@@ -38,8 +38,8 @@ export interface MetaData {
     width?: string;
     noExport?: boolean;
     noFilter?: boolean;
-    transform?: ( (o: any, ...args: any[])=> any ) | PipeTransform;
-    click?: (element: any, key: string ) => void;
+    transform?: ( (o: T | string, ...args: any[])=> any ) | PipeTransform;
+    click?: (element: T, key: string ) => void;
 }
 
 export interface  ReportDef<DataType = any> {
