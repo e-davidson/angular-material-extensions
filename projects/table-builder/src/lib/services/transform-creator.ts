@@ -25,6 +25,9 @@ export class TransformCreator{
       }
       return metaData.transform
     }
+        if (this.config.transformers && this.config.transformers[metaData.fieldType]) {
+          return this.config.transformers[metaData.fieldType];
+        }
         switch(metaData.fieldType) {
           case FieldType.Date:
             const dateFormat = metaData.additional?.dateFormat ?? this.config.defaultSettings?.dateFormat ?? 'shortDate';
