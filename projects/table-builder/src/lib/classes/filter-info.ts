@@ -60,8 +60,8 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
   return (rowObj) => {
     const value = rowObj[filter.key];
     return (
-      (value == undefined) && (filter.filterType !== FilterType.IsNull && filter.filterType !== FilterType.NumberNotEqual)) 
-      ? false 
+      (value === undefined) && (filter.filterType !== FilterType.IsNull && filter.filterType !== FilterType.NumberNotEqual))
+      ? false
       : func( value);
   };
 }

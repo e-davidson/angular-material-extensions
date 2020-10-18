@@ -3,7 +3,7 @@ import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
 
 const  booleanEqualsFunc : FilterFunc<boolean> = (filterInfo:FilterInfo<boolean>) => (val): boolean  => {
-    return filterInfo.filterValue === val;
+    return filterInfo.filterValue === (val || false);
 }
 
 export const BooleanFilterFuncs = {
