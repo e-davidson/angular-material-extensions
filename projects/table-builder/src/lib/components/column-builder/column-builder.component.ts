@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
+import { GenericTableComponent } from '../generic-table/generic-table.component';
 
 
 @Component({
@@ -35,7 +36,7 @@ export class ColumnBuilderComponent implements OnInit {
   template: TemplateRef<any>;
   transform: (o: any, ...args: any[])=> any ;
 
-  constructor( private transformCreator: TransformCreator) { }
+  constructor( private transformCreator: TransformCreator, private gt: GenericTableComponent) { }
 
   getTemplate() {
     if (this.customCell?.columnDef) {
@@ -57,6 +58,7 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngAfterViewInit() {
     this.template = this.getTemplate();
+    this.gt.table.addColumnDef(this.columnDef);
   }
 
   cellClicked(element, key) {

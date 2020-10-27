@@ -11,21 +11,20 @@ import {
   ViewContainerRef,
   ElementRef,
   ComponentFactory,
-  ChangeDetectorRef,
+  Injector,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable } from '@angular/material/table';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
 import { tap,  map, distinct } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
-import { ColumnInfo, TableContainerComponent } from '../table-container/table-container';
+import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
-import { FieldType } from '../../interfaces/report-def';
 
 @Component({
   selector: 'tb-generic-table',
@@ -47,11 +46,6 @@ export class GenericTableComponent implements OnInit {
 
   @Input() columnInfos:ColumnInfo[];
 
-
-
-
-  subs: Subscription[] = [];
-
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
   @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
@@ -61,17 +55,18 @@ export class GenericTableComponent implements OnInit {
   dataSource: MatTableObservableDataSource<any>;
   keys: string [] = [];
   factory: ComponentFactory<ColumnBuilderComponent> ;
+  injector: Injector;
   constructor(
     private sort: MatSort,
     public state: TableStore,
     componentFactoryResolver: ComponentFactoryResolver,
     private viewContainer: ViewContainerRef,
-    private tableContainer: TableContainerComponent,
-    private cdr: ChangeDetectorRef
+    injector: Injector,
     ) {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
     this.factory = componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
+    this.injector = Injector.create({ providers: [{provide: GenericTableComponent, useValue: this }], parent: injector});
   }
 
   paginatorChange(): void {
@@ -101,24 +96,20 @@ export class GenericTableComponent implements OnInit {
       this.columnInfos.forEach( ci => this.addMetaData(ci) ) ;
     }
   }
-
+  columns:string [] = [];
   ngOnInit() {
     if (this.SelectionColumn) {
-      this.state.setMetaData({ key: 'select', fieldType: FieldType.Unknown });
+      this.columns.push('select');
     }
     if (this.IndexColumn) {
-      this.state.setMetaData({ key: 'index', fieldType: FieldType.Unknown });
+     this.columns.push('index');
     }
     this.createDataSource();
 
     this.state.effect((o$: Observable<string[]>) => {
       return o$.pipe(
         tap((d: string[]) => {
-          setTimeout(() => {
-            this.rows.forEach(r => r.columns = d);
-            this.keys = d;
-            this.cdr.detectChanges();
-          }, 0);
+            this.keys = [...this.columns, ...d];
         }
         )
       );
@@ -143,25 +134,13 @@ export class GenericTableComponent implements OnInit {
     if(columnBuilder) {
       columnBuilder.metaData = column.metaData;
     } else {
-      const component = this.viewContainer.createComponent(this.factory);
+      const component = this.viewContainer.createComponent(this.factory,0, this.injector);
       component.instance.customCell = column.customCell;
       component.instance.metaData = column.metaData;
       component.instance.data$ = this.data$;
       this.myColumns[column.metaData.key] = component.instance;
-      this.needsInit.push(column.metaData.key);
     }
   }
-
-  ngAfterViewChecked() {
-    console.count('gt after view checked');
-    console.log(this.needsInit.length);
-    if(this.needsInit.length > 0 ) {
-      this.needsInit.forEach( key => this.table.addColumnDef( this.myColumns[key].columnDef ));
-      this.needsInit = [];
-      this.cdr.detectChanges();
-    }
-  }
-
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -174,10 +153,6 @@ export class GenericTableComponent implements OnInit {
     this.isAllSelected() ?
       this.selection.clear() :
       this.selection.select(...this.dataSource.data);
-  }
-
-  ngOnDestroy() {
-    this.subs.forEach( sub => sub.unsubscribe());
   }
 }
 

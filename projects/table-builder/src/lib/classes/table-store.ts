@@ -33,7 +33,7 @@ export class TableStore extends ComponentStore<TableState> {
     this.updateState( this.store.pipe(
       select(selectStorageStateItem(id)),
       mergeMap( (state: TableState ) => (state ? [state] : [] )),
-      first()
+      first(),
     ));
   }
 
@@ -130,7 +130,12 @@ export class TableStore extends ComponentStore<TableState> {
   });
 
   updateStateFunc(state: TableState, tableState: Partial<TableState>) : TableState {
-    return update( state ,  { $merge: tableState});
+    let metaData = {...tableState.metaData, ...Object.values( state.metaData ).reduce( (prev: Dictionary<MetaData> ,curr) => {
+      prev[curr.key] = {...curr, ...tableState.metaData[curr.key]};
+      return prev;
+    }, {}  )}
+
+    return update( state ,  { $merge: {...tableState, metaData }  });
   }
 
   readonly setPageSize = this.updater( (state, pageSize: number)=> ({...state,pageSize}));
