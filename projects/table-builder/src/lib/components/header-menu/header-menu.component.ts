@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/c
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { FilterType } from '../../enums/filterTypes';
 import { FilterInfo } from '../../classes/filter-info';
-import { TableStateManager } from '../../classes/table-state-manager';
+import { TableStore } from '../../classes/table-store';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
@@ -21,7 +21,7 @@ export class HeaderMenuComponent {
 
   @Input() metaData: MetaData;
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
-  constructor( public tableState: TableStateManager) {}
+  constructor( public tableState: TableStore) {}
 
   hideField(key) {
     this.tableState.hideColumn(key);
@@ -66,11 +66,6 @@ export class HeaderMenuComponent {
     } else {
       this.myFilterType = filterType;
     }
-  }
-
-  stopClickPropagate(event: any) {
-    event.stopPropagation();
-    event.preventDefault();
   }
 
   selectedFilters = [];

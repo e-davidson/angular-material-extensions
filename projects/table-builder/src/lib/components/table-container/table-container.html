@@ -3,74 +3,19 @@
     <div style="width:100%;">
       <div style="display: flex; flex-direction: row;justify-content: flex-end; ">
 
-        <!-- <mat-form-field appearance='outline'>
-          <mat-select (selectionChange)='storedStateSelectionChanged($event)'>
-            <mat-option *ngFor='let item of [1,2]'>
-              {{item}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field> -->
-
         <tb-filter-displayer >
         </tb-filter-displayer>
         <tb-col-displayer></tb-col-displayer>
 
-        <button mat-icon-button color='primary' [matMenuTriggerFor]="mainMenu"><mat-icon>more_vert</mat-icon></button>
-        <mat-menu #mainMenu='matMenu' >
-          <button mat-menu-item (click)="state.resetState();OnStateReset.next()" >
-            <mat-icon color="primary">autorenew</mat-icon>
-            <span>Reset table</span>
-          </button>
-           <button mat-menu-item *ngIf="tableId" (click)="state.saveToState(tableId);OnSaveState.next()" >
-            <mat-icon color="primary">save</mat-icon>
-            <span>Save Table</span>
-          </button>
-          <button mat-menu-item (click)="exportToCsv()" >
-            <mat-icon color="primary">file_download</mat-icon>
-            <span>Export Table</span>
-          </button>
-          <button mat-menu-item [matMenuTriggerFor]="savedNames" >
-            <mat-icon color="primary">file_download</mat-icon>
-            <span>More Save Options</span>
-          </button>
-        </mat-menu>
-        <mat-menu #savedNames='matMenu' panelClass='wide-menu'  >
-          <button mat-menu-item >
-            <mat-icon>add</mat-icon>
-            <span>New</span>
-          </button>
-          <ng-container  *ngFor='let item of [{val: "Main"}, {val: "Amazon"}]'>
-            <ng-container *ngIf='!item.editMode; else editMode'>
-              <button mat-menu-item (click)='setCurrentProfile(item.val)'>
-                <div style='display: flex; align-items: center; justify-content: space-between;'>
-                  <span style='display:flex;'>{{item.val}}</span>
-                  <span style='display:flex;'>
-                    <span style="width: 120px;"></span>
-                    <mat-icon color='accent' stop-propagation (click)="item.editMode = true" >edit</mat-icon>
-                    <mat-icon color='warn'   stop-propagation >delete_forever</mat-icon>
-
-                  </span>
-                </div>
-              </button>
-            </ng-container>
-            <ng-template #editMode>
-            <div style="padding-left: 24px; padding-right: 24px;">
-              <mat-form-field  >
-                <input style='width:90%' matInput [value]='item.val' />
-                <span matSuffix>
-                  <mat-icon  color='warn' stop-propagation (click)="item.editMode = false" >cancel</mat-icon>
-                  <mat-icon  color='accent' stop-propagation (click)="item.editMode = false" >save</mat-icon>
-                </span>
-              </mat-form-field>
-
-            </div>
-
-
-            </ng-template>
-          </ng-container>
-
-
-        </mat-menu>
+        <button mat-icon-button (click)="state.resetState();OnStateReset.next()" matTooltip="Reset table">
+          <mat-icon color="primary">autorenew</mat-icon>
+        </button>
+        <button *ngIf="tableId" mat-icon-button (click)="state.saveToState(tableId);OnSaveState.next()" matTooltip="Save Table">
+          <mat-icon color="primary">save</mat-icon>
+        </button>
+        <button mat-icon-button (click)="exportToCsv()" matTooltip="Export Table">
+          <mat-icon color="primary">file_download</mat-icon>
+        </button>
 
 
       </div>

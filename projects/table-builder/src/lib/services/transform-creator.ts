@@ -11,7 +11,7 @@ function isPipe(o : any ): o is PipeTransform {
 @Injectable({
   providedIn:  'root'
 })
-export class TransformCreator{
+export class TransformCreator {
   constructor(
     private datePipe: DatePipe,
     private currencyPipe: CurrencyPipe,

@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { filterTypeMap, FilterInfo } from '../../classes/filter-info';
+import { TableStore } from '../../classes/table-store';
 import { FilterType } from '../../enums/filterTypes';
 import { FieldType } from '../../interfaces/report-def';
-import { TableStateManager } from '../../classes/table-state-manager';
 
 @Component({
     selector: 'tb-filter',
@@ -17,7 +17,7 @@ export class FilterComponent {
   @Input() filter: FilterInfo;
   @Output() close = new EventEmitter();
   currentFilterType: FilterType;
-  constructor( public state: TableStateManager) { }
+  constructor( public state: TableStore) { }
 
   ngOnInit() {
     this.currentFilterType = this.filter.filterType;

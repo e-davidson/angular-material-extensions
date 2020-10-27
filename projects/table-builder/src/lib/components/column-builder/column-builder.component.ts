@@ -16,7 +16,14 @@ import { TransformCreator } from '../../services/transform-creator';
 export class ColumnBuilderComponent implements OnInit {
   FieldType = FieldType;
   filter: FilterInfo;
-  @Input() metaData: MetaData;
+  _metaData: MetaData;
+  @Input() set metaData(value: MetaData) {
+    this._metaData = value;
+    this.transform = this.transformCreator.createTransformer(this.metaData);
+  };
+  get metaData() : MetaData {
+    return this._metaData;
+  }
   @Input() customCell: CustomCellDirective;
   @Input() data$: Observable<any[]>;
 
@@ -46,7 +53,6 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
-    this.transform = this.transformCreator.createTransformer(this.metaData);
   }
 
   ngAfterViewInit() {

@@ -1,52 +1,50 @@
 import { Injectable, Inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { fullTableState, selectTableState} from './reducer';
-import { tap, mergeMap, first, map, filter } from 'rxjs/operators';
-import { Store, select } from '@ngrx/store';
+import { selectStorageState, StateStorage} from './reducer';
+import { tap, mergeMap, first, map } from 'rxjs/operators';
+import { Store, ActionCreator, Creator } from '@ngrx/store';
 import * as tableActions from './actions';
 import { TableBuilderConfig, TableBuilderConfigToken } from '../classes/TableBuilderConfig';
-
 
 @Injectable()
 export class SaveTableEffects {
 
-  saveTable$ = createEffect(
+  saveState$ = createEffect(
     () => this.actions$.pipe(
-      ofType(tableActions.saveTableState),
-      mergeMap( ({tableId}) =>  this.store$.pipe(
-        first(),
-        select(selectTableState(), {tableId} ),
-        map( table => ({tableId, table}))) ),
-        tap( ({tableId, table}) => {
-        localStorage.setItem(tableId, JSON.stringify(table));
+      ofType(tableActions.saveState),
+        tap( (action) => {
+          if(action.persist) {
+            localStorage.setItem(action.id, JSON.stringify(action.state));
+          }
       }),
     ), { dispatch: false }
   );
 
-  initTable$ = createEffect(
-    () => this.actions$.pipe(
-      ofType(tableActions.initTable),
-      mergeMap( ({tableId}) =>
-        this.store$.pipe(
-          map(s => s.fullTableState[tableId]),
-          first(),
-          filter( d => !d.initialized ),
-          map( u => {
-            const table = localStorage.getItem(tableId);
-            if (table) {
-              return tableActions.updateTableState({ tableId, tableState: {...JSON.parse(table), initialized : true} });
-            }
-            return tableActions.updateTableState(
-              { tableId, tableState: {...{ hiddenKeys: [], pageSize: 20, filters: {}, initialized : true }, ...this.config.defaultTableState } }
-            );
-          }),
-        ))
-    )
-  );
+  createEffectWithState<T,U extends ActionCreator<string, Creator>,V>( store: Store<T>, selector: (state: T) => V, allowedType: U   ) {
+    return this.actions$.pipe(
+      ofType(allowedType),
+      mergeMap( action => store.select(selector).pipe(
+        first(),
+        map(state => ({action,state}))
+      ))
+    );
+  }
+
+  loadState$ = createEffect(() => this.createEffectWithState(this.store$, selectStorageState, tableActions.loadState).pipe(
+    mergeMap( ({action,state}) => {
+      if(!state.states[action.id]) {
+        const storage = localStorage.getItem(action.id);
+        if(storage) {
+          return [tableActions.saveState({id: action.id, state: JSON.parse(storage)})];
+        }
+      }
+      return [];
+    })
+  ));
 
   constructor(
     private actions$: Actions,
-    private store$: Store<{fullTableState: fullTableState}>,
+    private store$: Store<{storageState: StateStorage}>,
     @Inject(TableBuilderConfigToken) private config: TableBuilderConfig
   ) {}
 }

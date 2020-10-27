@@ -18,7 +18,7 @@ import { ModuleWithProviders } from '@angular/compiler/src/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuilderConfig';
 import { NumberFilterComponent } from './components/number-filter/number-filter.component';
 import { StoreModule } from '@ngrx/store';
-import { tableStateReducer } from './ngrx/reducer';
+import { storageStateReducer } from './ngrx/reducer';
 import { HeaderMenuComponent } from './components/header-menu/header-menu.component';
 import { EffectsModule } from '@ngrx/effects';
 import { SaveTableEffects } from './ngrx/effects';
@@ -38,7 +38,7 @@ import {AutoFocusDirective} from './directives/auto-focus.directive'
   imports: [
     CommonModule,
     MaterialModule,
-    StoreModule.forFeature('fullTableState', tableStateReducer),
+    StoreModule.forFeature('storageState', storageStateReducer),
     EffectsModule.forFeature([SaveTableEffects]),
     FormsModule,
     RouterModule,

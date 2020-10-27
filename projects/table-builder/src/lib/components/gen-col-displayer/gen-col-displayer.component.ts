@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { DisplayCol } from '../../classes/display-col';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TableStateManager } from '../../classes/table-state-manager';
+import { TableStore } from '../../classes/table-store';
 import { FieldType } from '../../interfaces/report-def';
 
 @Component({
@@ -13,10 +13,10 @@ import { FieldType } from '../../interfaces/report-def';
 })
 export class GenColDisplayerComponent {
   columns$: Observable< DisplayCol[]>;
-  constructor( private tableState: TableStateManager) {
+  constructor( private tableState: TableStore ) {
     this.columns$ = this.tableState.state$.pipe(
       map( state =>
-        state.metaData
+        Object.values(state.metaData)
           .filter( md => md.fieldType !== FieldType.Hidden )
           .map( md => ({
             key: md.key,
@@ -25,11 +25,6 @@ export class GenColDisplayerComponent {
           }))
       ),
     );
-  }
-
-  stopClickPropagate(event: any) {
-    event.stopPropagation();
-    event.preventDefault();
   }
 
   reset(displayCols: DisplayCol[]) {

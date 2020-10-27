@@ -3,12 +3,10 @@
     <ng-container matColumnDef="select">
 
         <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" style="flex: 0 0 30px;" >
-
           <mat-checkbox (change)="$event ? masterToggle() : null"
                         [checked]="selection.hasValue() && isAllSelected()"
                         [indeterminate]="selection.hasValue() && !isAllSelected()">
           </mat-checkbox>
-
         </mat-header-cell>
 
         <mat-cell *matCellDef="let row" style="flex: 0 0 30px;">

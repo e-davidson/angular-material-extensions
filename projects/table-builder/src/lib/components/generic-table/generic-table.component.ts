@@ -10,21 +10,22 @@ import {
   ComponentFactoryResolver,
   ViewContainerRef,
   ElementRef,
+  ComponentFactory,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable } from '@angular/material/table';
-import { Observable, Subscription, of } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import * as _ from 'lodash';
 import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MultiSortDirective } from '../../directives/multi-sort.directive';
-import { orderBy } from 'lodash';
-import { combineArrays } from '../../functions/rxjs-operators';
-import { TableStateManager } from '../../classes/table-state-manager';
+import { TableStore } from '../../classes/table-store';
 import { tap,  map, distinct } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
-import { ColumnInfo } from '../table-container/table-container';
+import { ColumnInfo, TableContainerComponent } from '../table-container/table-container';
+import { Dictionary } from '../../interfaces/dictionary';
+import { FieldType } from '../../interfaces/report-def';
 
 @Component({
   selector: 'tb-generic-table',
@@ -41,10 +42,12 @@ export class GenericTableComponent implements OnInit {
   @Input() rows: QueryList<MatRowDef<any>>;
   @Input() isSticky = false;
   @Input() pageSize: number;
-  columnBuilders: ColumnBuilderComponent[];
+  @Input() columnBuilders: ColumnBuilderComponent[];
   @Output() selection$: Observable<any>;
 
   @Input() columnInfos:ColumnInfo[];
+
+
 
 
   subs: Subscription[] = [];
@@ -57,16 +60,18 @@ export class GenericTableComponent implements OnInit {
   selection: SelectionModel<any>;
   dataSource: MatTableObservableDataSource<any>;
   keys: string [] = [];
-
+  factory: ComponentFactory<ColumnBuilderComponent> ;
   constructor(
     private sort: MatSort,
-    public state: TableStateManager,
-    private componentFactoryResolver: ComponentFactoryResolver,
+    public state: TableStore,
+    componentFactoryResolver: ComponentFactoryResolver,
     private viewContainer: ViewContainerRef,
+    private tableContainer: TableContainerComponent,
+    private cdr: ChangeDetectorRef
     ) {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
-
+    this.factory = componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
   }
 
   paginatorChange(): void {
@@ -92,13 +97,32 @@ export class GenericTableComponent implements OnInit {
         }
       });
     }
-    if ( changes.columnInfos && this.columnInfos ) {
-        this.initColumns();
+    if ( changes.columnInfos){
+      this.columnInfos.forEach( ci => this.addMetaData(ci) ) ;
     }
   }
 
   ngOnInit() {
+    if (this.SelectionColumn) {
+      this.state.setMetaData({ key: 'select', fieldType: FieldType.Unknown });
+    }
+    if (this.IndexColumn) {
+      this.state.setMetaData({ key: 'index', fieldType: FieldType.Unknown });
+    }
     this.createDataSource();
+
+    this.state.effect((o$: Observable<string[]>) => {
+      return o$.pipe(
+        tap((d: string[]) => {
+          setTimeout(() => {
+            this.rows.forEach(r => r.columns = d);
+            this.keys = d;
+            this.cdr.detectChanges();
+          }, 0);
+        }
+        )
+      );
+    })(this.state.displayedColumns$);
   }
 
   createDataSource() {
@@ -106,58 +130,38 @@ export class GenericTableComponent implements OnInit {
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
     this.dataSource.sort = this.sort;
-    this.dataSource.sortData = (data: {}[], sort: MultiSortDirective) =>
-      orderBy(data, sort.rules.map(r => r.active), sort.rules.map(r => r.direction as direc ));
+
     this.dataSource.paginator = this.paginator;
-    this.subs.push(this.paginator.page.pipe(map( e => e.pageSize ), distinct()).subscribe( size => {
-      this.state.updateState( { pageSize: size});
-    }));
+    this.state.setPageSize(this.paginator.page.pipe(map( e => e.pageSize ), distinct()));
   }
-  init = false;
-  ngAfterContentChecked() {
-    if ( this.init) {
-      this.init = false;
-      this.columnBuilders.forEach( cb => this.table.addColumnDef(cb.columnDef));
-    }
-  }
-  initColumns() {
-    const factory = this.componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
-    this.columnBuilders = this.columnInfos.map(column => {
-      const component = this.viewContainer.createComponent(factory);
+
+  myColumns: Dictionary<ColumnBuilderComponent> = {};
+  needsInit: string [] = [];
+  addMetaData(column: ColumnInfo) {
+    console.count(column.metaData.key);
+    let columnBuilder = this.myColumns[column.metaData.key];
+    if(columnBuilder) {
+      columnBuilder.metaData = column.metaData;
+    } else {
+      const component = this.viewContainer.createComponent(this.factory);
       component.instance.customCell = column.customCell;
       component.instance.metaData = column.metaData;
       component.instance.data$ = this.data$;
-      return component.instance;
-    });
-    const staticColumns = [];
-    if (this.SelectionColumn) {
-      staticColumns.push('select');
+      this.myColumns[column.metaData.key] = component.instance;
+      this.needsInit.push(column.metaData.key);
     }
-    if (this.IndexColumn) {
-      staticColumns.push('index');
-    }
-    this.init = true;
-
-    const _keys = this.columnBuilders.map( cb => cb.metaData.key );
-
-    const keys$ = combineArrays(
-      [
-        of(staticColumns) ,
-        this.state.displayedColumns$.pipe(map( dc =>  dc.filter( c => _keys.includes(c))))
-      ]
-    ).pipe(
-      tap(d => {
-        this.currentColumns = d;
-        if (this.rows) {
-          this.rows.forEach(
-            r => r.columns = d
-          );
-        }
-      })
-    );
-
-    this.subs.push(keys$.subscribe( k => this.keys = k));
   }
+
+  ngAfterViewChecked() {
+    console.count('gt after view checked');
+    console.log(this.needsInit.length);
+    if(this.needsInit.length > 0 ) {
+      this.needsInit.forEach( key => this.table.addColumnDef( this.myColumns[key].columnDef ));
+      this.needsInit = [];
+      this.cdr.detectChanges();
+    }
+  }
+
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
