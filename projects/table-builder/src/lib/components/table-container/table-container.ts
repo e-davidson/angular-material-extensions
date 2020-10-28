@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
   Inject,
 } from '@angular/core';
-import { combineLatest, Observable, Subscription } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { FieldType, MetaData } from '../../interfaces/report-def';
 import { first, map } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';

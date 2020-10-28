@@ -5,7 +5,7 @@ import { defaultTableState, TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { FilterInfo } from './filter-info';
-import { mapVisibleFields, selectStorageStateItem, StateStorage,  } from '../ngrx/reducer';
+import { selectStorageStateItem, StateStorage,  } from '../ngrx/reducer';
 import { Sort, SortDirection }  from '@angular/material/sort' ;
 import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
@@ -69,8 +69,6 @@ export class TableStore extends ComponentStore<TableState> {
       .filter(key => !state.hiddenKeys.includes(key))
       .map( key => key )
     );
-
-  readonly visibleFields$ = this.select( state => mapVisibleFields(state));
 
   readonly hideColumn = this.updater((state, key: string) => ({
     ...state,
@@ -142,18 +140,37 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly updateState = this.updater<TableState>(this.updateStateFunc);
 
+  mergeMeta (orig: MetaData, merge: MetaData): MetaData {
+    return {
+        key: orig.key,
+        displayName: merge.displayName ?? orig.displayName,
+        fieldType: merge.fieldType || orig.fieldType,
+        additional: {...orig.additional, ...merge.additional},
+        order: merge.order ?? orig.order,
+        preSort: merge.preSort ?? orig.preSort,
+        _internalNotUserDefined: merge._internalNotUserDefined || orig._internalNotUserDefined,
+        width: merge.width ?? orig.width,
+        noExport: merge.noExport || orig.noExport,
+        noFilter: merge.noFilter || orig.noFilter,
+        customCell: merge.customCell ?? orig.customCell,
+        transform: merge.transform ?? orig.transform,
+        click: merge.click ?? orig.click,
+    };
+  }
+
   readonly setMetaData = this.updater((state, metaData: MetaData[] | MetaData ) => {
     const newMetaData: Dictionary<MetaData> = {};
     const metaDatas = Array.isArray(metaData) ? metaData : [metaData];
     metaDatas.forEach( md => {
-        const existing = state.metaData[md.key];
+        const existing = newMetaData[md.key] ?? state.metaData[md.key];
         if(!existing) {
           newMetaData[md.key] = { ...md, noExport: md.customCell }
         } else {
-          newMetaData[md.key] = { ...existing, ...md, noExport: existing.noExport ? md.customCell : false  };
+          newMetaData[md.key] = this.mergeMeta(existing,md);
         }
     });
 
     return {...state, metaData: {...state.metaData, ...newMetaData}};
   });
+
 }

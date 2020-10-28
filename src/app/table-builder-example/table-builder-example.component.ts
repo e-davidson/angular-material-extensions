@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
-import { Subject, Observable, of } from 'rxjs';
+import { Subject, Observable, of, ReplaySubject } from 'rxjs';
 import { scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType, ArrayAdditional, ArrayStyle } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
@@ -82,7 +82,7 @@ const META_DATA: MetaData[] = [
 export class TableBuilderExampleComponent {
   public tableBuilder: TableBuilder;
   newElement$ = new Subject<PeriodicElement>();
-  metaData$ = new Subject<MetaData[]>();
+  metaData$ = new ReplaySubject<MetaData[]>();
   myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
 
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
@@ -96,9 +96,9 @@ export class TableBuilderExampleComponent {
     );
     META_DATA[1].transform = lcp;
     const all = combineArrays([of(ELEMENT_DATA), addedElements]);
-    setTimeout(() => {
+   // setTimeout(() => {
       this.metaData$.next(META_DATA);
-    }, 1000);
+   // }, 0);
     this.tableBuilder = new TableBuilder(all, this.metaData$);
   }
 

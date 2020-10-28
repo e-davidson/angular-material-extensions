@@ -59,6 +59,7 @@ export class ColumnBuilderComponent implements OnInit {
   ngAfterViewInit() {
     this.template = this.getTemplate();
     this.gt.table.addColumnDef(this.columnDef);
+    console.log(this.metaData.key, this);
   }
 
   cellClicked(element, key) {
