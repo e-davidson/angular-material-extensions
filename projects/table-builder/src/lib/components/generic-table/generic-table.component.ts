@@ -44,7 +44,7 @@ export class GenericTableComponent implements OnInit {
   @Input() columnBuilders: ColumnBuilderComponent[];
   @Output() selection$: Observable<any>;
 
-  @Input() columnInfos:ColumnInfo[];
+  @Input() columnInfos: Observable<ColumnInfo[]>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
@@ -92,9 +92,6 @@ export class GenericTableComponent implements OnInit {
         }
       });
     }
-    if ( changes.columnInfos){
-      this.columnInfos.forEach( ci => this.addMetaData(ci) ) ;
-    }
   }
   columns:string [] = [];
   ngOnInit() {
@@ -106,14 +103,8 @@ export class GenericTableComponent implements OnInit {
     }
     this.createDataSource();
 
-    this.state.effect((o$: Observable<string[]>) => {
-      return o$.pipe(
-        tap((d: string[]) => {
-            this.keys = [...this.columns, ...d];
-        }
-        )
-      );
-    })(this.state.displayedColumns$);
+    this.state.on(this.columnInfos, columns => columns.forEach( ci => this.addMetaData(ci) ));
+    this.state.on(this.state.displayedColumns$, keys => this.keys = [...this.columns, ...keys] );
   }
 
   createDataSource() {
@@ -127,9 +118,8 @@ export class GenericTableComponent implements OnInit {
   }
 
   myColumns: Dictionary<ColumnBuilderComponent> = {};
-  needsInit: string [] = [];
+
   addMetaData(column: ColumnInfo) {
-    console.count(column.metaData.key);
     let columnBuilder = this.myColumns[column.metaData.key];
     if(columnBuilder) {
       columnBuilder.metaData = column.metaData;

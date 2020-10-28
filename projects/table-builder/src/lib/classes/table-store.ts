@@ -11,7 +11,7 @@ import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
 import { select, Store } from '@ngrx/store';
-import { first, mergeMap } from 'rxjs/operators';
+import { first, mergeMap, tap } from 'rxjs/operators';
 import { loadState, saveState } from '../ngrx/actions';
 
 
@@ -35,6 +35,12 @@ export class TableStore extends ComponentStore<TableState> {
       mergeMap( (state: TableState ) => (state ? [state] : [] )),
       first(),
     ));
+  }
+
+  on<T>( srcObservable: Observable<T>, func: (obj:T)=> void) {
+    this.effect((src: Observable<T>) => {
+      return src.pipe(tap(func));
+    })(srcObservable);
   }
 
   async saveToState(id:string) {

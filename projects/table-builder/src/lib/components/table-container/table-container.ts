@@ -51,7 +51,7 @@ import { DatePipe } from '@angular/common';
   @Output() OnStateReset = new EventEmitter();
   @Output() OnSaveState = new EventEmitter();
 
-  myColumns$: Observable<Partial<ColumnInfo>[]>;
+  myColumns$: Observable<ColumnInfo[]>;
 
 
   constructor(
