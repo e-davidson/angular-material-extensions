@@ -5,7 +5,7 @@ import { defaultTableState, TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { FilterInfo } from './filter-info';
-import { selectStorageStateItem, StateStorage,  } from '../ngrx/reducer';
+import { selectStorageStateItem, StateStorage } from '../ngrx/reducer';
 import { Sort, SortDirection }  from '@angular/material/sort' ;
 import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
@@ -27,6 +27,7 @@ export class TableStore extends ComponentStore<TableState> {
   getFilter$(filterId) : Observable<FilterInfo | undefined> {
     return this.select( this.filters$, filters => filters[filterId]);
   }
+
 
   setFromSavedState(id:string) {
     this.store.dispatch(loadState({id}));
@@ -59,15 +60,11 @@ export class TableStore extends ComponentStore<TableState> {
     return this.select(this.metaData$, md => md.find(m => m.key === key ))
   }
 
-  readonly rules$  : Observable<Sort[]> = this.select( this.metaData$,  (md) => {
-    return  md
-    .filter(( metaData ) => metaData.preSort)
-    .sort(
-      ({  preSort: ps1  }, { preSort: ps2 } ) =>  (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE)
-    )
-    .map(( {key, preSort} ) =>
-      ({ active: key, direction: preSort.direction }))
-  } );
+  createPreSort(metaDatas: Dictionary<MetaData>): Sort[] {
+    return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
+    .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
+    .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
+  }
 
 
   readonly displayedColumns$ = this.select(
@@ -85,8 +82,8 @@ export class TableStore extends ComponentStore<TableState> {
     const hiddenColumns = Object.values(state.metaData)
       .filter(md => md.fieldType === FieldType.Hidden)
       .map(md => md.key);
-    const sort = state.sorted
-    return update(state, { hiddenKeys: { $set: [...hiddenColumns] }, filters: { $set: {} } });
+    const sorted = this.createPreSort(state.metaData);
+    return update(state, { hiddenKeys: { $set: [...hiddenColumns] }, filters: { $set: {} }, sorted: {$set: sorted} });
   });
 
   readonly showColumn = this.updater((state, key: string) => ({
@@ -120,7 +117,6 @@ export class TableStore extends ComponentStore<TableState> {
   readonly removeFilter = this.updater( (state, filterId: string) =>
     update(state, {filters: {$unset : [filterId ]}})
   );
-
 
   readonly setSort = this.updater<{key: string, direction?: SortDirection}>((state, {key, direction} ) => {
     const sortArray = state.sorted.filter( s => s.active !== key );
@@ -175,8 +171,11 @@ export class TableStore extends ComponentStore<TableState> {
           newMetaData[md.key] = this.mergeMeta(existing,md);
         }
     });
-
-    return {...state, metaData: {...state.metaData, ...newMetaData}};
+    let sorted = state.sorted;
+    if(sorted.length === 0) {
+      sorted = this.createPreSort(newMetaData);
+    }
+    return {...state, metaData: {...state.metaData, ...newMetaData}, sorted};
   });
 
 }

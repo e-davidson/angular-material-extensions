@@ -1,7 +1,6 @@
 import { Directive, OnInit, OnDestroy } from '@angular/core';
-import { MatSort, Sort, MatSortable } from '@angular/material/sort';
-import { Subscription } from 'rxjs';
-import { map, distinctUntilChanged } from 'rxjs/operators';
+import { MatSort, Sort } from '@angular/material/sort';
+import { map } from 'rxjs/operators';
 import { TableStore } from '../classes/table-store';
 
 @Directive({
@@ -14,38 +13,29 @@ import { TableStore } from '../classes/table-store';
 })
 export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
   rules: Sort[] = [];
-  private SubRef: Subscription;
 
   constructor(private state: TableStore) {
     super();
-  }
+    this.state.setSort(this.sortChange.pipe(map(sc => ({ key: sc.active, direction: sc.direction }))));
+    this.state.on(
+      this.state.select(this.state.state$, state => state.sorted),
+      rules => {
+        this.rules = rules;
 
-  first = true;
+        if (this.active && rules.length === 0) {
+          this.active = '';
+          this.direction = '';
+          this.sortChange.emit({ active: '', direction: '' });
+        }
 
-  ngOnInit() {
-    this.SubRef = this.state.state$.pipe(
-      map( state => state.sorted ),
-      distinctUntilChanged(),
-    ).subscribe( rules => {
-      this.rules = rules;
-      if(rules?.length > 0 && this.first) {
-        this.first = false;
-        this.active = this.rules[0].active;
-        this.direction = this.rules[0].direction;
+        if(rules.length > 0 && (this.active !== rules[0].active || this.direction !== rules[0].direction)) {
+          this.active = rules[0].active;
+          this.direction = rules[0].direction;
+          this.sortChange.emit(rules[0]);
+        }
+
       }
-    });
-    super.ngOnInit();
+    );
   }
 
-
-  ngOnDestroy() {
-    this.SubRef.unsubscribe();
-    super.ngOnDestroy();
-  }
-
-  sort(sortable: MatSortable): void {
-    const direction = this.active !== sortable.id ?  sortable.start ?? this.start : this.getNextSortDirection(sortable);
-    this.state.setSort({key: sortable.id,direction});
-    super.sort(sortable);
-  }
 }

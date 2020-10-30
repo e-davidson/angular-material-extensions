@@ -40,7 +40,6 @@ export class GenericTableComponent implements OnInit {
   @Input() trackBy: string;
   @Input() rows: QueryList<MatRowDef<any>>;
   @Input() isSticky = false;
-  @Input() pageSize: number;
   @Input() columnBuilders: ColumnBuilderComponent[];
   @Output() selection$: Observable<any>;
 
@@ -66,7 +65,7 @@ export class GenericTableComponent implements OnInit {
     this.selection = new SelectionModel<any>(true, []);
     this.selection$ = this.selection.changed;
     this.factory = componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
-    this.injector = Injector.create({ providers: [{provide: GenericTableComponent, useValue: this }], parent: injector});
+    this.injector = Injector.create({ providers: [{provide: MatTable, useFactory: ()=> {return this.table} }], parent: injector});
   }
 
   paginatorChange(): void {

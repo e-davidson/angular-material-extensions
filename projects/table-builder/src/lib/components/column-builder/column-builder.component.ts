@@ -1,12 +1,10 @@
 import { Component, Input, ChangeDetectionStrategy, TemplateRef, ViewChild, OnInit } from '@angular/core';
 import { MetaData, FieldType } from '../../interfaces/report-def';
-import { MatColumnDef } from '@angular/material/table';
+import { MatColumnDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
-import { GenericTableComponent } from '../generic-table/generic-table.component';
-
 
 @Component({
   selector: 'tb-column-builder',
@@ -36,7 +34,7 @@ export class ColumnBuilderComponent implements OnInit {
   template: TemplateRef<any>;
   transform: (o: any, ...args: any[])=> any ;
 
-  constructor( private transformCreator: TransformCreator, private gt: GenericTableComponent) { }
+  constructor( private transformCreator: TransformCreator, private table: MatTable<any>) { }
 
   getTemplate() {
     if (this.customCell?.columnDef) {
@@ -58,7 +56,7 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngAfterViewInit() {
     this.template = this.getTemplate();
-    this.gt.table.addColumnDef(this.columnDef);
+    this.table.addColumnDef(this.columnDef);
   }
 
   cellClicked(element, key) {
