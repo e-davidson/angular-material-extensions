@@ -129,13 +129,24 @@ export class TableStore extends ComponentStore<TableState> {
     };
   });
 
-  updateStateFunc(state: TableState, tableState: Partial<TableState>) : TableState {
-    let metaData = {...tableState.metaData, ...Object.values( state.metaData ).reduce( (prev: Dictionary<MetaData> ,curr) => {
-      prev[curr.key] = {...curr, ...tableState.metaData[curr.key]};
-      return prev;
-    }, {}  )}
+  mergeMetaDatas(existingMetaData: Dictionary<MetaData>, newMetaDatas: Dictionary<MetaData>) {
+    const metaData: Dictionary<MetaData> = {};
+    const metaDatas = Object.values(existingMetaData);
+    metaDatas.forEach( md => {
+        const existing = metaData[md.key] ?? existingMetaData[md.key];
+        if(!existing) {
+          metaData[md.key] = { ...md, noExport: md.customCell }
+        } else {
+          metaData[md.key] = this.mergeMeta(existing,md);
+        }
+    });
+    return {...metaData, ...newMetaDatas};
+  }
 
-    return update( state ,  { $merge: {...tableState, metaData }  });
+  updateStateFunc(state: TableState, tableState: Partial<TableState>) : TableState {
+    const metaData = this.mergeMetaDatas(state.metaData,tableState.metaData);
+    const sorted = this.createPreSort(metaData);
+    return {...state, ...tableState, metaData , sorted};
   }
 
   readonly setPageSize = this.updater( (state, pageSize: number)=> ({...state,pageSize}));
@@ -160,22 +171,22 @@ export class TableStore extends ComponentStore<TableState> {
     };
   }
 
-  readonly setMetaData = this.updater((state, metaData: MetaData[] | MetaData ) => {
-    const newMetaData: Dictionary<MetaData> = {};
-    const metaDatas = Array.isArray(metaData) ? metaData : [metaData];
-    metaDatas.forEach( md => {
-        const existing = newMetaData[md.key] ?? state.metaData[md.key];
-        if(!existing) {
-          newMetaData[md.key] = { ...md, noExport: md.customCell }
+  readonly setMetaData = this.updater((state, md: MetaData[] | MetaData ) => {
+    const metaDatas = ( Array.isArray(md) ? md : [md] )
+      .reduce((prev: Dictionary<MetaData>,curr) => {
+        if(prev[curr.key]) {
+          prev[curr.key] = this.mergeMeta(prev[curr.key],curr);
         } else {
-          newMetaData[md.key] = this.mergeMeta(existing,md);
+          prev[curr.key] = curr;
         }
-    });
+        return prev;
+      } ,{});
+    const metaData = this.mergeMetaDatas(state.metaData,metaDatas);
     let sorted = state.sorted;
     if(sorted.length === 0) {
-      sorted = this.createPreSort(newMetaData);
+      sorted = this.createPreSort(metaData);
     }
-    return {...state, metaData: {...state.metaData, ...newMetaData}, sorted};
+    return {...state, metaData, sorted};
   });
 
 }
