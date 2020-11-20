@@ -70,7 +70,6 @@ export class TableStore extends ComponentStore<TableState> {
   readonly displayedColumns$ = this.select(
     state => Object.keys(state.metaData)
       .filter(key => !state.hiddenKeys.includes(key))
-      .map( key => key )
     );
 
   readonly hideColumn = this.updater((state, key: string) => ({
