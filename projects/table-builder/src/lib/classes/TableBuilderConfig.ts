@@ -7,7 +7,7 @@ export interface TableBuilderConfig {
   export?: TableBuilderExport;
   defaultSettings?: DefaultSettings;
   arrayInfo?: ArrayAdditional;
-  transformers?: { [key in keyof typeof FieldType]: any }
+  transformers?: Partial<{ [key in keyof typeof FieldType]: (val: any) => any }>
 }
 
 export interface TableBuilderExport {

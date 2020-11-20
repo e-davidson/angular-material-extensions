@@ -15,7 +15,7 @@ import { FilterType } from '../../enums/filterTypes';
 import { TableBuilderModule } from '../../table-builder.module';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
-import { TableStateManager } from '../../classes/table-state-manager';
+import { TableStateManager } from '../../classes/table-store';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatButtonHarness } from '@angular/material/button/testing';
 

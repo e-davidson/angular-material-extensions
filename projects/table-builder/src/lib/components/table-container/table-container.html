@@ -2,31 +2,34 @@
   <ng-container >
     <div style="width:100%;">
       <div style="display: flex; flex-direction: row;justify-content: flex-end; ">
+
         <tb-filter-displayer >
         </tb-filter-displayer>
         <tb-col-displayer></tb-col-displayer>
-        <button mat-icon-button (click)="state.resetState();resort$.next({});OnStateReset.next()" matTooltip="Reset table">
+
+        <button mat-icon-button (click)="state.resetState();OnStateReset.next()" matTooltip="Reset table">
           <mat-icon color="primary">autorenew</mat-icon>
         </button>
-        <button *ngIf="tableId" mat-icon-button (click)="state.saveTable();OnSaveState.next()" matTooltip="Save Table">
+        <button *ngIf="tableId" mat-icon-button (click)="state.saveToState(tableId);OnSaveState.next()" matTooltip="Save Table">
           <mat-icon color="primary">save</mat-icon>
         </button>
         <button mat-icon-button (click)="exportToCsv()" matTooltip="Export Table">
           <mat-icon color="primary">file_download</mat-icon>
         </button>
+
+
       </div>
     </div>
     <div style="clear: both;">
       <tb-generic-table
       [rows]='customRows'
-      [data$]="filteredData"
+      [data$]="data"
       [IndexColumn]='IndexColumn'
       [SelectionColumn]='SelectionColumn'
       (selection$)='selection$.emit($event)'
       [trackBy]='trackBy'
       [isSticky]='isSticky'
-      [pageSize]='pageSize'
-      [columnInfos]='myColumns$ | async'
+      [columnInfos]='myColumns$'
       >
       </tb-generic-table>
     </div>
