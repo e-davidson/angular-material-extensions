@@ -1,11 +1,10 @@
 import { Component, Input, ChangeDetectionStrategy, TemplateRef, ViewChild, OnInit } from '@angular/core';
 import { MetaData, FieldType } from '../../interfaces/report-def';
-import { MatColumnDef } from '@angular/material/table';
+import { MatColumnDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
-
 
 @Component({
   selector: 'tb-column-builder',
@@ -16,7 +15,14 @@ import { TransformCreator } from '../../services/transform-creator';
 export class ColumnBuilderComponent implements OnInit {
   FieldType = FieldType;
   filter: FilterInfo;
-  @Input() metaData: MetaData;
+  _metaData: MetaData;
+  @Input() set metaData(value: MetaData) {
+    this._metaData = value;
+    this.transform = this.transformCreator.createTransformer(this.metaData);
+  };
+  get metaData() : MetaData {
+    return this._metaData;
+  }
   @Input() customCell: CustomCellDirective;
   @Input() data$: Observable<any[]>;
 
@@ -28,7 +34,7 @@ export class ColumnBuilderComponent implements OnInit {
   template: TemplateRef<any>;
   transform: (o: any, ...args: any[])=> any ;
 
-  constructor( private transformCreator: TransformCreator) { }
+  constructor( private transformCreator: TransformCreator, private table: MatTable<any>) { }
 
   getTemplate() {
     if (this.customCell?.columnDef) {
@@ -46,11 +52,11 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
-    this.transform = this.transformCreator.createTransformer(this.metaData);
   }
 
   ngAfterViewInit() {
     this.template = this.getTemplate();
+    this.table.addColumnDef(this.columnDef);
   }
 
   cellClicked(element, key) {

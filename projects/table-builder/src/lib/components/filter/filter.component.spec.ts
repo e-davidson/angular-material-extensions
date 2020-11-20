@@ -9,7 +9,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SpaceCasePipe } from '../../pipes/space-case.pipes';
 import { DateFilterComponent } from '../date-filter/date-filter.component';
 import { FilterType } from '../../enums/filterTypes';
-import { TableStateManager } from '../../classes/table-state-manager';
+import { TableStateManager } from '../../classes/table-store';
 import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 import {MatButtonHarness} from '@angular/material/button/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';

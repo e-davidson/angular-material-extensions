@@ -38,6 +38,7 @@ export interface MetaData<T = any> {
     width?: string;
     noExport?: boolean;
     noFilter?: boolean;
+    customCell?: boolean;
     transform?: ( (o: T | string, ...args: any[])=> any ) | PipeTransform;
     click?: (element: T, key: string ) => void;
 }

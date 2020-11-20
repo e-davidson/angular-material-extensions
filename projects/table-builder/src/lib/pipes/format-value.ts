@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TableStateManager } from '../classes/table-state-manager';
+import { TableStore } from '../classes/table-store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldType } from '../interfaces/report-def';
@@ -10,10 +10,10 @@ import { FilterInfo } from '../classes/filter-info';
 
 @Pipe({name: 'formatValue'})
 export class FormatValuePipe implements PipeTransform {
-  constructor( public tableState: TableStateManager, private datePipe: DatePipe) {
+  constructor( public tableState: TableStore , private datePipe: DatePipe) {
   }
   transform(value: any, key: string, filterType: FilterType): Observable<string> {
-    return this.tableState.metaData$(key).pipe(
+    return this.tableState.getMetaData$(key).pipe(
       map( md => {
         if(filterType === FilterType.Or) {
           const filters = value as FilterInfo [];

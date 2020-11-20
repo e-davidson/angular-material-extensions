@@ -22,7 +22,7 @@
 
       <ng-template #defaultFilter>
         <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown || metaData.fieldType === FieldType.PhoneNumber">
-          <mat-form-field (click)="stopClickPropagate($event)" class="example-full-width font" style="padding: 0 16px">
+          <mat-form-field stop-propagation class="example-full-width font" style="padding: 0 16px">
             <mat-icon matPrefix class="search-icon">search</mat-icon>
             <input matInput [placeholder]="myFilterType === FilterType.StringDoesNotContain ? 'Does Not Contain...' : 'Contains...'" name="filterValue" [ngModel]="filter.filterValue" />
             <span matSuffix [matTooltip]="myFilterType === FilterType.StringDoesNotContain ? 'Contains' : 'Does Not Contain'">
@@ -36,7 +36,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
-          <mat-form-field class="auto-width" (click)="stopClickPropagate($event)" style="padding: 0 16px">
+          <mat-form-field class="auto-width"  stop-propagation style="padding: 0 16px">
             <input matInput type='number'  name="filterValue" [ngModel]="filter.filterValue" />
             <span matPrefix>
               <button mat-icon-button disableRipple>
@@ -63,7 +63,7 @@
             <label>
               <mat-icon class="search-icon">filter_list</mat-icon>
             </label>
-            <mat-radio-group (click)="stopClickPropagate($event)" #ctrl="matRadioGroup" #boolField='ngModel' class="font" name="filterValue" [ngModel]="myFilterValue" >
+            <mat-radio-group stop-propagation #ctrl="matRadioGroup" #boolField='ngModel' class="font" name="filterValue" [ngModel]="myFilterValue" >
               <mat-radio-button class="filter-radio-button" (click)="myFilterValue = true;" [value]="true">True</mat-radio-button><br/>
               <mat-radio-button class="filter-radio-button" (click)="myFilterValue = false" [value]="false">False</mat-radio-button><br/>
             </mat-radio-group>
@@ -71,7 +71,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Date">
-          <mat-form-field style="padding: 0 16px" class="font auto-width" (click)="stopClickPropagate($event)">
+          <mat-form-field style="padding: 0 16px" class="font auto-width" stop-propagation >
             <span matPrefix>
               <button mat-icon-button disableRipple>
                 <mat-icon (click)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons"

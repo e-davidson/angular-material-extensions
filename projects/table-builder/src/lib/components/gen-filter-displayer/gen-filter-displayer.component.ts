@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MetaData, FieldType } from '../../interfaces/report-def';
 import { Observable } from 'rxjs';
-import { TableStateManager } from '../../classes/table-state-manager';
+import { TableStore } from '../../classes/table-store';
 import { FilterInfo } from '../../classes/filter-info';
 import { map } from 'rxjs/operators';
 
@@ -13,13 +13,14 @@ import { map } from 'rxjs/operators';
 })
 export class GenFilterDisplayerComponent {
 
-  constructor( public tableState: TableStateManager) {
-    this.filterCols$ = tableState.metaDatas$.pipe(
-      map(md => md.filter(m => (m.fieldType !== FieldType.Hidden) && (!m.noFilter))),
+  constructor( public tableState: TableStore) {
+    this.filterCols$ =  tableState.metaData$.pipe(
+      map(md => Object.values( md ).filter(m => (m.fieldType !== FieldType.Hidden) && (!m.noFilter))),
     );
   }
 
     filterCols$: Observable<MetaData[]>;
+    filters$ = this.tableState.filters$.pipe(map( filters => Object.values(filters)));
     currentFilters: FilterInfo[] = [];
 
 

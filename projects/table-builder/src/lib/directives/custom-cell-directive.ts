@@ -37,7 +37,8 @@ export class CustomCellDirective implements AfterContentInit {
         fieldType: metaData?.fieldType ??  FieldType.Unknown,
         order: this.customCellOrder ?? metaData?.order,
         _internalNotUserDefined: !(!!metaData),
-        width: this.customCellWidth ?? metaData?.width
+        width: this.customCellWidth ?? metaData?.width,
+        customCell: true,
       };
     }
 }

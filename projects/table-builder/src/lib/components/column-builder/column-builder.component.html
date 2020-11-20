@@ -47,13 +47,16 @@
     <ng-template #header>
       <mat-header-cell  [styler]='metaData?.additional?.styles' >
         <div class="header-container">
-          <div *ngIf="!metaData._internalNotUserDefined;" mat-sort-header style="width: 100%">
+          <div *ngIf="!metaData._internalNotUserDefined || !customCell?.columnDef?.cell ; else headerWithoutMenu" mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
           </div>
-          <div *ngIf="metaData._internalNotUserDefined;" style="width: 100%">
-            {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
-          </div>
-          <tb-header-menu *ngIf="(!metaData._internalNotUserDefined) && (!metaData.noFilter)" #menu [metaData]='metaData' [filter]='filter' ></tb-header-menu>
+          <ng-template #headerWithoutMenu >
+            <div *ngIf="metaData._internalNotUserDefined;" style="width: 100%">
+              {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+            </div>
+          </ng-template>
+
+          <tb-header-menu *ngIf="(!metaData._internalNotUserDefined || !customCell?.columnDef?.cell) && (!metaData.noFilter)" #menu [metaData]='metaData' [filter]='filter' ></tb-header-menu>
         </div>
       </mat-header-cell>
     </ng-template>
