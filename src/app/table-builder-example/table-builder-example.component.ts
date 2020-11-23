@@ -45,7 +45,7 @@ const META_DATA: MetaData[] = [
   {key: 'position', fieldType: FieldType.Number, order: 2, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', fieldType: FieldType.String },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
-    preSort: {direction: SortDirection.asc, precedence: 1},
+    // preSort: {direction: SortDirection.asc, precedence: 1},
     additional: {dateFormat: 'shortDate'},
     click: (element, key) => console.log(element,key)
   },
