@@ -1,11 +1,11 @@
-import { Observable, combineLatest } from 'rxjs';
+import { Observable, combineLatest, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { combineArrays } from '../functions/rxjs-operators';
 import { createFilterFunc, FilterInfo } from './filter-info';
 
 export class DataFilter<T = any> {
 
-  constructor(private filters$: Observable< Array< (val: any) => boolean>> ) {
+  constructor(private filters$?: Observable< Array< (val: any) => boolean>> ) {
   }
 
   filter(data: any[], filters: Array<(val: any) => boolean> ): any[] {
@@ -21,7 +21,7 @@ export class DataFilter<T = any> {
 
   appendFilters(filters$: Observable<FilterInfo[]>) : DataFilter {
     return new DataFilter(combineArrays([
-      this.filters$,
+      this.filters$ ?? of([]),
       filters$.pipe(map(fltrs => fltrs.map(filter => createFilterFunc(filter))))
     ]));
   }
