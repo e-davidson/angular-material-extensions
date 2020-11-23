@@ -8,8 +8,8 @@ export class MatTableObservableDataSource<T> extends  MatTableDataSource<T> {
   subscription: Subscription;
   constructor(private dataSrc: Observable<T[]>) {
     super([]);
-    this.sortData = (data: {}[], sort: MultiSortDirective) => !sort.rules ? 
-      this.sortData 
+    this.sortData = (data: T[], sort: MultiSortDirective) => !sort.rules ? 
+      super.sortData(data,sort)
       : orderBy(data, sort.rules.map(r => r.active), sort.rules.map(r => r.direction as direc ));
   }
 
