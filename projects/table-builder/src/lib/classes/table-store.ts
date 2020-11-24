@@ -24,12 +24,12 @@ export class TableStore extends ComponentStore<TableState> {
   }
   readonly filters$ = this.select(state => state.filters );
 
-  getFilter$(filterId) : Observable<FilterInfo | undefined> {
+  getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
     return this.select( this.filters$, filters => filters[filterId]);
   }
 
 
-  setFromSavedState(id:string) {
+  setFromSavedState = (id:string) => {
     this.store.dispatch(loadState({id}));
     this.updateState( this.store.pipe(
       select(selectStorageStateItem(id)),
@@ -38,13 +38,13 @@ export class TableStore extends ComponentStore<TableState> {
     ));
   }
 
-  on<T>( srcObservable: Observable<T>, func: (obj:T)=> void) {
+  on = <T>( srcObservable: Observable<T>, func: (obj:T)=> void) => {
     this.effect((src: Observable<T>) => {
       return src.pipe(tap(func));
     })(srcObservable);
   }
 
-  async saveToState(id:string) {
+  saveToState = async (id:string) => {
     const state = await this.state$.pipe(first()).toPromise();
     const metaData = Object.values(state.metaData).map( md => ({...md, transform: undefined }))
       .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {})
@@ -56,11 +56,11 @@ export class TableStore extends ComponentStore<TableState> {
       .sort( (a,b)=> a.order - b.order )
   );
 
-  getMetaData$(key: string) : Observable<MetaData> {
+  getMetaData$ = (key: string) : Observable<MetaData> => {
     return this.select(this.metaData$, md => md.find(m => m.key === key ))
   }
 
-  createPreSort(metaDatas: Dictionary<MetaData>): Sort[] {
+  createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
     return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
     .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
     .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
@@ -128,7 +128,7 @@ export class TableStore extends ComponentStore<TableState> {
     };
   });
 
-  mergeMetaDatas(existingMetaData: Dictionary<MetaData>, newMetaDatas: Dictionary<MetaData>) {
+  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, newMetaDatas: Dictionary<MetaData>) => {
     const metaData: Dictionary<MetaData> = {};
     const metaDatas = Object.values(existingMetaData);
     metaDatas.forEach( md => {
@@ -142,7 +142,7 @@ export class TableStore extends ComponentStore<TableState> {
     return {...metaData, ...newMetaDatas};
   }
 
-  updateStateFunc(state: TableState, tableState: Partial<TableState>) : TableState {
+  updateStateFunc = (state: TableState, tableState: Partial<TableState>) : TableState => {
     const metaData = this.mergeMetaDatas(state.metaData,tableState.metaData);
     const sorted = this.createPreSort(metaData);
     return {...state, ...tableState, metaData , sorted};
@@ -152,7 +152,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly updateState = this.updater<TableState>(this.updateStateFunc);
 
-  mergeMeta (orig: MetaData, merge: MetaData): MetaData {
+  mergeMeta = (orig: MetaData, merge: MetaData): MetaData => {
     return {
         key: orig.key,
         displayName: merge.displayName ?? orig.displayName,

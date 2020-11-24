@@ -26,6 +26,7 @@ export class FilterComponent {
     event.preventDefault();
     if (filter.filterValue != null && filter.filterType) {
       this.state.addFilter(filter);
+      this.close.emit();
     }
   }
 }
