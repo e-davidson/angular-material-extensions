@@ -18,13 +18,13 @@ import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
-import { MatTableObservableDataSource } from '../../classes/MatTableObservableDataSource';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
 import { tap, map, distinct } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
+import { GenericTableDataSource } from '../../classes/GenericTableDataSource';
 
 @Component({
   selector: 'tb-generic-table',
@@ -51,7 +51,7 @@ export class GenericTableComponent implements OnInit {
 
   currentColumns: string[];
   selection: SelectionModel<any>;
-  dataSource: MatTableObservableDataSource<any>;
+  dataSource: GenericTableDataSource<any>;
   keys: string [] = [];
   factory: ComponentFactory<ColumnBuilderComponent> ;
   injector: Injector;
@@ -107,7 +107,7 @@ export class GenericTableComponent implements OnInit {
   }
 
   createDataSource() {
-    this.dataSource = new MatTableObservableDataSource(
+    this.dataSource = new GenericTableDataSource(
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
     this.dataSource.sort = this.sort;
