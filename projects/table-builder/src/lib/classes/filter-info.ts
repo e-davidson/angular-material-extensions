@@ -60,7 +60,7 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
   return (rowObj) => {
     const value = rowObj[filter.key];
     return (
-      (value == undefined) && (filter.filterType !== FilterType.IsNull && filter.filterType !== FilterType.NumberNotEqual)) 
+      (value == undefined) && !FalseyValueCanBeIncludedFilterTypes.includes(filter.filterType)) 
       ? false 
       : func( value);
   };
@@ -68,3 +68,5 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
 
 export type FilterFunc<T,V = T> = (filterInfo:FilterInfo<T>) => (val:V) => boolean;
 export type Range<T> = {Start:T,End:T};
+
+const FalseyValueCanBeIncludedFilterTypes = [FilterType.IsNull,FilterType.NumberNotEqual,FilterType.DateIsNotOn,FilterType.StringDoesNotContain];
