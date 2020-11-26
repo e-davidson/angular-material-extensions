@@ -41,7 +41,6 @@ export class GenericTableComponent implements OnInit {
   @Input() rows: QueryList<MatRowDef<any>>;
   @Input() isSticky = false;
   @Input() columnBuilders: ColumnBuilderComponent[];
-  @Output() selection$: Observable<any>;
 
   @Input() columnInfos: Observable<ColumnInfo[]>;
 
@@ -130,13 +129,9 @@ export class GenericTableComponent implements OnInit {
     }
   }
   selection : SelectionModel<any> = new SelectionModel<any>(true, []);
-  selection$ = this.selection.changed;
-  masterToggleSelected$;
-  setUpSelectionStreams(){
-    this.selection = new SelectionModel<any>(true, []);
-    this.selection$ = this.selection.changed;
-  }
-
+  @Output() selection$: Observable<any> = this.selection.changed;
+  masterToggleChecked$ = this.selection$.pipe(map(()=>this.selection.hasValue() && this.isAllSelected()));
+  masterToggleIntermediate$ = this.selection$.pipe(map(()=>this.selection.hasValue() && !this.isAllSelected()));
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
