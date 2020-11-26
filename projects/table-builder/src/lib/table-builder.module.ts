@@ -25,7 +25,6 @@ import { SaveTableEffects } from './ngrx/effects';
 import { KeyDisplayPipe } from './pipes/key-display';
 import { PhoneNumberPipe } from './pipes/phone.pipe';
 import { FunctionPipe } from './pipes/function.pipe';
-import { FormatValuePipe } from './pipes/format-value';
 import { RouterModule } from '@angular/router';
 import { StopPropagationDirective } from './directives/stop-propagation.directive';
 import { ArrayColumnComponent } from './components/array-column.component';
@@ -33,6 +32,8 @@ import { StylerDirective } from './directives/styler';
 import { PreventEnterDirective } from './directives/prevent-enter.directive';
 import { InFilterComponent } from './components/in-filter/in-filter.component';
 import {AutoFocusDirective} from './directives/auto-focus.directive'
+import { FormatFilterValuePipe } from './pipes/format-filter-value.pipe';
+import { FormatFilterTypePipe } from './pipes/format-filter-type.pipe';
 
 @NgModule({
   imports: [
@@ -72,7 +73,8 @@ import {AutoFocusDirective} from './directives/auto-focus.directive'
         KeyDisplayPipe,
         PhoneNumberPipe,
         FunctionPipe,
-        FormatValuePipe,
+        FormatFilterValuePipe,
+        FormatFilterTypePipe,
         StopPropagationDirective,
         StylerDirective,
         PreventEnterDirective,

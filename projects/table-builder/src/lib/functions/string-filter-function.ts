@@ -16,7 +16,7 @@ const stringContainsFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) =>
 
 const stringDoesNotContainFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) => {
   const doesNotContainVal = prepareForStringCompare(filterInfo.filterValue);
-  return ((val)=>!prepareForStringCompare(val).includes(doesNotContainVal));
+  return ((val)=>!prepareForStringCompare(val)?.includes(doesNotContainVal));
 }
 
 const stringStartsWithFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) => {

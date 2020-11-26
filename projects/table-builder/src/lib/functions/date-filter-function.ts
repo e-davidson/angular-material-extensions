@@ -10,7 +10,7 @@ const dateIsOnFunc:FilterFunc<Date> = (filterInfo:FilterInfo<Date>) => {
 
 const dateIsNotOnFunc:FilterFunc<Date> = (filterInfo:FilterInfo<Date>) => {
   const isNotOnVal = new Date( filterInfo.filterValue).getTime();
-  return ((val)=>val.getTime()  !== isNotOnVal);
+  return ((val)=>val?.getTime()  !== isNotOnVal);
 }
 
 const dateIsOnOrAfterFunc:FilterFunc<Date> = (filterInfo:FilterInfo<Date>) => {
