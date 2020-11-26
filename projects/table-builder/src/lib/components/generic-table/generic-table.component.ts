@@ -50,7 +50,7 @@ export class GenericTableComponent implements OnInit {
   @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
 
   currentColumns: string[];
-  selection: SelectionModel<any>;
+
   dataSource: GenericTableDataSource<any>;
   keys: string [] = [];
   factory: ComponentFactory<ColumnBuilderComponent> ;
@@ -62,8 +62,7 @@ export class GenericTableComponent implements OnInit {
     private viewContainer: ViewContainerRef,
     injector: Injector,
     ) {
-    this.selection = new SelectionModel<any>(true, []);
-    this.selection$ = this.selection.changed;
+    
     this.factory = componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
     this.injector = Injector.create({ providers: [{provide: MatTable, useFactory: ()=> {return this.table} }], parent: injector});
   }
@@ -130,10 +129,18 @@ export class GenericTableComponent implements OnInit {
       this.myColumns[column.metaData.key] = component.instance;
     }
   }
+  selection : SelectionModel<any> = new SelectionModel<any>(true, []);
+  selection$ = this.selection.changed;
+  masterToggleSelected$;
+  setUpSelectionStreams(){
+    this.selection = new SelectionModel<any>(true, []);
+    this.selection$ = this.selection.changed;
+  }
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
+    console.count('object')
     return numSelected === numRows;
   }
 

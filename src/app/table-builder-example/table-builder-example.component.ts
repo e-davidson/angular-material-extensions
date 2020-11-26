@@ -151,7 +151,7 @@ export class TableBuilderExampleComponent {
     const fi = {
       filterId: 'multipleValuesTest',
       filterType: FilterType.StringIn,
-      filterValue: change.value,
+      filterValue: change.value.map(v => ({value:v})),
       key: 'name',
       fieldType: FieldType.String
     }
