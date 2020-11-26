@@ -5,7 +5,7 @@
         <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" style="flex: 0 0 30px;" >
           <mat-checkbox (change)="$event ? masterToggle() : null"
                         [checked]="masterToggleChecked$ | async"
-                        [indeterminate]="masterToggleIntermediate$ | async">
+                        [indeterminate]="masterToggleIndeterminate$ | async">
           </mat-checkbox>
         </mat-header-cell>
 
