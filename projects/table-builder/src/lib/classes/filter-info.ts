@@ -57,10 +57,10 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
     return filterFactoryMap[filter.filterType](filter);
   }
   const func = filterTypeFuncMap[filter.fieldType][filter.filterType](filter);
+  const cannotBeTrueForNull = !FalseyValueCanBeIncludedFilterTypes.includes(filter.filterType);
   return (rowObj) => {
     const value = rowObj[filter.key];
-    return (
-      (value == undefined) && !FalseyValueCanBeIncludedFilterTypes.includes(filter.filterType)) 
+    return ((value == undefined) && cannotBeTrueForNull) 
       ? false 
       : func( value);
   };
