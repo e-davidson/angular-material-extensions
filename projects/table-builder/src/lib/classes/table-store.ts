@@ -142,10 +142,10 @@ export class TableStore extends ComponentStore<TableState> {
     return {...metaData, ...newMetaDatas};
   }
 
-  updateStateFunc = (state: TableState, tableState: Partial<TableState>) : TableState => {
-    const metaData = this.mergeMetaDatas(state.metaData,tableState.metaData);
-    const sorted = this.createPreSort(metaData);
-    return {...state, ...tableState, metaData , sorted};
+  updateStateFunc = (state: TableState, incomingTableState: Partial<TableState>) : TableState => {
+    const metaData = this.mergeMetaDatas(state.metaData,incomingTableState.metaData);
+    const sorted = incomingTableState.sorted?.length ? incomingTableState.sorted : this.createPreSort(metaData);
+    return {...state, ...incomingTableState, metaData , sorted};
   }
 
   readonly setPageSize = this.updater( (state, pageSize: number)=> ({...state,pageSize}));
