@@ -51,11 +51,7 @@ export class ExportToCsvService<T> {
         break;
       case FieldType.Array:
         const additional = meta.additional as ArrayAdditional;
-        if(additional.arrayStyle === ArrayStyle.CommaDelimited){
-          val = (val as Array<string>).slice(0,additional.limit).join(', ');
-        } else if(additional.arrayStyle === ArrayStyle.NewLine){
-          val = (val as Array<string>).slice(0,additional.limit).join('\n');
-        }
+        val = (val as Array<string>).slice(0,additional.limit).join(additional.arrayStyle === ArrayStyle.NewLine ? '\n' : ', ');
         break;
       case FieldType.Expression:
         console.log('object')
