@@ -37,7 +37,6 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 const additional: ArrayAdditional = {
-  limit: 3,
   arrayStyle: ArrayStyle.NewLine,
 };
 
@@ -50,20 +49,19 @@ const META_DATA: MetaData[] = [
     click: (element, key) => console.log(element,key)
   },
   {key: 'name', fieldType: FieldType.String,
-  additional: {
-    export: { prepend: "'" },
-    FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
-    styles: { color: 'yellow'  },
-  },
-  transform: (o: string) => o + ' #'
+    additional: {
+      export: { prepend: "'" },
+      FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
+      styles: { color: 'yellow'  },
+    },
+    transform: (o: string) => o + ' #'
   },
   {key: 'gas', fieldType: FieldType.Boolean , additional: {
     styles: {  flex : '0 0 5%'},
   } },
   {key: 'phone', fieldType: FieldType.PhoneNumber },
   {key: 'moreInfo', fieldType: FieldType.Array, additional},
-  {
-    key:'expression', fieldType: FieldType.Expression,
+  {key:'expression', fieldType: FieldType.Expression,
     transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + o.name,
     additional: {
       styles: {color: 'green', flex: '0 0 200px'}
@@ -96,9 +94,7 @@ export class TableBuilderExampleComponent {
     );
     META_DATA[1].transform = lcp;
     const all = combineArrays([of(ELEMENT_DATA), addedElements]);
-   // setTimeout(() => {
-      this.metaData$.next(META_DATA);
-   // }, 0);
+    this.metaData$.next(META_DATA);
     this.tableBuilder = new TableBuilder(all, this.metaData$);
   }
 

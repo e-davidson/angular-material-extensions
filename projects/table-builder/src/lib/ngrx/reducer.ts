@@ -4,22 +4,7 @@ import * as tableActions from './actions';
 import { Dictionary } from '../interfaces/dictionary';
 
 
-export const removeFromMetaData = (state: TableState, keysToRemove: string[]) =>
-  Object.keys(state.metaData)
-  .filter( key => !keysToRemove.includes(key))
-  .map( key => state.metaData[key])
-  .sort((md1,md2) => md1.order - md2.order);
 
-
-export const nonExportableFields = (state: TableState) => Object.values( state.metaData)
-  .filter(md => md.noExport )
-  .map( md => md.key );
-
-export const mapExportableFields = (state: TableState) => {
-  const fieldsToRemove = nonExportableFields(state)
-    .concat(state.hiddenKeys);
-   return removeFromMetaData(state, fieldsToRemove);
-}
 
 
 export interface StateStorage {

@@ -8,8 +8,8 @@ import {
   ChangeDetectionStrategy,
   Inject,
 } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { FieldType, MetaData } from '../../interfaces/report-def';
+import { Observable } from 'rxjs';
+import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
 import { first, map } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
@@ -18,17 +18,16 @@ import {  TableStore } from '../../classes/table-store';
 import * as _ from 'lodash';
 import { DataFilter } from '../../classes/data-filter';
 import { mapArray } from '../../functions/rxjs-operators';
-import { downloadData } from '../../functions/download-data';
-import { mapExportableFields } from '../../ngrx/reducer';
+import { ExportToCsvService } from '../../services/export-to-csv.service';
+import { ArrayDefaults } from '../../classes/DefaultSettings';
 import { TableBuilderConfig, TableBuilderConfigToken } from '../../classes/TableBuilderConfig';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'tb-table-container',
   templateUrl: './table-container.html',
   styleUrls: ['./table-container.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TableStore]
+  providers: [TableStore,ExportToCsvService]
 }) export class TableContainerComponent<T = any> {
   @Input() tableId;
   @Input() SaveState = false;
@@ -56,8 +55,8 @@ import { DatePipe } from '@angular/common';
 
   constructor(
     public state: TableStore,
-    @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
-    private datePipe: DatePipe,
+    private exportToCsvService: ExportToCsvService<T>,
+    @Inject(TableBuilderConfigToken) private config: TableBuilderConfig
   ) {
   }
 
@@ -78,8 +77,9 @@ import { DatePipe } from '@angular/common';
 
   InitializeColumns() {
     const customCellMap = new Map(this.customCells.map(cc => [cc.customCell,cc]));
-    this.state.setMetaData(this.tableBuilder.metaData$.pipe(first(),map((md) => {
-      return [...md, ...this.customCells.map( cc => cc.getMetaData() )]
+    this.state.setMetaData(this.tableBuilder.metaData$.pipe(first(),map((mds) => {
+      mds = mds.map(this.mapMetaDatas);
+      return [...mds, ...this.customCells.map( cc => cc.getMetaData() )]
     })));
 
     this.myColumns$ = this.state.metaData$.pipe(
@@ -87,40 +87,18 @@ import { DatePipe } from '@angular/common';
     );
   }
 
-  exportToCsv() {
-    const exportableFields$ = this.state.state$.pipe(
-      map(mapExportableFields)
-    );
-
-    combineLatest([this.data,exportableFields$]).pipe(
-      first(),
-      map(([data,fields]) => this.csvData(data,fields)),
-    ).subscribe(csv => downloadData(csv,'export.csv','text/csv') );
+  exportToCsv = () => {
+    this.exportToCsvService.exportToCsv(this.data)
   }
 
-  csvData(data:Array<any>, metaData: MetaData[]) {
-    const res = data.map(row => metaData.map(meta => this.metaToField(meta, row)).join(','));
-    res.unshift(metaData.map(meta => meta.displayName || meta.key).join(','));
-    return res.join('\n');
-  }
-
-  metaToField(meta: MetaData, row: any) {
-    let val = row[meta.key];
-    switch (meta.fieldType) {
-      case FieldType.Date:
-        const dateFormat = meta.additional?.export?.dateFormat || this.config?.export?.dateFormat;
-        val = this.datePipe.transform(val, dateFormat);
-        break;
-      case FieldType.String:
-        const prepend: string = meta.additional?.export?.prepend || '';
-        val = prepend + val;
-        break;
+  mapMetaDatas = (meta : MetaData<T>) => {
+    if(meta.fieldType === FieldType.Array){
+      const additional = {...meta.additional} as ArrayAdditional;
+      additional.arrayStyle = additional?.arrayStyle ?? ArrayDefaults.arrayStyle;
+      additional.limit = additional.limit ?? this.config.arrayInfo?.limit ?? ArrayDefaults.limit;
+      return {...meta,additional}
     }
-    if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
-      val = val.replace('"', '""');
-      val = '"' + val + '"';
-    }
-    return val;
+    return meta;
   }
 }
 

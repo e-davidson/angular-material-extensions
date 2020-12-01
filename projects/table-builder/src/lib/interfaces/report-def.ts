@@ -72,7 +72,8 @@ export interface Additional   {
 }
 
 export enum ArrayStyle {
-  CommaDelimited, NewLine
+  CommaDelimited,
+  NewLine
 }
 
 export interface ArrayAdditional extends Additional {
