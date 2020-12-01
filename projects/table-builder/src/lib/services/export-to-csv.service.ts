@@ -8,6 +8,7 @@ import { TableBuilderConfig, TableBuilderConfigToken } from '../classes/TableBui
 import { downloadData } from '../functions/download-data';
 import { ArrayAdditional, ArrayStyle, FieldType, MetaData } from '../interfaces/report-def';
 import { TableState } from '../classes/TableState';
+import { isPipe } from './transform-creator';
 @Injectable()
 export class ExportToCsvService<T> {
   constructor(
@@ -38,7 +39,7 @@ export class ExportToCsvService<T> {
     if (val == null && !meta.transform) return val
     if(meta.transform && meta.fieldType !== FieldType.Expression){
       const transform = meta.transform as any;
-      return transform.transform ? transform.transform(val) : transform(val);
+      return  isPipe(transform) ? transform.transform(val) : transform(val);
     }
     switch (meta.fieldType) {
       case FieldType.Date:
