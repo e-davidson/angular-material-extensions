@@ -54,7 +54,6 @@ export class ExportToCsvService<T> {
         val = (val as Array<string>).slice(0,additional.limit).join(additional.arrayStyle === ArrayStyle.NewLine ? '\n' : ', ');
         break;
       case FieldType.Expression:
-        console.log('object')
         val = (meta.transform as any)(row);
         break;
     }

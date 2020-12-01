@@ -37,7 +37,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 ];
 
 const additional: ArrayAdditional = {
-  // arrayStyle: ArrayStyle.NewLine,
+  arrayStyle: ArrayStyle.NewLine,
 };
 
 const META_DATA: MetaData[] = [
