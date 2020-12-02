@@ -11,23 +11,23 @@ import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
 import { select, Store } from '@ngrx/store';
-import { first, mergeMap, tap } from 'rxjs/operators';
+import { first, mergeMap } from 'rxjs/operators';
 import { loadState, saveState } from '../ngrx/actions';
+import { ComponentStoreExtensions } from './component-store-extensions';
 
 
-@Injectable()
-export class TableStore extends ComponentStore<TableState> {
+const TableStateStore = ComponentStoreExtensions<TableState>()(ComponentStore);
 
-  constructor(@Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
+@Injectable({
+  providedIn: 'root',
+})
+export class TableStore extends TableStateStore<TableState> {
+
+  constructor(@Inject(TableBuilderConfigToken) config: TableBuilderConfig,
   private store: Store<{storageState: StateStorage}>) {
-    super( { ...defaultTableState, ...config.defaultTableState});
-  }
-  readonly filters$ = this.select(state => state.filters );
+   super( { ...defaultTableState, ...config.defaultTableState});
 
-  getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
-    return this.select( this.filters$, filters => filters[filterId]);
   }
-
 
   setFromSavedState = (id:string) => {
     this.store.dispatch(loadState({id}));
@@ -38,17 +38,16 @@ export class TableStore extends ComponentStore<TableState> {
     ));
   }
 
-  on = <T>( srcObservable: Observable<T>, func: (obj:T)=> void) => {
-    this.effect((src: Observable<T>) => {
-      return src.pipe(tap(func));
-    })(srcObservable);
-  }
-
   saveToState = async (id:string) => {
     const state = await this.state$.pipe(first()).toPromise();
     const metaData = Object.values(state.metaData).map( md => ({...md, transform: undefined }))
       .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {})
     this.store.dispatch(saveState({id,state: {...state,metaData},persist: true}));
+  }
+  readonly filters$ = this.select(state => state.filters );
+
+  getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
+    return this.select( state => state.filters[filterId] );
   }
 
   readonly metaData$ = this.select(
@@ -57,7 +56,7 @@ export class TableStore extends ComponentStore<TableState> {
   );
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
-    return this.select(this.metaData$, md => md.find(m => m.key === key ))
+    return this.select( state => state.metaData[key]  )
   }
 
   createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
