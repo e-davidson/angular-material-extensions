@@ -34,12 +34,14 @@ import { InFilterComponent } from './components/in-filter/in-filter.component';
 import {AutoFocusDirective} from './directives/auto-focus.directive'
 import { FormatFilterValuePipe } from './pipes/format-filter-value.pipe';
 import { FormatFilterTypePipe } from './pipes/format-filter-type.pipe';
+import { DialogOpenDirective } from './directives/buttonSubject';
+import { DialogDirective } from './directives/dialog';
 
 @NgModule({
   imports: [
     CommonModule,
     MaterialModule,
-    StoreModule.forFeature('storageState', storageStateReducer),
+    StoreModule.forFeature('globalStorageState', storageStateReducer),
     EffectsModule.forFeature([SaveTableEffects]),
     FormsModule,
     RouterModule,
@@ -80,6 +82,8 @@ import { FormatFilterTypePipe } from './pipes/format-filter-type.pipe';
         PreventEnterDirective,
         InFilterComponent,
         AutoFocusDirective,
+        DialogOpenDirective,
+        DialogDirective,
     ],
     providers : [SpaceCasePipe, DatePipe, CurrencyPipe, PhoneNumberPipe]
 })

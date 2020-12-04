@@ -7,16 +7,53 @@
         </tb-filter-displayer>
         <tb-col-displayer></tb-col-displayer>
 
-        <button mat-icon-button (click)="state.resetState();OnStateReset.next()" matTooltip="Reset table">
-          <mat-icon color="primary">autorenew</mat-icon>
-        </button>
-        <button *ngIf="tableId" mat-icon-button (click)="state.saveToState(tableId);OnSaveState.next()" matTooltip="Save Table">
-          <mat-icon color="primary">save</mat-icon>
-        </button>
-        <button mat-icon-button (click)="exportToCsv()" matTooltip="Export Table">
-          <mat-icon color="primary">file_download</mat-icon>
-        </button>
+        <button mat-icon-button color='primary' [matMenuTriggerFor]="mainMenu"><mat-icon>more_vert</mat-icon></button>
+        <mat-menu #mainMenu='matMenu' >
+          <button mat-menu-item (click)="state.resetState();OnStateReset.next()" >
+            <mat-icon color="primary">autorenew</mat-icon>
+            <span>Reset table</span>
+          </button>
+           <button mat-menu-item *ngIf="tableId" (click)="saveState()" >
+            <mat-icon color="primary">save</mat-icon>
+            <span>Save Table</span>
+          </button>
+          <button mat-menu-item (click)="exportToCsvService.exportToCsv(data)" >
+            <mat-icon color="primary">file_download</mat-icon>
+            <span>Export Table</span>
+          </button>
+          <button *ngIf='tableId' mat-menu-item [matMenuTriggerFor]="savedNames" >
+            <mat-icon color="primary">file_download</mat-icon>
+            <span>More Save Options</span>
+          </button>
+        </mat-menu>
+        <mat-menu #savedNames='matMenu' panelClass='wide-menu'  >
+          <button mat-menu-item clickSubject #add='clickSubject' >
+            <mat-icon>add</mat-icon>
+            <span>New</span>
+          </button>
+          <ng-container *ngIf="currentStateKey$ | async as currentKey" >
+            <ng-container  *ngFor='let key of stateKeys$ | async'>
+              <button mat-menu-item (click)='setProfileState(key)' >
+                <div style='display: flex; align-items: center; justify-content: space-between;'>
+                  <span style='display:flex;'>{{key}}</span>
+                  <span style='display:flex;'>
+                    <span style="width: 120px;"></span>
+                    <mat-icon color='warn' (click)='deleteProfileState(key)' stop-propagation >delete_forever</mat-icon>
+                  </span>
+                </div>
+              </button>
+          </ng-container>
+          </ng-container>
 
+
+
+        </mat-menu>
+        <div *appDialog='add' >
+          <mat-form-field  >
+            <input style='width:90%' matInput #addedKey  />
+          </mat-form-field>
+          <button mat-button (click)='setProfileState(addedKey.value); add.next(false);'>Add</button>
+        </div>
 
       </div>
     </div>

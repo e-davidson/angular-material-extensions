@@ -5,14 +5,11 @@ import { defaultTableState, TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { FilterInfo } from './filter-info';
-import { selectStorageStateItem, StateStorage } from '../ngrx/reducer';
 import { Sort, SortDirection }  from '@angular/material/sort' ;
 import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
-import { select, Store } from '@ngrx/store';
-import { first, mergeMap } from 'rxjs/operators';
-import { loadState, saveState } from '../ngrx/actions';
+import { map } from 'rxjs/operators';
 import { ComponentStoreExtensions } from './component-store-extensions';
 
 
@@ -23,26 +20,20 @@ const TableStateStore = ComponentStoreExtensions<TableState>()(ComponentStore);
 })
 export class TableStore extends TableStateStore<TableState> {
 
-  constructor(@Inject(TableBuilderConfigToken) config: TableBuilderConfig,
-  private store: Store<{storageState: StateStorage}>) {
+  constructor(@Inject(TableBuilderConfigToken) config: TableBuilderConfig) {
    super( { ...defaultTableState, ...config.defaultTableState});
-
   }
 
-  setFromSavedState = (id:string) => {
-    this.store.dispatch(loadState({id}));
-    this.updateState( this.store.pipe(
-      select(selectStorageStateItem(id)),
-      mergeMap( (state: TableState ) => (state ? [state] : [] )),
-      first(),
-    ));
-  }
+  getSavableState() : Observable<TableState> {
+    return  this.state$.pipe(
+      map( s => {
+        const metaData = Object.values(s.metaData)
+        .map( md => ({...md, transform: undefined }))
+        .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {});
+        return {...s,metaData: undefined};
+      })
+    );
 
-  saveToState = async (id:string) => {
-    const state = await this.state$.pipe(first()).toPromise();
-    const metaData = Object.values(state.metaData).map( md => ({...md, transform: undefined }))
-      .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {})
-    this.store.dispatch(saveState({id,state: {...state,metaData},persist: true}));
   }
   readonly filters$ = this.select(state => state.filters );
 

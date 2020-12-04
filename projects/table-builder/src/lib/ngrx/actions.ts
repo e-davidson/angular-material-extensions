@@ -1,5 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 
-export const saveState = createAction('[State Storage] save state', props<{id: string, state:any, persist?: boolean}>());
+export const setLocalProfile = createAction('[State Storage] Set Local Profile', props<{key: string, value: any, persist?: boolean}>());
 
-export const loadState = createAction('[State Storage] load state', props<{id: string}>());
+export const setLocalProfilesState = createAction('[State Storage] Set Local Profiles Current', props<{key: string, current: string}>());
+
+export const deleteLocalProfilesState = createAction('[State Storage] Delete Local Profiles Current', props<{key: string, stateKey: string}>());

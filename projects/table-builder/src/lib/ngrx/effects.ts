@@ -1,50 +1,57 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { selectStorageState, StateStorage} from './reducer';
-import { tap, mergeMap, first, map } from 'rxjs/operators';
-import { Store, ActionCreator, Creator } from '@ngrx/store';
+import { defaultStorageState, GlobalStorageState} from './reducer';
+import { tap, filter, mergeMap, first, map } from 'rxjs/operators';
 import * as tableActions from './actions';
-import { TableBuilderConfig, TableBuilderConfigToken } from '../classes/TableBuilderConfig';
+import { select, Store } from '@ngrx/store';
+import { selectLocalProfile } from './selectors';
+
 
 @Injectable()
 export class SaveTableEffects {
 
-  saveState$ = createEffect(
+  saveLocalProfile$ = createEffect(
     () => this.actions$.pipe(
-      ofType(tableActions.saveState),
-        tap( (action) => {
-          if(action.persist) {
-            localStorage.setItem(action.id, JSON.stringify(action.state));
+      ofType(tableActions.setLocalProfile),
+      filter( action => action.persist),
+      mergeMap( action => this.store.pipe(
+        select(selectLocalProfile(action.key)),
+        first(),
+        map( profile => ({action,profile}))
+      )),
+      tap( (a) => {
+        const globalSavedState: GlobalStorageState = JSON.parse(localStorage.getItem('global-state-storage') ?? JSON.stringify(defaultStorageState) );
+        let profile = a.profile;
+        if(!profile) {
+          profile =  {default: 'default', current: 'default', states : {default: a.action.value}};
+          globalSavedState.localProfiles[a.action.key] = profile;
+        } {
+          if(!globalSavedState.localProfiles[a.action.key]) {
+            globalSavedState.localProfiles[a.action.key] = {...profile,states: {[profile.current ?? profile.default]: a.action.value}};
+          } else {
+            globalSavedState.localProfiles[a.action.key].states[profile.current ?? profile.default] = a.action.value;
           }
+
+        }
+        localStorage.setItem('global-state-storage', JSON.stringify( globalSavedState));
       }),
     ), { dispatch: false }
   );
 
-  createEffectWithState<T,U extends ActionCreator<string, Creator>,V>( store: Store<T>, selector: (state: T) => V, allowedType: U   ) {
-    return this.actions$.pipe(
-      ofType(allowedType),
-      mergeMap( action => store.select(selector).pipe(
-        first(),
-        map(state => ({action,state}))
-      ))
-    );
-  }
+  deleteLocalProfile$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(tableActions.deleteLocalProfilesState),
+      tap( (a) => {
+        const globalSavedState: GlobalStorageState = JSON.parse(localStorage.getItem('global-state-storage') ?? JSON.stringify(defaultStorageState) );
+          if(!globalSavedState.localProfiles[a.key]) {
+            return;
+          } else {
+            delete globalSavedState.localProfiles[a.key].states[a.stateKey];
+          }
+        localStorage.setItem('global-state-storage', JSON.stringify( globalSavedState));
+      }),
+    ), { dispatch: false }
+  );
 
-  loadState$ = createEffect(() => this.createEffectWithState(this.store$, selectStorageState, tableActions.loadState).pipe(
-    mergeMap( ({action,state}) => {
-      if(!state.states[action.id]) {
-        const storage = localStorage.getItem(action.id);
-        if(storage) {
-          return [tableActions.saveState({id: action.id, state: JSON.parse(storage)})];
-        }
-      }
-      return [];
-    })
-  ));
-
-  constructor(
-    private actions$: Actions,
-    private store$: Store<{storageState: StateStorage}>,
-    @Inject(TableBuilderConfigToken) private config: TableBuilderConfig
-  ) {}
+  constructor( private actions$: Actions, private store: Store ) {}
 }
