@@ -119,10 +119,13 @@ import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from
 
   InitializeColumns() {
     const customCellMap = new Map(this.customCells.map(cc => [cc.customCell,cc]));
-    this.state.setMetaData(this.tableBuilder.metaData$.pipe(first(),map((mds) => {
-      mds = mds.map(this.mapMetaDatas);
-      return [...mds, ...this.customCells.map( cc => cc.getMetaData() )]
-    })));
+    this.state.setMetaData(this.tableBuilder.metaData$.pipe(
+      first(),
+      map((mds) => {
+        mds = mds.map(this.mapMetaDatas);
+        return [...mds, ...this.customCells.map( cc => cc.getMetaData() )]
+      })
+    ));
 
     this.myColumns$ = this.state.metaData$.pipe(
       mapArray( metaData => ({metaData, customCell: customCellMap.get(metaData.key)}))

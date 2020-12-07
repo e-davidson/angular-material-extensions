@@ -11,6 +11,7 @@ import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
 import { map } from 'rxjs/operators';
 import { ComponentStoreExtensions } from './component-store-extensions';
+import * as _ from 'lodash';
 
 
 const TableStateStore = ComponentStoreExtensions<TableState>()(ComponentStore);
@@ -118,18 +119,19 @@ export class TableStore extends TableStateStore<TableState> {
     };
   });
 
-  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, newMetaDatas: Dictionary<MetaData>) => {
-    const metaData: Dictionary<MetaData> = {};
-    const metaDatas = Object.values(existingMetaData);
-    metaDatas.forEach( md => {
-        const existing = metaData[md.key] ?? existingMetaData[md.key];
-        if(!existing) {
-          metaData[md.key] = { ...md, noExport: md.customCell }
-        } else {
-          metaData[md.key] = this.mergeMeta(existing,md);
-        }
-    });
-    return {...metaData, ...newMetaDatas};
+  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, incomingMetaData: Dictionary<MetaData>) : Dictionary<MetaData> => {
+    const allKeys = Object.keys(existingMetaData).concat(Object.keys(incomingMetaData));
+    const keys: string [] = _.uniq(allKeys, false);
+    return keys.reduce( (prev: Dictionary<MetaData>, key: string) => {
+      const existing = existingMetaData[key];
+      const incoming = incomingMetaData[key];
+      if(existing && incoming) {
+        prev[key] = this.mergeMeta(existing,incoming);
+      } else {
+        prev[key] = incoming ?? existing;
+      }
+      return prev;
+    }, {});
   }
 
   updateStateFunc = (state: TableState, incomingTableState: Partial<TableState>) : TableState => {
