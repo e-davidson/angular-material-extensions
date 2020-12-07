@@ -1,4 +1,4 @@
-<ng-container multiSort >
+<ng-container multiSort *ngIf="currentStateKey$ | async as currentKey" >
   <ng-container >
     <div style="width:100%;">
       <div style="display: flex; flex-direction: row;justify-content: flex-end; ">
@@ -14,7 +14,7 @@
             <span>Reset table</span>
           </button>
            <button mat-menu-item *ngIf="tableId" (click)="saveState()" >
-            <mat-icon color="primary">save</mat-icon>
+            <mat-icon color="primary">save to {{currentKey}}</mat-icon>
             <span>Save Table</span>
           </button>
           <button mat-menu-item (click)="exportToCsvService.exportToCsv(data)" >
@@ -22,8 +22,7 @@
             <span>Export Table</span>
           </button>
           <button *ngIf='tableId' mat-menu-item [matMenuTriggerFor]="savedNames" >
-            <mat-icon color="primary">file_download</mat-icon>
-            <span>More Save Options</span>
+            <span>Choose Profile</span>
           </button>
         </mat-menu>
         <mat-menu #savedNames='matMenu' panelClass='wide-menu'  >
@@ -31,7 +30,6 @@
             <mat-icon>add</mat-icon>
             <span>New</span>
           </button>
-          <ng-container *ngIf="currentStateKey$ | async as currentKey" >
             <ng-container  *ngFor='let key of stateKeys$ | async'>
               <button mat-menu-item (click)='setProfileState(key)' >
                 <div style='display: flex; align-items: center; justify-content: space-between;'>
@@ -42,7 +40,6 @@
                   </span>
                 </div>
               </button>
-          </ng-container>
           </ng-container>
 
 

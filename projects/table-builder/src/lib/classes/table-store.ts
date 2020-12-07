@@ -30,7 +30,7 @@ export class TableStore extends TableStateStore<TableState> {
         const metaData = Object.values(s.metaData)
         .map( md => ({...md, transform: undefined }))
         .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {});
-        return {...s,metaData: undefined};
+        return {...s, metaData };
       })
     );
 

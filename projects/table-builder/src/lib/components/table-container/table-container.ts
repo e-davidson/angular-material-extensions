@@ -98,8 +98,8 @@ import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from
     this.state.getSavableState().pipe(
       first()
     ).subscribe( tableState => {
-      this.store.dispatch(setLocalProfile({ key: this.tableId, value:tableState, persist: true} ));
       this.OnSaveState.next();
+      this.store.dispatch(setLocalProfile({ key: this.tableId, value:tableState, persist: true} ));
     });
   }
 
