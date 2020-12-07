@@ -14,8 +14,8 @@
             <span>Reset table</span>
           </button>
            <button mat-menu-item *ngIf="tableId" (click)="saveState()" >
-            <mat-icon color="primary">save to {{currentKey}}</mat-icon>
-            <span>Save Table</span>
+            <mat-icon color="primary">save</mat-icon>
+            <span>Save to {{currentKey}}</span>
           </button>
           <button mat-menu-item (click)="exportToCsvService.exportToCsv(data)" >
             <mat-icon color="primary">file_download</mat-icon>
