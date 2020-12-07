@@ -128,10 +128,10 @@ export class TableStore extends ComponentStore<TableState> {
     };
   });
 
-  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, newMetaDatas: Dictionary<MetaData>) => {
+  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, incomingMetaData: Dictionary<MetaData>) => {
     const metaData: Dictionary<MetaData> = {};
-    const metaDatas = Object.values(existingMetaData);
-    metaDatas.forEach( md => {
+    const incomingMetaDatas = Object.values(incomingMetaData);
+    incomingMetaDatas.forEach( md => {
         const existing = metaData[md.key] ?? existingMetaData[md.key];
         if(!existing) {
           metaData[md.key] = { ...md, noExport: md.customCell }
@@ -139,7 +139,7 @@ export class TableStore extends ComponentStore<TableState> {
           metaData[md.key] = this.mergeMeta(existing,md);
         }
     });
-    return {...metaData, ...newMetaDatas};
+    return metaData;
   }
 
   updateStateFunc = (state: TableState, incomingTableState: Partial<TableState>) : TableState => {
