@@ -130,7 +130,7 @@ import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from
       })
     ));
 
-    this.myColumns$ = this.state.metaData$.pipe(
+    this.myColumns$ = this.state.metaDataArray$.pipe(
       mapArray( metaData => ({metaData, customCell: customCellMap.get(metaData.key)}))
     );
   }

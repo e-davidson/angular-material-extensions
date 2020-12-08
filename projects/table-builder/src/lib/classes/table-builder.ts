@@ -3,7 +3,7 @@ import { MetaData, FieldType, ReportDef } from '../interfaces/report-def';
 import { first, map, switchMap, shareReplay, publishReplay, refCount } from 'rxjs/operators';
 import { mapArray } from '../functions/rxjs-operators';
 
-export class TableBuilder {
+export class TableBuilder<T = any> {
   constructor(private data$: Observable<any[]>, public metaData$?: Observable<MetaData[]> ) {
     this.data$ = this.data$.pipe(publishReplay(1),refCount());
     this.metaData$ = this.metaData$ ?
@@ -41,11 +41,12 @@ export class TableBuilder {
     return val;
   }
 
-  cleanRecord( record: any, metadata: MetaData []): any  {
-    metadata.forEach( md => {
-      record[md.key] = this.cleanVal(record[md.key], md);
-    });
-    return record;
+  cleanRecord( record: T, metadata: MetaData []): T  {
+    const cleaned = metadata.reduce( (prev: T, curr: MetaData) => {
+      prev[curr.key] = this.cleanVal(record[curr.key], curr);
+      return prev;
+    }, {} )
+    return {...record, ...cleaned};
   }
 }
 

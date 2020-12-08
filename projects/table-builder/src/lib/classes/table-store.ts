@@ -40,8 +40,11 @@ export class TableStore extends TableStateStore<TableState> {
     return this.select( state => state.filters[filterId] );
   }
 
-  readonly metaData$ = this.select(
-    state => Object.values(state.metaData)
+  readonly metaData$ = this.select( state => state.metaData);
+
+  readonly metaDataArray$ = this.select(
+    this.metaData$,
+    md => Object.values(md)
       .sort( (a,b)=> a.order - b.order )
   );
 

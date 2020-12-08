@@ -14,7 +14,7 @@ import { map } from 'rxjs/operators';
 export class GenFilterDisplayerComponent {
 
   constructor( public tableState: TableStore) {
-    this.filterCols$ =  tableState.metaData$.pipe(
+    this.filterCols$ =  tableState.metaDataArray$.pipe(
       map(md => Object.values( md ).filter(m => (m.fieldType !== FieldType.Hidden) && (!m.noFilter))),
     );
   }
