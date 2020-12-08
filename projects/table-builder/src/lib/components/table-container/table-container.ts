@@ -123,7 +123,10 @@ import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from
       first(),
       map((mds) => {
         mds = mds.map(this.mapMetaDatas);
-        return [...mds, ...this.customCells.map( cc => cc.getMetaData() )]
+        return [
+          ...mds,
+          ...this.customCells.map( cc => cc.getMetaData(mds.find( item => item.key === cc.customCell )) )
+        ]
       })
     ));
 
