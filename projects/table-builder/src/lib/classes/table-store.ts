@@ -11,8 +11,6 @@ import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
 import { map } from 'rxjs/operators';
 import { ComponentStoreExtensions } from './component-store-extensions';
-import * as _ from 'lodash';
-
 
 const TableStateStore = ComponentStoreExtensions<TableState>()(ComponentStore);
 
@@ -120,8 +118,7 @@ export class TableStore extends TableStateStore<TableState> {
   });
 
   mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, incomingMetaData: Dictionary<MetaData>) : Dictionary<MetaData> => {
-    const allKeys = Object.keys(existingMetaData).concat(Object.keys(incomingMetaData));
-    const keys: string [] = _.uniq(allKeys, false);
+    const keys = [...new Set(Object.keys(existingMetaData).concat(Object.keys(incomingMetaData)))];
     return keys.reduce( (prev: Dictionary<MetaData>, key: string) => {
       const existing = existingMetaData[key];
       const incoming = incomingMetaData[key];
