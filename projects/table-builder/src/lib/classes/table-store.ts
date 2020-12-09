@@ -5,59 +5,51 @@ import { defaultTableState, TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { FilterInfo } from './filter-info';
-import { selectStorageStateItem, StateStorage } from '../ngrx/reducer';
 import { Sort, SortDirection }  from '@angular/material/sort' ;
 import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
-import { select, Store } from '@ngrx/store';
-import { first, mergeMap, tap } from 'rxjs/operators';
-import { loadState, saveState } from '../ngrx/actions';
+import { map } from 'rxjs/operators';
+import { ComponentStoreExtensions } from './component-store-extensions';
 
+const TableStateStore = ComponentStoreExtensions<TableState>()(ComponentStore);
 
-@Injectable()
-export class TableStore extends ComponentStore<TableState> {
+@Injectable({
+  providedIn: 'root',
+})
+export class TableStore extends TableStateStore<TableState> {
 
-  constructor(@Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
-  private store: Store<{storageState: StateStorage}>) {
-    super( { ...defaultTableState, ...config.defaultTableState});
+  constructor(@Inject(TableBuilderConfigToken) config: TableBuilderConfig) {
+   super( { ...defaultTableState, ...config.defaultTableState});
+  }
+
+  getSavableState() : Observable<TableState> {
+    return  this.state$.pipe(
+      map( s => {
+        const metaData = Object.values(s.metaData)
+        .map( md => ({...md, transform: undefined }))
+        .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {});
+        return {...s, metaData };
+      })
+    );
+
   }
   readonly filters$ = this.select(state => state.filters );
 
   getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
-    return this.select( this.filters$, filters => filters[filterId]);
+    return this.select( state => state.filters[filterId] );
   }
 
+  readonly metaData$ = this.select( state => state.metaData);
 
-  setFromSavedState = (id:string) => {
-    this.store.dispatch(loadState({id}));
-    this.updateState( this.store.pipe(
-      select(selectStorageStateItem(id)),
-      mergeMap( (state: TableState ) => (state ? [state] : [] )),
-      first(),
-    ));
-  }
-
-  on = <T>( srcObservable: Observable<T>, func: (obj:T)=> void) => {
-    this.effect((src: Observable<T>) => {
-      return src.pipe(tap(func));
-    })(srcObservable);
-  }
-
-  saveToState = async (id:string) => {
-    const state = await this.state$.pipe(first()).toPromise();
-    const metaData = Object.values(state.metaData).map( md => ({...md, transform: undefined }))
-      .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {})
-    this.store.dispatch(saveState({id,state: {...state,metaData},persist: true}));
-  }
-
-  readonly metaData$ = this.select(
-    state => Object.values(state.metaData)
+  readonly metaDataArray$ = this.select(
+    this.metaData$,
+    md => Object.values(md)
       .sort( (a,b)=> a.order - b.order )
   );
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
-    return this.select(this.metaData$, md => md.find(m => m.key === key ))
+    return this.select( state => state.metaData[key]  )
   }
 
   createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
@@ -128,18 +120,18 @@ export class TableStore extends ComponentStore<TableState> {
     };
   });
 
-  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, newMetaDatas: Dictionary<MetaData>) => {
-    const metaData: Dictionary<MetaData> = {};
-    const metaDatas = Object.values(existingMetaData);
-    metaDatas.forEach( md => {
-        const existing = metaData[md.key] ?? existingMetaData[md.key];
-        if(!existing) {
-          metaData[md.key] = { ...md, noExport: md.customCell }
-        } else {
-          metaData[md.key] = this.mergeMeta(existing,md);
-        }
-    });
-    return {...metaData, ...newMetaDatas};
+  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, incomingMetaData: Dictionary<MetaData>) : Dictionary<MetaData> => {
+    const keys = [...new Set(Object.keys(existingMetaData).concat(Object.keys(incomingMetaData)))];
+    return keys.reduce( (prev: Dictionary<MetaData>, key: string) => {
+      const existing = existingMetaData[key];
+      const incoming = incomingMetaData[key];
+      if(existing && incoming) {
+        prev[key] = this.mergeMeta(existing,incoming);
+      } else {
+        prev[key] = incoming ?? existing;
+      }
+      return prev;
+    }, {});
   }
 
   updateStateFunc = (state: TableState, incomingTableState: Partial<TableState>) : TableState => {

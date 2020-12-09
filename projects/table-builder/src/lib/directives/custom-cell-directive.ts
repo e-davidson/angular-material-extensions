@@ -39,6 +39,7 @@ export class CustomCellDirective implements AfterContentInit {
         _internalNotUserDefined: !(!!metaData),
         width: this.customCellWidth ?? metaData?.width,
         customCell: true,
+        noExport: !metaData
       };
     }
 }

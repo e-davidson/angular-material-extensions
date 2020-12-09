@@ -62,6 +62,7 @@ import { MatChipsModule } from '@angular/material/chips';
     MatAutocompleteModule,
     MatPaginatorModule,
     MatChipsModule,
+    MatDialogModule,
   ],
     exports: [
       MatSlideToggleModule,
@@ -93,6 +94,7 @@ import { MatChipsModule } from '@angular/material/chips';
       MatAutocompleteModule,
       MatPaginatorModule,
       MatChipsModule,
+      MatDialogModule,
     ]
 
 })
