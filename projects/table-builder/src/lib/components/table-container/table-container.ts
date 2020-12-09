@@ -24,8 +24,8 @@ import { TableBuilderConfig, TableBuilderConfigToken } from '../../classes/Table
 import { GlobalStorageState } from '../../ngrx/reducer';
 import * as selectors from '../../ngrx/selectors';
 import { select, Store } from '@ngrx/store';
-import { TableState } from 'dist/mx-table-builder/lib/classes/TableState';
 import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from '../../ngrx/actions';
+import { TableState } from '../../classes/TableState';
 
 @Component({
   selector: 'tb-table-container',

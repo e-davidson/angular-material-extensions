@@ -9,15 +9,12 @@ import { Sort, SortDirection }  from '@angular/material/sort' ;
 import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
-import { map } from 'rxjs/operators';
-import { ComponentStoreExtensions } from './component-store-extensions';
-
-const TableStateStore = ComponentStoreExtensions<TableState>()(ComponentStore);
+import { map, tap } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root',
 })
-export class TableStore extends TableStateStore<TableState> {
+export class TableStore extends ComponentStore<TableState> {
 
   constructor(@Inject(TableBuilderConfigToken) config: TableBuilderConfig) {
    super( { ...defaultTableState, ...config.defaultTableState});
@@ -32,8 +29,14 @@ export class TableStore extends TableStateStore<TableState> {
         return {...s, metaData };
       })
     );
-
   }
+
+  on = <V>(srcObservable: Observable<V>, func: (obj: V) => void) => {
+    this.effect((src: Observable<V>) => {
+      return src.pipe(tap(func));
+    })(srcObservable);
+  }
+
   readonly filters$ = this.select(state => state.filters );
 
   getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
