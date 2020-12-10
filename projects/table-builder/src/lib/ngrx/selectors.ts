@@ -24,7 +24,7 @@ export const selectLocalProfileCurrentKey = <T>(key:string) =>  createSelector(
     if(profile) {
       return  profile.current ?? profile.default;
     }
-    return null;
+    return 'default';
 });
 
 export const selectLocalProfileKeys = <T>(key:string) =>  createSelector(
