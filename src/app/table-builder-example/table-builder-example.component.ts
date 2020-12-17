@@ -41,14 +41,14 @@ const additional: ArrayAdditional = {
 };
 
 const META_DATA: MetaData[] = [
-  {key: 'position', fieldType: FieldType.Number, order: 2, additional : {footer:{type : 'sum' }} },
-  {key: 'symbol', fieldType: FieldType.String },
+  {key: 'position', fieldType: FieldType.Number, order: 3, additional : {footer:{type : 'sum' }} },
+  {key: 'symbol', order:2, fieldType: FieldType.String },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
     additional: {dateFormat: 'shortDate'},
     click: (element, key) => console.log(element,key)
   },
-  {key: 'name', fieldType: FieldType.String,
+  {key: 'name', order: 1,fieldType: FieldType.String,
     additional: {
       export: { prepend: "'" },
       FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
