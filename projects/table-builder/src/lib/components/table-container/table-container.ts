@@ -25,7 +25,7 @@ import { GlobalStorageState } from '../../ngrx/reducer';
 import * as selectors from '../../ngrx/selectors';
 import { select, Store } from '@ngrx/store';
 import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from '../../ngrx/actions';
-import { TableState } from '../../classes/TableState';
+import { PersistedTableState } from '../../classes/TableState';
 
 @Component({
   selector: 'tb-table-container',
@@ -71,7 +71,7 @@ import { TableState } from '../../classes/TableState';
     if(this.tableId) {
       this.state.updateState(
         this.store.pipe(
-          select(selectors.selectLocalProfileState<TableState>(this.tableId)),
+          select(selectors.selectLocalProfileState<PersistedTableState>(this.tableId)),
           tap( state => {
             // for backwards compatability we want to load the state from the old schema.
             if(!state) {

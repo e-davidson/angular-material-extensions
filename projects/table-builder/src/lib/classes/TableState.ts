@@ -6,11 +6,10 @@ import { Sort } from '@angular/material/sort';
 export interface SavedTableProfile {
   profileNames : string [];
   currentProfile: string;
-  profiles: Dictionary<TableState>;
+  profiles: Dictionary<PersistedTableState>;
 }
 
-export interface TableState {
-  metaData?: Dictionary<MetaData>;
+export interface PersistedTableState {
   hiddenKeys?: string [];
   pageSize?: number;
   currentPage?: number;
@@ -18,6 +17,10 @@ export interface TableState {
   initialized : boolean;
   sorted : Sort [];
   currentProfile?: string;
+}
+
+export interface TableState extends PersistedTableState {
+  metaData?: Dictionary<MetaData>;
 }
 
 export const defaultTableState: TableState = {
