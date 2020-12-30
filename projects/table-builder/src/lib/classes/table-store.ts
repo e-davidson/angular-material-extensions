@@ -1,7 +1,7 @@
 import { FieldType, MetaData } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
 import { Observable } from 'rxjs';
-import { defaultTableState, TableState } from './TableState';
+import { defaultTableState, PersistedTableState, TableState } from './TableState';
 import { Injectable, Inject } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './TableBuilderConfig';
 import { FilterInfo } from './filter-info';
@@ -20,13 +20,12 @@ export class TableStore extends ComponentStore<TableState> {
    super( { ...defaultTableState, ...config.defaultTableState});
   }
 
-  getSavableState() : Observable<TableState> {
+  getSavableState() : Observable<PersistedTableState> {
     return  this.state$.pipe(
       map( s => {
-        const metaData = Object.values(s.metaData)
-        .map( md => ({...md, transform: undefined }))
-        .reduce((prev: Dictionary<MetaData>, current)=> ({...prev, [current.key]: current}), {});
-        return {...s, metaData };
+        const savableState = {...s}
+        delete savableState.metaData;
+        return savableState;
       })
     );
   }
@@ -123,22 +122,8 @@ export class TableStore extends ComponentStore<TableState> {
     };
   });
 
-  mergeMetaDatas = (existingMetaData: Dictionary<MetaData>, incomingMetaData: Dictionary<MetaData>) : Dictionary<MetaData> => {
-    const keys = [...new Set(Object.keys(existingMetaData).concat(Object.keys(incomingMetaData)))];
-    return keys.reduce( (prev: Dictionary<MetaData>, key: string) => {
-      const existing = existingMetaData[key];
-      const incoming = incomingMetaData[key];
-      if(existing && incoming) {
-        prev[key] = this.mergeMeta(existing,incoming);
-      } else {
-        prev[key] = incoming ?? existing;
-      }
-      return prev;
-    }, {});
-  }
-
   updateStateFunc = (state: TableState, incomingTableState: Partial<TableState>) : TableState => {
-    const metaData = this.mergeMetaDatas(state.metaData,incomingTableState.metaData);
+    const metaData = state.metaData;
     const sorted = incomingTableState.sorted?.length ? incomingTableState.sorted : this.createPreSort(metaData);
     return {...state, ...incomingTableState, metaData , sorted};
   }
@@ -166,7 +151,7 @@ export class TableStore extends ComponentStore<TableState> {
   }
 
   readonly setMetaData = this.updater((state, md: MetaData[] | MetaData ) => {
-    const metaDatas = ( Array.isArray(md) ? md : [md] )
+    const metaData = ( Array.isArray(md) ? [...md] : [md] ).sort((a,b)=> a.order - b.order)
       .reduce((prev: Dictionary<MetaData>,curr) => {
         if(prev[curr.key]) {
           prev[curr.key] = this.mergeMeta(prev[curr.key],curr);
@@ -175,7 +160,6 @@ export class TableStore extends ComponentStore<TableState> {
         }
         return prev;
       } ,{});
-    const metaData = this.mergeMetaDatas(state.metaData,metaDatas);
     let sorted = state.sorted;
     if(sorted.length === 0) {
       sorted = this.createPreSort(metaData);
