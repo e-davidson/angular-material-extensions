@@ -45,7 +45,7 @@
     </ng-container>
 
     <ng-template #header>
-      <mat-header-cell  [styler]='metaData?.additional?.styles' >
+      <mat-header-cell  [styler]='metaData?.additional?.styles' [resizeColumn]="true" [key]="metaData.key">
         <div class="header-container">
           <div *ngIf="!metaData._internalNotUserDefined || !customCell?.columnDef?.cell ; else headerWithoutMenu" mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}

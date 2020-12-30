@@ -96,6 +96,7 @@ export class TableBuilderExampleComponent {
     const all = combineArrays([of(ELEMENT_DATA), addedElements]);
     this.metaData$.next(META_DATA);
     this.tableBuilder = new TableBuilder(all, this.metaData$);
+    // this.tableBuilder = new TableBuilder(all, of([{key:'date',fieldType: FieldType.Date , displayName: 'The Date'}]),{metaDataPlusRestOfFields:true});
   }
 
 

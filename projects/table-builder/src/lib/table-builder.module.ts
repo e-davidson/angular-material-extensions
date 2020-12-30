@@ -36,6 +36,7 @@ import { FormatFilterValuePipe } from './pipes/format-filter-value.pipe';
 import { FormatFilterTypePipe } from './pipes/format-filter-type.pipe';
 import { DialogOpenDirective } from './directives/buttonSubject';
 import { DialogDirective } from './directives/dialog';
+import { ResizeColumnDirective } from './directives/resize-column.directive';
 
 @NgModule({
   imports: [
@@ -80,6 +81,7 @@ import { DialogDirective } from './directives/dialog';
         StopPropagationDirective,
         StylerDirective,
         PreventEnterDirective,
+        ResizeColumnDirective,
         InFilterComponent,
         AutoFocusDirective,
         DialogOpenDirective,

@@ -1,13 +1,13 @@
 import { Observable } from 'rxjs';
-import { MetaData, FieldType, ReportDef } from '../interfaces/report-def';
+import { MetaData, FieldType, ReportDef, TableOptions, DefaultTableOptions } from '../interfaces/report-def';
 import { first, map, switchMap, shareReplay, publishReplay, refCount } from 'rxjs/operators';
 import { mapArray } from '../functions/rxjs-operators';
 
 export class TableBuilder<T = any> {
-  constructor(private data$: Observable<any[]>, public metaData$?: Observable<MetaData[]> ) {
+  constructor(private data$: Observable<T[]>, public metaData$?: Observable<MetaData<T>[]>, options : TableOptions = DefaultTableOptions) {
     this.data$ = this.data$.pipe(publishReplay(1),refCount());
     this.metaData$ = this.metaData$ ?
-      this.metaData$.pipe(first(),shareReplay()) :
+      this.setUpMeta(this.data$,this.metaData$,options) :
       data$.pipe(first(), map( data => this.createMetaData(data[0]) ),shareReplay() );
   }
 
@@ -47,6 +47,27 @@ export class TableBuilder<T = any> {
       return prev;
     }, {} )
     return {...record, ...cleaned};
+  }
+
+  setUpMeta(data$:Observable<T[]>, metaData$:Observable<MetaData<T>[]>, options : TableOptions):Observable<MetaData<T>[]>{
+    const metas$ = metaData$.pipe(first(),shareReplay({bufferSize:1,refCount:true}));
+    if(options.metaDataPlusRestOfFields){
+      return data$.pipe(
+        switchMap(data => metas$.pipe(
+            map(metas => {
+              const aggregateMeta = this.createMetaData(data[0]).map(metaFromData => {
+                const metaFromMeta = metas.find(meta => meta.key === metaFromData.key);
+                if(metaFromMeta) return metaFromMeta;
+                return metaFromData;
+              });
+              return aggregateMeta;
+          }))),
+          shareReplay({bufferSize:1,refCount:true})
+      );
+    } 
+    else {
+      return metas$;
+    }
   }
 }
 

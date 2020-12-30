@@ -104,7 +104,7 @@ export class GenericTableComponent implements OnInit {
     this.state.on(this.state.displayedColumns$, keys => this.keys = [...this.columns, ...keys] );
   }
 
-  createDataSource() {
+  createDataSource() { 
     this.dataSource = new GenericTableDataSource(
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
