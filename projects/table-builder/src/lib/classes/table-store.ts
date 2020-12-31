@@ -54,6 +54,9 @@ export class TableStore extends ComponentStore<TableState> {
     return this.select( state => state.metaData[key]  )
   }
 
+  getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefinedWidth[key]);
+  getUserDefinedWidths$ = this.select(state => state.userDefinedWidth);
+
   createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
     return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
     .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
@@ -96,6 +99,12 @@ export class TableStore extends ComponentStore<TableState> {
     return update( state , { hiddenKeys: {$set: hiddenKeys}});
   });
 
+
+  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number}[]) => {
+    const userDefinedWidth = {...state.userDefinedWidth}
+    colWidths.forEach(cw => userDefinedWidth[cw.key] = cw.widthInPixel);
+    return {...state, userDefinedWidth};
+  });
 
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {
     if (!filter.filterId) {

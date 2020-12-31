@@ -12,10 +12,12 @@ import {
   ElementRef,
   ComponentFactory,
   Injector,
+  ViewChildren,
+  ContentChildren,
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatRowDef, MatTable } from '@angular/material/table';
+import { MatHeaderCell, MatHeaderCellDef, MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -47,6 +49,7 @@ export class GenericTableComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
   @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
+  @ViewChild('mat-table') matHeader: MatHeaderCell;
 
   currentColumns: string[];
 
@@ -105,6 +108,10 @@ export class GenericTableComponent implements OnInit {
     this.state.on(this.state.displayedColumns$, keys => {
       this.keys = [...this.columns, ...keys]} );
   }
+
+  ngAfterContentInit(){setTimeout(() => {
+    console.log(this.tableElRef)
+  }, 100);}
 
   createDataSource() { 
     this.dataSource = new GenericTableDataSource(

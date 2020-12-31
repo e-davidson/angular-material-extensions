@@ -37,6 +37,7 @@ import { FormatFilterTypePipe } from './pipes/format-filter-type.pipe';
 import { DialogOpenDirective } from './directives/buttonSubject';
 import { DialogDirective } from './directives/dialog';
 import { ResizeColumnDirective } from './directives/resize-column.directive';
+import {ReactiveComponentModule} from '@ngrx/component'
 
 @NgModule({
   imports: [
@@ -46,6 +47,7 @@ import { ResizeColumnDirective } from './directives/resize-column.directive';
     EffectsModule.forFeature([SaveTableEffects]),
     FormsModule,
     RouterModule,
+    ReactiveComponentModule,
   ],
     exports: [
         GenericTableComponent,

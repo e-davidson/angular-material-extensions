@@ -1,4 +1,5 @@
 import { Directive, OnInit, Renderer2, Input, ElementRef } from "@angular/core";
+import { TableStore } from "../classes/table-store";
 
 @Directive({
   selector: "[resizeColumn]"
@@ -21,10 +22,10 @@ export class ResizeColumnDirective implements OnInit {
 
   private pressed: boolean;
 
-  constructor(private renderer: Renderer2, private el: ElementRef) {
+  constructor(private renderer: Renderer2, private el: ElementRef, public state: TableStore,) {
     
   }
-
+ 
   ngOnInit() {
     this.column = this.el.nativeElement;
     if (this.resizable) {
@@ -41,12 +42,13 @@ export class ResizeColumnDirective implements OnInit {
   }
 
   ngAfterViewInit(){
+    console.log(this.el)
     setTimeout(()=>{
       this.cells = Array.from(this.table.querySelectorAll(".mat-row"))
         .map((row: any) => row.querySelector(`.mat-column-${this.key}`));
       this.sibling = this.column.nextElementSibling as HTMLElement;
       this.siblingCells = this.cells.map(elem => elem.nextElementSibling);
-    },0);
+    },100);
     
 
   }
@@ -68,26 +70,23 @@ export class ResizeColumnDirective implements OnInit {
       const change = (event.pageX - this.startX)
       let width = (this.startWidth + change) - offset;
       let siblingWidth = (this.startSiblingWidth - change) - offset;
-      console.log({change,siblingWidth,width})
 
-      // Set table header width
-      this.renderer.setStyle(this.column, "flex", 'none');
-      this.renderer.setStyle(this.sibling, "flex", 'none');
-      this.renderer.setStyle(this.column, "width", `${width}px`);
-      this.renderer.setStyle(this.sibling, "width", `${siblingWidth}px`);
+      this.state.setUserDefinedWidth([{key:this.key,widthInPixel:width}])
+
+    //   // Set table header width
+    //   this.renderer.setStyle(this.column, "flex", `0 0 ${width}px`);
+    //   this.renderer.setStyle(this.sibling, "flex", `0 0 ${siblingWidth}px`);
       
 
-      // Set table cells width
-      this.cells.forEach(cell => {
-        this.renderer.setStyle(cell, "flex", 'none');
-        this.renderer.setStyle(cell, "width", `${width}px`);
+    //   // Set table cells width
+    //   this.cells.forEach(cell => {
+    //     this.renderer.setStyle(cell, "flex", `0 0 ${width}px`);
 
-      })
-      this.siblingCells.forEach(cell => {
-        this.renderer.setStyle(cell, "flex", 'none');
-        this.renderer.setStyle(cell, "width", `${siblingWidth}px`);
+    //   })
+    //   this.siblingCells.forEach(cell => {
+    //     this.renderer.setStyle(cell, "flex", `0 0 ${siblingWidth}px`);
 
-      })
+    //   })
     }
   };
 
