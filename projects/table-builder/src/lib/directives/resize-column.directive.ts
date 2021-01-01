@@ -71,22 +71,22 @@ export class ResizeColumnDirective implements OnInit {
       let width = (this.startWidth + change) - offset;
       let siblingWidth = (this.startSiblingWidth - change) - offset;
 
-      this.state.setUserDefinedWidth([{key:this.key,widthInPixel:width}])
+      this.state.setUserDefinedWidth([{key:this.key,widthInPixel:width,siblingWidthInPixel:siblingWidth}])
 
-    //   // Set table header width
-    //   this.renderer.setStyle(this.column, "flex", `0 0 ${width}px`);
-    //   this.renderer.setStyle(this.sibling, "flex", `0 0 ${siblingWidth}px`);
+      // Set table header width
+      // this.renderer.setStyle(this.column, "flex", `0 0 ${width}px`);
+      // this.renderer.setStyle(this.sibling, "flex", `0 0 ${siblingWidth}px`);
       
 
-    //   // Set table cells width
-    //   this.cells.forEach(cell => {
-    //     this.renderer.setStyle(cell, "flex", `0 0 ${width}px`);
+      // // Set table cells width
+      // this.cells.forEach(cell => {
+      //   this.renderer.setStyle(cell, "flex", `0 0 ${width}px`);
 
-    //   })
-    //   this.siblingCells.forEach(cell => {
-    //     this.renderer.setStyle(cell, "flex", `0 0 ${siblingWidth}px`);
+      // })
+      // this.siblingCells.forEach(cell => {
+      //   this.renderer.setStyle(cell, "flex", `0 0 ${siblingWidth}px`);
 
-    //   })
+      // })
     }
   };
 

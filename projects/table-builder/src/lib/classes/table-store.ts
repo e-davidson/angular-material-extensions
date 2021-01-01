@@ -62,12 +62,15 @@ export class TableStore extends ComponentStore<TableState> {
     .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
     .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
   }
+  private displayedColumns =  (state:TableState) => Object.keys(state.metaData)
+    .filter(key => !state.hiddenKeys.includes(key));
+  private getVisibleRightSibling = (state:TableState, key:string) => {
+    const cols = this.displayedColumns(state);
+    const index = cols.findIndex(k => k === key);
+    return cols[index+1];
+  }
+  readonly displayedColumns$ = this.select(this.displayedColumns);
 
-
-  readonly displayedColumns$ = this.select(
-    state => Object.keys(state.metaData)
-      .filter(key => !state.hiddenKeys.includes(key))
-    );
 
   readonly hideColumn = this.updater((state, key: string) => ({
     ...state,
@@ -100,9 +103,13 @@ export class TableStore extends ComponentStore<TableState> {
   });
 
 
-  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number}[]) => {
-    const userDefinedWidth = {...state.userDefinedWidth}
-    colWidths.forEach(cw => userDefinedWidth[cw.key] = cw.widthInPixel);
+  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number, siblingWidthInPixel:number}[]) => {
+    const userDefinedWidth = {...state.userDefinedWidth};
+    colWidths.forEach(cw => {
+      const sibling = this.getVisibleRightSibling(state,cw.key);
+      userDefinedWidth[cw.key] = cw.widthInPixel;
+      if(sibling) userDefinedWidth[sibling] = cw.siblingWidthInPixel;
+    });
     return {...state, userDefinedWidth};
   });
 
