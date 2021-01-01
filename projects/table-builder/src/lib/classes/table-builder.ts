@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { MetaData, FieldType, ReportDef, TableOptions, DefaultTableOptions } from '../interfaces/report-def';
+import { MetaData, FieldType, ReportDef } from '../interfaces/report-def';
 import { first, map, switchMap, shareReplay, publishReplay, refCount } from 'rxjs/operators';
 import { mapArray } from '../functions/rxjs-operators';
 
