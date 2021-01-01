@@ -15,8 +15,6 @@ export class ResizeColumnDirective implements OnInit {
   private startSiblingWidth: number;
 
   private column: HTMLElement;
-  private cells:any[];
-  private siblingCells;
   private sibling: HTMLElement
   private table: HTMLElement;
 
@@ -42,15 +40,9 @@ export class ResizeColumnDirective implements OnInit {
   }
 
   ngAfterViewInit(){
-    console.log(this.el)
     setTimeout(()=>{
-      this.cells = Array.from(this.table.querySelectorAll(".mat-row"))
-        .map((row: any) => row.querySelector(`.mat-column-${this.key}`));
       this.sibling = this.column.nextElementSibling as HTMLElement;
-      this.siblingCells = this.cells.map(elem => elem.nextElementSibling);
-    },100);
-    
-
+    },0);
   }
 
   onMouseDown = (event: MouseEvent) => {
@@ -71,22 +63,7 @@ export class ResizeColumnDirective implements OnInit {
       let width = (this.startWidth + change) - offset;
       let siblingWidth = (this.startSiblingWidth - change) - offset;
 
-      this.state.setUserDefinedWidth([{key:this.key,widthInPixel:width,siblingWidthInPixel:siblingWidth}])
-
-      // Set table header width
-      // this.renderer.setStyle(this.column, "flex", `0 0 ${width}px`);
-      // this.renderer.setStyle(this.sibling, "flex", `0 0 ${siblingWidth}px`);
-      
-
-      // // Set table cells width
-      // this.cells.forEach(cell => {
-      //   this.renderer.setStyle(cell, "flex", `0 0 ${width}px`);
-
-      // })
-      // this.siblingCells.forEach(cell => {
-      //   this.renderer.setStyle(cell, "flex", `0 0 ${siblingWidth}px`);
-
-      // })
+      this.state.setUserDefinedWidth([{key:this.key,widthInPixel:width,siblingWidthInPixel:siblingWidth}]);
     }
   };
 

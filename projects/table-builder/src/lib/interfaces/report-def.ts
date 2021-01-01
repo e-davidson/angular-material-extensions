@@ -81,11 +81,3 @@ export interface ArrayAdditional extends Additional {
     limit?: number;
     arrayStyle?: ArrayStyle;
 }
-
-export interface TableOptions {
-  metaDataPlusRestOfFields : boolean; 
-}
-
-export const DefaultTableOptions:TableOptions= {
-  metaDataPlusRestOfFields:false
-}

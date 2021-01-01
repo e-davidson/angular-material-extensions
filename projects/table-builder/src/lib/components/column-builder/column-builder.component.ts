@@ -33,7 +33,6 @@ export class ColumnBuilderComponent implements OnInit {
 
   @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
   @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
-  @ViewChild("myHeader") matHeader: MatHeaderCellDef;
 
   template: TemplateRef<any>;
   transform: (o: any, ...args: any[])=> any ;
@@ -70,10 +69,6 @@ export class ColumnBuilderComponent implements OnInit {
   ngAfterViewInit() {
     this.template = this.getTemplate();
     this.table.addColumnDef(this.columnDef);
-    setTimeout(() => {
-      console.log(this.columnDef)
-    }, 100);
-    
   }
 
   cellClicked(element, key) {
