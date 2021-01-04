@@ -82,7 +82,13 @@ export class TableStore extends ComponentStore<TableState> {
       .filter(md => md.fieldType === FieldType.Hidden)
       .map(md => md.key);
     const sorted = this.createPreSort(state.metaData);
-    return update(state, { hiddenKeys: { $set: [...hiddenColumns] }, filters: { $set: {} }, sorted: {$set: sorted} });
+    return update(state, {
+       hiddenKeys: { $set: [...hiddenColumns] }, 
+       filters: { $set: {} }, 
+       sorted: {$set: sorted},
+       userDifinedTableWidth: {$set: null},
+       userDefinedWidth : {$set: {}}
+      });
   });
 
   readonly showColumn = this.updater((state, key: string) => ({
@@ -103,7 +109,7 @@ export class TableStore extends ComponentStore<TableState> {
   });
 
 
-  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number, siblingWidthInPixel:number}[]) => {
+  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number, siblingWidthInPixel?:number}[]) => {
     const userDefinedWidth = {...state.userDefinedWidth};
     colWidths.forEach(cw => {
       const sibling = this.getVisibleRightSibling(state,cw.key);
@@ -147,6 +153,9 @@ export class TableStore extends ComponentStore<TableState> {
   readonly setPageSize = this.updater( (state, pageSize: number)=> ({...state,pageSize}));
 
   readonly updateState = this.updater<TableState>(this.updateStateFunc);
+
+  getUserDefinedTableSize$ = this.select(state => state.userDifinedTableWidth);
+  setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDifinedTableWidth:widthInpixels})) ;
 
   mergeMeta = (orig: MetaData, merge: MetaData): MetaData => {
     return {

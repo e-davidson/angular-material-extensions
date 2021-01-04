@@ -147,6 +147,8 @@ export class GenericTableComponent implements OnInit {
       this.selection.clear() :
       this.selection.select(...this.dataSource.data);
   }
+
+  tableWidth = this.state.getUserDefinedTableSize$.pipe(map(w => ({width:`${w}px`})),tap(a=>console.log(a)));
 }
 
 export type direc = 'asc' | 'desc' | boolean;

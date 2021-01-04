@@ -13,6 +13,7 @@ export class ResizeColumnDirective implements OnInit {
 
   private startWidth: number;
   private startSiblingWidth: number;
+  private startTableWidth:number;
 
   private column: HTMLElement;
   private sibling: HTMLElement
@@ -50,7 +51,7 @@ export class ResizeColumnDirective implements OnInit {
     this.startX = event.pageX;
     this.startWidth = this.column.offsetWidth;
     this.startSiblingWidth = this.sibling.offsetWidth;
-
+    this.startTableWidth = this.table.offsetWidth;
   };
 
   onMouseMove = (event: MouseEvent) => {
@@ -62,8 +63,10 @@ export class ResizeColumnDirective implements OnInit {
       const change = (event.pageX - this.startX)
       let width = (this.startWidth + change) - offset;
       let siblingWidth = (this.startSiblingWidth - change) - offset;
+      let tableSize = (this.startTableWidth + change) - offset;
 
-      this.state.setUserDefinedWidth([{key:this.key,widthInPixel:width,siblingWidthInPixel:siblingWidth}]);
+      this.state.setUserDefinedWidth([{key:this.key,widthInPixel:width}]);
+      this.state.setTableWidth(tableSize);
     }
   };
 
