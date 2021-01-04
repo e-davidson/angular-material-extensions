@@ -24,7 +24,7 @@
     "@ngrx/effects": "^10.0.1",
     "@ngrx/store": "^10.0.1",
     "@ngrx/store-devtools": "^10.0.1",
-    "@ngrx/component-store": "^10.0.1",
+    "@ngrx/component-store": "^10.1.2",
     "@ngrx/component": "10.1.2",
     "core-js": "3.6.5",
     "immutability-helper": "^3.1.1",

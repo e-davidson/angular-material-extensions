@@ -64,14 +64,7 @@ export class TableStore extends ComponentStore<TableState> {
   }
   private displayedColumns =  (state:TableState) => Object.keys(state.metaData)
     .filter(key => !state.hiddenKeys.includes(key));
-  private getVisibleRightSibling = (state:TableState, key:string) => {
-    const cols = this.displayedColumns(state);
-    const index = cols.findIndex(k => k === key);
-    return cols[index+1];
-  }
   readonly displayedColumns$ = this.select(this.displayedColumns);
-
-
   readonly hideColumn = this.updater((state, key: string) => ({
     ...state,
     hiddenKeys: [...state.hiddenKeys.filter( k => k !== key), key],
@@ -109,12 +102,10 @@ export class TableStore extends ComponentStore<TableState> {
   });
 
 
-  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number, siblingWidthInPixel?:number}[]) => {
+  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number}[]) => {
     const userDefinedWidth = {...state.userDefinedWidth};
     colWidths.forEach(cw => {
-      const sibling = this.getVisibleRightSibling(state,cw.key);
       userDefinedWidth[cw.key] = cw.widthInPixel;
-      if(sibling) userDefinedWidth[sibling] = cw.siblingWidthInPixel;
     });
     return {...state, userDefinedWidth};
   });
