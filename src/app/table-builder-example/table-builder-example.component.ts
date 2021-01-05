@@ -41,7 +41,7 @@ const additional: ArrayAdditional = {
 };
 
 const META_DATA: MetaData[] = [
-  {key: 'position', fieldType: FieldType.Number, order: 3, additional : {footer:{type : 'sum' }} },
+  {key: 'position', fieldType: FieldType.Hidden, order: 3, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', order:2, fieldType: FieldType.String },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
