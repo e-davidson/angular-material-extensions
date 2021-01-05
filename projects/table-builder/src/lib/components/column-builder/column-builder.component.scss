@@ -10,7 +10,7 @@
 }
 
 .column-head{
-  position: relative;      
+  position: relative;
   &:not(:last-child) {
     .resize-holder {
       cursor: col-resize;

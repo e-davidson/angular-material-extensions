@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
 import { Subject, Observable, of, ReplaySubject } from 'rxjs';
-import { scan, startWith } from 'rxjs/operators';
+import { map, scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType, ArrayAdditional, ArrayStyle } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
