@@ -79,7 +79,7 @@ export class TableStore extends ComponentStore<TableState> {
        hiddenKeys: { $set: [...hiddenColumns] }, 
        filters: { $set: {} }, 
        sorted: {$set: sorted},
-       userDifinedTableWidth: {$set: null},
+       userDefinedTableWidth: {$set: null},
        userDefinedWidth : {$set: {}}
       });
   });
@@ -145,8 +145,8 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly updateState = this.updater<TableState>(this.updateStateFunc);
 
-  getUserDefinedTableSize$ = this.select(state => state.userDifinedTableWidth);
-  setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDifinedTableWidth:widthInpixels})) ;
+  getUserDefinedTableSize$ = this.select(state => state.userDefinedTableWidth);
+  setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDefinedTableWidth:widthInpixels})) ;
 
   mergeMeta = (orig: MetaData, merge: MetaData): MetaData => {
     return {

@@ -18,7 +18,7 @@ export interface PersistedTableState {
   sorted : Sort [];
   currentProfile?: string;
   userDefinedWidth:Dictionary<number>
-  userDifinedTableWidth?:number;
+  userDefinedTableWidth?:number;
 }
 
 export interface TableState extends PersistedTableState {
