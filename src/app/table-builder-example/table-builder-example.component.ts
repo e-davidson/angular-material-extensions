@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
 import { Subject, Observable, of, ReplaySubject } from 'rxjs';
-import { scan, startWith } from 'rxjs/operators';
+import { map, scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType, ArrayAdditional, ArrayStyle } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
@@ -41,7 +41,7 @@ const additional: ArrayAdditional = {
 };
 
 const META_DATA: MetaData[] = [
-  {key: 'position', fieldType: FieldType.Number, order: 3, additional : {footer:{type : 'sum' }} },
+  {key: 'position', fieldType: FieldType.Hidden, order: 3, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', order:2, fieldType: FieldType.String },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
@@ -96,6 +96,7 @@ export class TableBuilderExampleComponent {
     const all = combineArrays([of(ELEMENT_DATA), addedElements]);
     this.metaData$.next(META_DATA);
     this.tableBuilder = new TableBuilder(all, this.metaData$);
+    // this.tableBuilder = new TableBuilder(all, of([{key:'date',fieldType: FieldType.Date , displayName: 'The Date'}]),{metaDataPlusRestOfFields:true});
   }
 
 

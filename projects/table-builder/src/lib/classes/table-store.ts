@@ -54,18 +54,17 @@ export class TableStore extends ComponentStore<TableState> {
     return this.select( state => state.metaData[key]  )
   }
 
+  getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefinedWidths[key]);
+  getUserDefinedWidths$ = this.select(state => state.userDefinedWidths);
+
   createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
     return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
     .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
     .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
   }
-
-
-  readonly displayedColumns$ = this.select(
-    state => Object.keys(state.metaData)
-      .filter(key => !state.hiddenKeys.includes(key) && state.metaData[key].fieldType !== FieldType.Hidden)
-    );
-
+  private displayedColumns =  (state:TableState) => Object.keys(state.metaData)
+    .filter(key => !state.hiddenKeys.includes(key) && state.metaData[key].fieldType !== FieldType.Hidden);
+  readonly displayedColumns$ = this.select(this.displayedColumns);
   readonly hideColumn = this.updater((state, key: string) => ({
     ...state,
     hiddenKeys: [...state.hiddenKeys.filter( k => k !== key), key],
@@ -76,7 +75,13 @@ export class TableStore extends ComponentStore<TableState> {
       .filter(md => md.fieldType === FieldType.Hidden)
       .map(md => md.key);
     const sorted = this.createPreSort(state.metaData);
-    return update(state, { hiddenKeys: { $set: [...hiddenColumns] }, filters: { $set: {} }, sorted: {$set: sorted} });
+    return update(state, {
+       hiddenKeys: { $set: [...hiddenColumns] }, 
+       filters: { $set: {} }, 
+       sorted: {$set: sorted},
+       userDefinedTableWidth: {$set: null},
+       userDefinedWidths : {$set: {}}
+      });
   });
 
   readonly showColumn = this.updater((state, key: string) => ({
@@ -96,6 +101,14 @@ export class TableStore extends ComponentStore<TableState> {
     return update( state , { hiddenKeys: {$set: hiddenKeys}});
   });
 
+
+  setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number}[]) => {
+    const userDefinedWidths = {...state.userDefinedWidths};
+    colWidths.forEach(cw => {
+      userDefinedWidths[cw.key] = cw.widthInPixel;
+    });
+    return {...state, userDefinedWidths: userDefinedWidths};
+  });
 
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {
     if (!filter.filterId) {
@@ -131,6 +144,9 @@ export class TableStore extends ComponentStore<TableState> {
   readonly setPageSize = this.updater( (state, pageSize: number)=> ({...state,pageSize}));
 
   readonly updateState = this.updater<TableState>(this.updateStateFunc);
+
+  getUserDefinedTableSize$ = this.select(state => state.userDefinedTableWidth);
+  setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDefinedTableWidth:widthInpixels})) ;
 
   mergeMeta = (orig: MetaData, merge: MetaData): MetaData => {
     return {

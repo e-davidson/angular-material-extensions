@@ -9,6 +9,7 @@
     "@ngrx/effects": "^10.0.0",
     "immutability-helper": "^3.0.1",
     "rxjs": "6.6.0",
+    "@ngrx/component": "10.1.2",
     "uuid4": "^1.1.4"
   },
   "dependencies": {

@@ -4,7 +4,7 @@ import { first, map, switchMap, shareReplay, publishReplay, refCount } from 'rxj
 import { mapArray } from '../functions/rxjs-operators';
 
 export class TableBuilder<T = any> {
-  constructor(private data$: Observable<any[]>, public metaData$?: Observable<MetaData[]> ) {
+  constructor(private data$: Observable<T[]>, public metaData$?: Observable<MetaData<T>[]> ) {
     this.data$ = this.data$.pipe(publishReplay(1),refCount());
     this.metaData$ = this.metaData$ ?
       this.metaData$.pipe(first(),shareReplay()) :
