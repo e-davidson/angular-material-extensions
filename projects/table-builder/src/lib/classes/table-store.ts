@@ -63,7 +63,7 @@ export class TableStore extends ComponentStore<TableState> {
     .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
   }
   private displayedColumns =  (state:TableState) => Object.keys(state.metaData)
-    .filter(key => !state.hiddenKeys.includes(key));
+    .filter(key => !state.hiddenKeys.includes(key) && state.metaData[key].fieldType !== FieldType.Hidden);
   readonly displayedColumns$ = this.select(this.displayedColumns);
   readonly hideColumn = this.updater((state, key: string) => ({
     ...state,
