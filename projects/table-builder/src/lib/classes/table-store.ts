@@ -54,8 +54,8 @@ export class TableStore extends ComponentStore<TableState> {
     return this.select( state => state.metaData[key]  )
   }
 
-  getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefinedWidth[key]);
-  getUserDefinedWidths$ = this.select(state => state.userDefinedWidth);
+  getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefinedWidths[key]);
+  getUserDefinedWidths$ = this.select(state => state.userDefinedWidths);
 
   createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
     return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
@@ -80,7 +80,7 @@ export class TableStore extends ComponentStore<TableState> {
        filters: { $set: {} }, 
        sorted: {$set: sorted},
        userDefinedTableWidth: {$set: null},
-       userDefinedWidth : {$set: {}}
+       userDefinedWidths : {$set: {}}
       });
   });
 
@@ -103,11 +103,11 @@ export class TableStore extends ComponentStore<TableState> {
 
 
   setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number}[]) => {
-    const userDefinedWidth = {...state.userDefinedWidth};
+    const userDefinedWidths = {...state.userDefinedWidths};
     colWidths.forEach(cw => {
-      userDefinedWidth[cw.key] = cw.widthInPixel;
+      userDefinedWidths[cw.key] = cw.widthInPixel;
     });
-    return {...state, userDefinedWidth};
+    return {...state, userDefinedWidths: userDefinedWidths};
   });
 
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {

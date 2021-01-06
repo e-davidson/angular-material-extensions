@@ -1,6 +1,6 @@
 import { Directive, OnInit, Renderer2, Input, ElementRef } from "@angular/core";
 import { fromEvent, of } from "rxjs";
-import { filter, first, map, switchMap, takeUntil, tap } from "rxjs/operators";
+import { filter, first, map, shareReplay, switchMap, takeUntil, tap } from "rxjs/operators";
 import { TableStore } from "../classes/table-store";
 
 @Directive({
@@ -14,55 +14,88 @@ export class ResizeColumnDirective implements OnInit{
 
   ngOnInit(){
     if (this.resizable){
-      const columnHead = this.el.nativeElement;
-      const resizer = this.renderer.createElement("span");
-      this.renderer.addClass(resizer, "resize-holder");
-      this.renderer.appendChild(columnHead, resizer);
-      const row = this.renderer.parentNode(columnHead);
-      const table = this.renderer.parentNode(row);
+      const {table, columnHead} = this.getTableAndColumnHeadHtmlElements();
 
-      const onMouseDown = fromEvent<MouseEvent>(resizer, "mousedown").pipe(
-        map(event => ({
-          startX: event.pageX,
-          startWidth: columnHead.offsetWidth,
-          startTableWidth: table.offsetWidth
-        }))
-      );
+      const resizer = this.createResizerSpanInColumnHead(columnHead);
 
-      const aggregateMouseEvents$ = onMouseDown.pipe(
-        switchMap( startData => fromEvent<MouseEvent>(table, "mousemove").pipe(
-          map( mouseMove => ({startData, mouseMove})),
-          takeUntil(fromEvent<MouseEvent>(document, "mouseup").pipe(first()))
-        ) ),
+      const aggregateMouseEventsMapped$ = this.mouseDownThroghMouseUpEventMapper(resizer,columnHead,table)
 
-      );
-
-      const resizeColsData$ = aggregateMouseEvents$.pipe(
-        map( ({startData,mouseMove}) => {
-          const offset = 13;
-          if (mouseMove.buttons) {
-            // Calculate width of column
-            const change = (mouseMove.pageX - startData.startX ) - offset;
-            let width = (startData.startWidth + change);
-            if(width < 1){
-              width= 1;
-            }
-            const columnChange = width - startData.startWidth;
-            let tableSize = (startData.startTableWidth + columnChange)+offset;
-            return ({key:this.key,widthInPixel:width,tableSize})
-          }
-          return null}),
-        filter( d => d !== null )
+      const resizeColsData$ = aggregateMouseEventsMapped$.pipe(
+        filter(({mouseMove})=>!!mouseMove.buttons),
+        map( ({mouseDownData,mouseMove}) => {
+            const {newTableWidth,newColumnWidthBesidesPaddingAndBorder}  = this.calculateNewWidths(mouseDownData,mouseMove,columnHead)
+            return ({
+              key:this.key,
+              widthInPixel:newColumnWidthBesidesPaddingAndBorder,
+              tableSize:newTableWidth})
+          }),
+        shareReplay({bufferSize:1,refCount:true})
       );
 
       this.store.setUserDefinedWidth(resizeColsData$.pipe(
-        // tap(resizeData => this.renderer.setStyle(columnHead, "flex", `0, 0, ${resizeData.widthInPixel}px`)),
         map(resizeData => ([{key: this.key, widthInPixel: resizeData.widthInPixel }]))
       ));
 
       this.store.setTableWidth(resizeColsData$.pipe(
-        tap(resizeData => this.renderer.setStyle(table, "flex", `0, 0, ${resizeData.tableSize}px`)),
         map(resizeData => resizeData.tableSize )));
     }
+
   }
+
+  createResizerSpanInColumnHead(columnHead:HTMLElement){
+    const resizer = this.renderer.createElement("span");
+    this.renderer.addClass(resizer, "resize-holder");
+    this.renderer.appendChild(columnHead, resizer);
+    return resizer;
+  }
+
+  getTableAndColumnHeadHtmlElements():{table:HTMLElement,columnHead:HTMLElement}{
+    const columnHead: HTMLElement = this.el.nativeElement;
+    const row = this.renderer.parentNode(columnHead);
+    const table = this.renderer.parentNode(row);
+    return ({table,columnHead})
+  }
+
+  mouseDownThroghMouseUpEventMapper(resizer:HTMLElement, columnHead:HTMLElement, table:HTMLElement){
+    return this.resizerMouseDownEventMapper(resizer,columnHead,table)
+    .pipe(
+      switchMap( mouseDownData => fromEvent<MouseEvent>(table, "mousemove").pipe(
+        map( mouseMove => ({mouseDownData, mouseMove})),
+        takeUntil(fromEvent<MouseEvent>(document, "mouseup"))
+      ) ),
+    )
+  }
+  resizerMouseDownEventMapper(resizer:HTMLElement, columnHead:HTMLElement, table:HTMLElement){
+    return fromEvent<MouseEvent>(resizer, "mousedown").pipe(
+      map(event => ({
+        startPageX: event.pageX,
+        startColumnWidth: columnHead.offsetWidth,
+        startTableWidth: table.offsetWidth
+      }))
+    );
+  }
+
+  calculateNewWidths(mouseDownData:MouseDowmData,mouseMove:MouseEvent,columnHead:HTMLElement):{newTableWidth:number,newColumnWidthBesidesPaddingAndBorder:number}{
+    const columnPaddingAndBorderWidth = this.calculateOffset(columnHead);
+    const change = (mouseMove.pageX - mouseDownData.startPageX );
+    const newColumnWidth = mouseDownData.startColumnWidth + change;
+    let newColumnWidthBesidesPaddingAndBorder = newColumnWidth - columnPaddingAndBorderWidth;
+    if(newColumnWidthBesidesPaddingAndBorder < 1){
+      newColumnWidthBesidesPaddingAndBorder = 1;
+    }
+    const columnChange = newColumnWidth - mouseDownData.startColumnWidth;
+    const newTableWidth = (mouseDownData.startTableWidth + columnChange);
+    return ({newTableWidth,newColumnWidthBesidesPaddingAndBorder})
+  }
+  calculateOffset(columnHead:HTMLElement){
+    const styles = globalThis.getComputedStyle(columnHead);
+    var paddingPlusBorder = 
+      (+styles.getPropertyValue('border-left-width').replace('px','')) + (+styles.getPropertyValue('border-right-width').replace('px',''))
+      +
+      (+styles.getPropertyValue('padding-left').replace('px','')) + (+styles.getPropertyValue('padding-right').replace('px',''))
+    
+    return paddingPlusBorder;
+  }
+  
 }
+interface MouseDowmData{startPageX:number,startColumnWidth:number,startTableWidth:number}
