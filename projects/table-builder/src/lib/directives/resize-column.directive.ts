@@ -23,11 +23,12 @@ export class ResizeColumnDirective implements OnInit{
       const resizeColsData$ = aggregateMouseEventsMapped$.pipe(
         filter(({mouseMove})=>!!mouseMove.buttons),
         map( ({mouseDownData,mouseMove}) => {
-            const {newTableWidth,newColumnWidthBesidesPaddingAndBorder}  = this.calculateNewWidths(mouseDownData,mouseMove,columnHead)
+            const {newTableWidth,newColumnWidthBesidesPaddingAndBorder}  = this.calculateNewWidths(mouseDownData,mouseMove)
             return ({
               key:this.key,
               widthInPixel:newColumnWidthBesidesPaddingAndBorder,
-              tableSize:newTableWidth})
+              tableSize:newTableWidth,
+            })
           }),
         shareReplay({bufferSize:1,refCount:true})
       );
@@ -70,16 +71,16 @@ export class ResizeColumnDirective implements OnInit{
       map(event => ({
         startPageX: event.pageX,
         startColumnWidth: columnHead.offsetWidth,
-        startTableWidth: table.offsetWidth
+        startTableWidth: table.offsetWidth,
+        widthOffset : this.calculateColumnPaddingAndBorderWidth(columnHead),
       }))
     );
   }
 
-  calculateNewWidths(mouseDownData:MouseDowmData,mouseMove:MouseEvent,columnHead:HTMLElement):{newTableWidth:number,newColumnWidthBesidesPaddingAndBorder:number}{
-    const columnPaddingAndBorderWidth = this.calculateOffset(columnHead);
+  calculateNewWidths(mouseDownData:MouseDowmData,mouseMove:MouseEvent):{newTableWidth:number,newColumnWidthBesidesPaddingAndBorder:number}{
     const change = (mouseMove.pageX - mouseDownData.startPageX );
     const newColumnWidth = mouseDownData.startColumnWidth + change;
-    let newColumnWidthBesidesPaddingAndBorder = newColumnWidth - columnPaddingAndBorderWidth;
+    let newColumnWidthBesidesPaddingAndBorder = newColumnWidth - mouseDownData.widthOffset;
     if(newColumnWidthBesidesPaddingAndBorder < 1){
       newColumnWidthBesidesPaddingAndBorder = 1;
     }
@@ -87,7 +88,7 @@ export class ResizeColumnDirective implements OnInit{
     const newTableWidth = (mouseDownData.startTableWidth + columnChange);
     return ({newTableWidth,newColumnWidthBesidesPaddingAndBorder})
   }
-  calculateOffset(columnHead:HTMLElement){
+  calculateColumnPaddingAndBorderWidth(columnHead:HTMLElement){
     const styles = globalThis.getComputedStyle(columnHead);
     var paddingPlusBorder = 
       (+styles.getPropertyValue('border-left-width').replace('px','')) + (+styles.getPropertyValue('border-right-width').replace('px',''))
@@ -98,4 +99,9 @@ export class ResizeColumnDirective implements OnInit{
   }
   
 }
-interface MouseDowmData{startPageX:number,startColumnWidth:number,startTableWidth:number}
+interface MouseDowmData{
+  startPageX:number,
+  startColumnWidth:number,
+  startTableWidth:number,
+  widthOffset:number;
+}
