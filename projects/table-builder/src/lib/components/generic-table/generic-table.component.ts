@@ -106,7 +106,7 @@ export class GenericTableComponent implements OnInit {
       this.keys = [...this.columns, ...keys]} );
   }
 
-  createDataSource() {
+  createDataSource() { 
     this.dataSource = new GenericTableDataSource(
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
@@ -147,6 +147,8 @@ export class GenericTableComponent implements OnInit {
       this.selection.clear() :
       this.selection.select(...this.dataSource.data);
   }
+
+  tableWidth = this.state.getUserDefinedTableSize$.pipe(map(w => ({width:`${w}px`})));
 }
 
 export type direc = 'asc' | 'desc' | boolean;

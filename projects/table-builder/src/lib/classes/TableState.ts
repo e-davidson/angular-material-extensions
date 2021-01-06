@@ -17,6 +17,8 @@ export interface PersistedTableState {
   initialized : boolean;
   sorted : Sort [];
   currentProfile?: string;
+  userDefinedWidths:Dictionary<number>
+  userDefinedTableWidth?:number;
 }
 
 export interface TableState extends PersistedTableState {
@@ -29,4 +31,5 @@ export const defaultTableState: TableState = {
   hiddenKeys: [],
   initialized : false,
   sorted: [],
+  userDefinedWidths:{},
 };

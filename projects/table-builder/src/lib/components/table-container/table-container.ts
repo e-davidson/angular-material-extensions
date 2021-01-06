@@ -134,7 +134,6 @@ import { PersistedTableState } from '../../classes/TableState';
       mapArray( metaData => ({metaData, customCell: customCellMap.get(metaData.key)}))
     );
   }
-
   mapMetaDatas = (meta : MetaData<T>) => {
     if(meta.fieldType === FieldType.Array){
       const additional = {...meta.additional} as ArrayAdditional;

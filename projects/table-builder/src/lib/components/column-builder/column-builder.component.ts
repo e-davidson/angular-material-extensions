@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
+import { TableStore } from '../../classes/table-store';
+import { map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'tb-column-builder',
@@ -34,7 +36,9 @@ export class ColumnBuilderComponent implements OnInit {
   template: TemplateRef<any>;
   transform: (o: any, ...args: any[])=> any ;
 
-  constructor( private transformCreator: TransformCreator, private table: MatTable<any>) { }
+  constructor( private transformCreator: TransformCreator, private table: MatTable<any>, 
+    public state: TableStore,
+    ) { }
 
   getTemplate() {
     if (this.customCell?.columnDef) {
@@ -52,6 +56,13 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
+    this.styles$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(
+      startWith(null),
+      map(w => {
+      const width = w ? {flex:`0 0 ${w}px`} : {};
+      const styles = this.metaData.additional?.styles || w ? {...this.metaData.additional?.styles,...width} : null;
+      return styles;
+    }));
   }
 
   ngAfterViewInit() {
@@ -64,4 +75,7 @@ export class ColumnBuilderComponent implements OnInit {
       this.metaData.click(element,key);
     }
   }
+
+  styles$;
+
 }

@@ -8,3 +8,19 @@
 .negative-currency {
   color: red;
 }
+
+.column-head{
+  position: relative;
+  &:not(:last-child) {
+    .resize-holder {
+      cursor: col-resize;
+      user-select: none;
+      width: 20px;
+      height: 100%;
+      position: absolute;
+      right: -10px;
+      top: 0;
+      z-index: 1;
+    }
+  }
+}
