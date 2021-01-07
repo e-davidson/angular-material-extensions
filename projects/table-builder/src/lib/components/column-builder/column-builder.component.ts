@@ -59,7 +59,7 @@ export class ColumnBuilderComponent implements OnInit {
     this.styles$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(
       startWith(null),
       map(w => {
-      const width = w ? {flex:`0 0 ${w}px`} : {};
+      const width = w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {};
       const styles = this.metaData.additional?.styles || w ? {...this.metaData.additional?.styles,...width} : null;
       return styles;
     }));
