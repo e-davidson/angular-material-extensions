@@ -23,10 +23,10 @@ export class ResizeColumnDirective implements OnInit{
       const resizeColsData$ = aggregateMouseEventsMapped$.pipe(
         filter(({mouseMove})=>!!mouseMove.buttons),
         map( ({mouseDownData,mouseMove}) => {
-            const {newTableWidth,newColumnWidthBesidesPaddingAndBorder}  = this.calculateNewWidths(mouseDownData,mouseMove)
+            const {newTableWidth,newColumnWidth}  = this.calculateNewWidths(mouseDownData,mouseMove)
             return ({
               key:this.key,
-              widthInPixel:newColumnWidthBesidesPaddingAndBorder,
+              widthInPixel:newColumnWidth,
               tableSize:newTableWidth,
             })
           }),
@@ -70,38 +70,27 @@ export class ResizeColumnDirective implements OnInit{
     return fromEvent<MouseEvent>(resizer, "mousedown").pipe(
       map(event => ({
         startPageX: event.pageX,
-        startColumnWidth: columnHead.offsetWidth,
-        startTableWidth: table.offsetWidth,
-        widthOffset : this.calculateColumnPaddingAndBorderWidth(columnHead),
+        startColumnWidth: this.getElementWidth(columnHead),
+        startTableWidth: this.getElementWidth(table),
       }))
     );
   }
 
-  calculateNewWidths(mouseDownData:MouseDowmData,mouseMove:MouseEvent):{newTableWidth:number,newColumnWidthBesidesPaddingAndBorder:number}{
+  calculateNewWidths(mouseDownData:MouseDowmData,mouseMove:MouseEvent):{newTableWidth:number,newColumnWidth:number}{
     const change = (mouseMove.pageX - mouseDownData.startPageX );
-    const newColumnWidth = mouseDownData.startColumnWidth + change;
-    let newColumnWidthBesidesPaddingAndBorder = newColumnWidth - mouseDownData.widthOffset;
-    if(newColumnWidthBesidesPaddingAndBorder < 1){
-      newColumnWidthBesidesPaddingAndBorder = 1;
+    let newColumnWidth = mouseDownData.startColumnWidth + change;
+    if(newColumnWidth < 1){
+      newColumnWidth = 1;
     }
     const columnChange = newColumnWidth - mouseDownData.startColumnWidth;
     const newTableWidth = (mouseDownData.startTableWidth + columnChange);
-    return ({newTableWidth,newColumnWidthBesidesPaddingAndBorder})
+    return ({newTableWidth,newColumnWidth})
   }
-  calculateColumnPaddingAndBorderWidth(columnHead:HTMLElement){
-    const styles = globalThis.getComputedStyle(columnHead);
-    var paddingPlusBorder = 
-      (+styles.getPropertyValue('border-left-width').replace('px','')) + (+styles.getPropertyValue('border-right-width').replace('px',''))
-      +
-      (+styles.getPropertyValue('padding-left').replace('px','')) + (+styles.getPropertyValue('padding-right').replace('px',''))
-    
-    return paddingPlusBorder;
-  }
+  getElementWidth = (elem:HTMLElement) => (+(globalThis.getComputedStyle(elem).getPropertyValue('width').replace('px','')))
   
 }
 interface MouseDowmData{
   startPageX:number,
   startColumnWidth:number,
   startTableWidth:number,
-  widthOffset:number;
 }

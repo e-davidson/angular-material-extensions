@@ -57,7 +57,7 @@ const META_DATA: MetaData[] = [
     transform: (o: string) => o + ' #'
   },
   {key: 'gas', fieldType: FieldType.Boolean , additional: {
-    styles: {  flex : '0 0 5%'},
+    styles: {  maxWidth:'10px'},
   } },
   {key: 'phone', fieldType: FieldType.PhoneNumber },
   {key: 'moreInfo', fieldType: FieldType.Array, additional},
