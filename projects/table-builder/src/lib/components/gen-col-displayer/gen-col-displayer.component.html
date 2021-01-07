@@ -31,27 +31,29 @@
           </div>
         </button>
 
-        <button [class.isHidden]="!col.isVisible" stop-propagation mat-menu-item
-            *ngFor="let col of displayCols">
-            <div (click)="col.isVisible = !col.isVisible; emit(displayCols)" stop-propagation style="display: flex; justify-content: space-between; align-items: center;">
-                <p class="label" style="display: flex;">
-                    {{col.displayName || (col.key | spaceCase) }}
-                </p>
-                <span matTooltip="Hide Column" class="show-hide" *ngIf="col.isVisible; else hidden">
-                    <button mat-icon-button>
-                        <mat-icon color="primary">check_box</mat-icon>
-                    </button>
-                </span>
-
-                <ng-template #hidden >
-                    <span matTooltip="Show Column" class="show-hide">
-                        <button mat-icon-button>
-                            <mat-icon>indeterminate_check_box</mat-icon>
-                        </button>
-                    </span>
-                </ng-template>
-
-            </div>
-        </button>
+        <div cdkDropList (cdkDropListDropped)="drop($event)" stop-propagation >
+          <button [class.isHidden]="!col.isVisible" stop-propagation mat-menu-item cdkDrag [cdkDragData]="col"
+              *ngFor="let col of displayCols">
+              <div (click)="col.isVisible = !col.isVisible; emit(displayCols)" style="display: flex; justify-content: space-between; align-items: center;">
+                  <p class="label" style="display: flex;">
+                      {{col.displayName || (col.key | spaceCase) }}
+                  </p>
+                  <span matTooltip="Hide Column" class="show-hide" *ngIf="col.isVisible; else hidden">
+                      <button mat-icon-button>
+                          <mat-icon color="primary">check_box</mat-icon>
+                      </button>
+                  </span>
+  
+                  <ng-template #hidden >
+                      <span matTooltip="Show Column" class="show-hide">
+                          <button mat-icon-button>
+                              <mat-icon>indeterminate_check_box</mat-icon>
+                          </button>
+                      </span>
+                  </ng-template>
+  
+              </div>
+          </button>
+        </div>
     </mat-menu>
   </ng-container>

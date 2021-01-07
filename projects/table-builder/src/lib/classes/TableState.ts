@@ -18,6 +18,7 @@ export interface PersistedTableState {
   sorted : Sort [];
   currentProfile?: string;
   userDefinedWidths:Dictionary<number>
+  userDefinedOrder:Dictionary<number>
   userDefinedTableWidth?:number;
 }
 
@@ -32,4 +33,5 @@ export const defaultTableState: TableState = {
   initialized : false,
   sorted: [],
   userDefinedWidths:{},
+  userDefinedOrder:{}
 };

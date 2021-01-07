@@ -44,10 +44,10 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly metaData$ = this.select( state => state.metaData);
 
+  orderMetaData = (metaData:Dictionary<MetaData>) => Object.values(metaData).sort( (a,b)=> a.order - b.order );
   readonly metaDataArray$ = this.select(
     this.metaData$,
-    md => Object.values(md)
-      .sort( (a,b)=> a.order - b.order )
+    this.orderMetaData
   );
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
@@ -109,6 +109,26 @@ export class TableStore extends ComponentStore<TableState> {
     });
     return {...state, userDefinedWidths: userDefinedWidths};
   });
+
+  setUserDefinedOrder = this.updater((state,order:{key:string,order:number})=>{
+    const userDefinedOrder = {...state.userDefinedOrder};
+    const orderedData = this.orderMetaData(state.metaData);
+    if(orderedData.indexOf(state.metaData[order.key])=== order.order) return state;
+    const previous = orderedData[order.order-1]?.order ?? ;
+    const next = orderedData[order.order]?.order ?? order.order + 1
+    let newOrder :number;
+    if(previous - next > 1){newOrder = next + 1}else{
+      newOrder = previous;
+      let baseTen = .1
+      while(newOrder === previous || newOrder >= next){
+        newOrder += baseTen;
+        baseTen *= 10;
+      }
+    };
+    var b= ({...state, metaData:{...state.metaData,[order.key]:{...state.metaData[order.key],order:newOrder}}})
+    console.log(b)
+    return b;
+  })
 
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {
     if (!filter.filterId) {

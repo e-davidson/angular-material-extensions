@@ -59,7 +59,7 @@ const META_DATA: MetaData[] = [
   {key: 'gas', fieldType: FieldType.Boolean , additional: {
     styles: {  maxWidth:'10px'},
   } },
-  {key: 'phone', fieldType: FieldType.PhoneNumber },
+  {key: 'phone', fieldType: FieldType.PhoneNumber, order:undefined },
   {key: 'moreInfo', fieldType: FieldType.Array, additional},
   {key:'expression', fieldType: FieldType.Expression,
     transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + o.name,
