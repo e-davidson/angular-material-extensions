@@ -78,7 +78,7 @@ export class TableStore extends ComponentStore<TableState> {
       .map(md => md.key);
     const sorted = this.createPreSort(state.metaData);
     const cloneMeta = {...state.metaData}
-    Object.values(state.metaData).sort((a,b)=>a.order - b.order).forEach((md,index)=>{
+    Object.values(state.metaData).sort((a,b)=>a.order - b.order).filter(a => a.fieldType !== FieldType.Hidden).forEach((md,index)=>{
       cloneMeta[md.key] = {...cloneMeta[md.key],_internalOrder:index}
     })
     return update(state, {
