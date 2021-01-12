@@ -46,6 +46,7 @@ export class TableStore extends ComponentStore<TableState> {
   readonly metaData$ = this.select( state => state.metaData);
 
   orderMetaData = (metaData:Dictionary<InternalMetaData>) => Object.values(metaData).sort( (a,b)=> a._internalOrder - b._internalOrder );
+  orderViewableMetaData = (metaData:Dictionary<InternalMetaData>) => this.orderMetaData(metaData).filter(a => a.fieldType !== FieldType.Hidden);
   readonly metaDataArray$ = this.select(
     this.metaData$,
     this.orderMetaData
@@ -120,10 +121,8 @@ export class TableStore extends ComponentStore<TableState> {
 
     const newOrder = moved.newOrder;
     const oldOrder = state.metaData[moved.key]._internalOrder;
-    const mdsArr = this.orderMetaData(state.metaData);
-    
+    const mdsArr = this.orderViewableMetaData(state.metaData);
     moveItemInArray(mdsArr,oldOrder,newOrder);
-
     const mds = {...state.metaData};
     mdsArr.forEach((md,index) => {
       mds[md.key]._internalOrder = index;
@@ -211,7 +210,7 @@ export class TableStore extends ComponentStore<TableState> {
   });
 
   private initializeOrder = (state:TableState,mds: Dictionary<MetaData>) : {order:Dictionary<number>,mds:Dictionary<InternalMetaData>}=> {
-    const metaDataArr = Object.values(mds).sort((a,b)=> a.order - b.order);
+    const metaDataArr = Object.values(mds).sort((a,b)=> a.order - b.order).filter(a => a.fieldType !== FieldType.Hidden);
     const userDefinedOrder = state.userDefined.order;
     const mdsClone:Dictionary<InternalMetaData> = {...mds} as Dictionary<InternalMetaData> ;
     const userDefinedOrderArr = Object.values(userDefinedOrder);
@@ -246,7 +245,7 @@ export class TableStore extends ComponentStore<TableState> {
     //in case there are spaces between _internalOrder (if some colums werer programaticly removed since last save)
     const orderClone = {...order};
     const mdsClone = {...mds};
-    this.orderMetaData(mdsClone).forEach((md,index) => mdsClone[md.key]._internalOrder = index);
+    this.orderViewableMetaData(mdsClone).forEach((md,index) => mdsClone[md.key]._internalOrder = index);
     Object.keys(orderClone).forEach((key)=>{
       if(!mds[key]){delete orderClone[key]}else{orderClone[key] = mds[key]._internalOrder}
     });
