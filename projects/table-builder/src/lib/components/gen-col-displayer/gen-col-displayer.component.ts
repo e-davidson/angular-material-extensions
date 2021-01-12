@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TableStore } from '../../classes/table-store';
 import { FieldType } from '../../interfaces/report-def';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'tb-col-displayer',
@@ -17,7 +17,8 @@ export class GenColDisplayerComponent {
   constructor( private tableState: TableStore ) {
     this.columns$ = this.tableState.state$.pipe(
       map( state =>
-        Object.values(state.metaData)
+        tableState.orderMetaData
+          (state.metaData)
           .filter( md => md.fieldType !== FieldType.Hidden )
           .map( md => ({
             key: md.key,
@@ -33,8 +34,7 @@ export class GenColDisplayerComponent {
     this.emit(displayCols);
   }
   drop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    this.tableState.setUserDefinedOrder({key:event.item.data.key,order:event.currentIndex})
+    this.tableState.setUserDefinedOrder({key:event.item.data.key,newOrder:event.currentIndex})
   }
   unset(displayCols: DisplayCol[]) {
     displayCols.forEach(c => c.isVisible = false);

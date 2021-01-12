@@ -31,7 +31,7 @@
           </div>
         </button>
 
-        <div cdkDropList (cdkDropListDropped)="drop($event)" stop-propagation >
+        <div cdkDropList (cdkDropListDropped)="drop($event)" stop-propagation [cdkDropListLockAxis]="'y'">
           <button [class.isHidden]="!col.isVisible" stop-propagation mat-menu-item cdkDrag [cdkDragData]="col"
               *ngFor="let col of displayCols">
               <div (click)="col.isVisible = !col.isVisible; emit(displayCols)" style="display: flex; justify-content: space-between; align-items: center;">

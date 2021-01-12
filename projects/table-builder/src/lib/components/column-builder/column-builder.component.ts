@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy, TemplateRef, ViewChild, OnInit } from '@angular/core';
-import { MetaData, FieldType } from '../../interfaces/report-def';
+import { FieldType, InternalMetaData } from '../../interfaces/report-def';
 import { MatColumnDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
@@ -17,12 +17,12 @@ import { map, startWith } from 'rxjs/operators';
 export class ColumnBuilderComponent implements OnInit {
   FieldType = FieldType;
   filter: FilterInfo;
-  _metaData: MetaData;
-  @Input() set metaData(value: MetaData) {
+  _metaData: InternalMetaData;
+  @Input() set metaData(value: InternalMetaData) {
     this._metaData = value;
     this.transform = this.transformCreator.createTransformer(this.metaData);
   };
-  get metaData() : MetaData {
+  get metaData() : InternalMetaData {
     return this._metaData;
   }
   @Input() customCell: CustomCellDirective;
