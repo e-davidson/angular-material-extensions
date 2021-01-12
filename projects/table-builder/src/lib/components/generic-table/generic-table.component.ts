@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatRowDef, MatTable } from '@angular/material/table';
+import { MatHeaderCellDef, MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import * as _ from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -25,6 +25,7 @@ import { ColumnBuilderComponent } from '../column-builder/column-builder.compone
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
 import { GenericTableDataSource } from '../../classes/GenericTableDataSource';
+import {CdkDropList, CDK_DROP_LIST, DragDrop} from '@angular/cdk/drag-drop'
 
 @Component({
   selector: 'tb-generic-table',
@@ -46,7 +47,9 @@ export class GenericTableComponent implements OnInit {
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
+  @ViewChild(CdkDropList, {static: true}) dropList: CdkDropList;
   @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
+  @ViewChild(MatHeaderCellDef ) headerRow: MatHeaderCellDef;
 
   currentColumns: string[];
 
@@ -60,12 +63,18 @@ export class GenericTableComponent implements OnInit {
     componentFactoryResolver: ComponentFactoryResolver,
     private viewContainer: ViewContainerRef,
     injector: Injector,
+    private DragDrop : DragDrop,
     ) {
     
-    this.factory = componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
-    this.injector = Injector.create({ providers: [{provide: MatTable, useFactory: ()=> {return this.table} }], parent: injector});
+      
+      this.factory = componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
+    this.injector = Injector.create({ providers:
+      [
+        {provide: MatTable, useFactory: ()=> {return this.table;} },
+        {provide: CDK_DROP_LIST,useFactory: () => { debugger; return this.dropList;} }
+      ], parent: injector});
   }
-
+  ref
   paginatorChange(): void {
     setTimeout(() => this.tableElRef?.nativeElement?.scrollIntoView(), 0);
   }
@@ -101,9 +110,25 @@ export class GenericTableComponent implements OnInit {
     this.createDataSource();
 
     this.state.on(this.columnInfos, columns => {
-      columns.forEach( ci => this.addMetaData(ci) )});
+      columns.forEach( ci => this.addMetaData(ci) );
+      
+      // Object.values(this.myColumns).forEach(col => this.DragDrop.createDrag(col.columnDef))
+    });
     this.state.on(this.state.displayedColumns$, keys => {
       this.keys = [...this.columns, ...keys]} );
+  }
+
+  ngAfterViewInit(){
+    this.dropList.dropped.subscribe( d => console.log(d));
+   // this.ref = this.DragDrop.createDropList(this.headerRow.nativeElement);
+    // console.log(this.headerRow.nativeElement.children)
+      console.log(this.tableElRef)
+      // Object.values(this.myColumns).forEach(a=> console.log(a.columnDef.headerCell))
+      // const r = [...this.headerRow.nativeElement.children];
+      // const refs = r.map(r=>this.DragDrop.createDrag(r));
+      // this.ref.withItems(refs)
+      // console.log(ref.getItemIndex(refs[1]))
+      this.ref.dropped.subscribe(a=>console.log(a,'here'))
   }
 
   createDataSource() { 
@@ -116,6 +141,7 @@ export class GenericTableComponent implements OnInit {
     this.state.setPageSize(this.paginator.page.pipe(map( e => e.pageSize ), distinct()));
   }
 
+  drop(a){console.log(a)}
   myColumns: Dictionary<ColumnBuilderComponent> = {};
 
   addMetaData(column: ColumnInfo) {

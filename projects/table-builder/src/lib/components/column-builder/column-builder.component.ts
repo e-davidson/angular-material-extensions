@@ -29,9 +29,11 @@ export class ColumnBuilderComponent implements OnInit {
   @Input() data$: Observable<any[]>;
 
   @ViewChild(MatColumnDef) columnDef: MatColumnDef;
+  // @ViewChild(MatColumnDef) columnDef: MatColumnDef;
 
   @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
   @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
+  @ViewChild('header') headref: TemplateRef<any>;
 
   template: TemplateRef<any>;
   transform: (o: any, ...args: any[])=> any ;

@@ -1,4 +1,9 @@
-<mat-table #table [dataSource]="dataSource" [trackBy]='trackByFunction' [styler]="tableWidth | async">
+<div >
+
+</div>
+
+
+<mat-table #table [dataSource]="dataSource" [trackBy]='trackByFunction' [styler]="tableWidth | async" cdkDropList>
 
     <ng-container matColumnDef="select">
 
@@ -14,7 +19,7 @@
                         (change)="$event ? selection.toggle(row) : null"
                         [checked]="selection.isSelected(row)">
           </mat-checkbox>
-        </mat-cell>
+        </mat-cell> 
 
         <mat-footer-cell *matFooterCellDef style="flex: 0 0 30px;">
           {{ selection.selected.length }}
@@ -28,7 +33,7 @@
 
       </ng-container>
 
-  <mat-header-row *matHeaderRowDef="keys; sticky: isSticky"></mat-header-row>
+  <mat-header-row *matHeaderRowDef="keys; sticky: isSticky"  #matHeader  ></mat-header-row>
   <mat-row *matRowDef="let row; columns: keys; let i = index"></mat-row>
   <mat-footer-row *matFooterRowDef="keys"></mat-footer-row>
 
