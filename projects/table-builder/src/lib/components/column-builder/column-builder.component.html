@@ -4,7 +4,8 @@
     <mat-cell [styler]='styles'  (click)='cellClicked(element, metaData.key)' *ngrxLet="styles$ as styles">
       <ng-container [ngSwitch]="metaData.fieldType">
         <span *ngSwitchCase="FieldType.Boolean">
-            <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
+            <mat-icon *ngIf="element[metaData.key]" color="primary">check</mat-icon>
+            <mat-icon *ngIf="!element[metaData.key]" color="accent">clear</mat-icon>
         </span>
         <span *ngSwitchCase="FieldType.Link">
           <a *ngIf="metaData.additional.useRouterLink; else hrefLink" target="{{metaData.additional?.target || '_blank'}}" [routerLink]="[metaData.additional.base, metaData.additional.urlKey ? element[metaData.additional.urlKey] : element[metaData.key]]">
