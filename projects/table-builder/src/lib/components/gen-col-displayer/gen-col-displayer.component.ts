@@ -17,9 +17,8 @@ export class GenColDisplayerComponent {
   constructor( private tableState: TableStore ) {
     this.columns$ = this.tableState.state$.pipe(
       map( state =>
-        tableState.orderMetaData
+        tableState.orderViewableMetaData
           (state.metaData)
-          .filter( md => md.fieldType !== FieldType.Hidden )
           .map( md => ({
             key: md.key,
             displayName: md.displayName,
