@@ -25,6 +25,7 @@ import { ColumnBuilderComponent } from '../column-builder/column-builder.compone
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
 import { GenericTableDataSource } from '../../classes/GenericTableDataSource';
+import { FieldType } from '../../interfaces/report-def';
 
 @Component({
   selector: 'tb-generic-table',
@@ -79,18 +80,13 @@ export class GenericTableComponent implements OnInit {
     }
     return item;
   }
-
+  rowDefArr :MatRowDef<any>[]= [];
+  columns:string [] = [];
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.rows && this.rows) {
-      this.rows.forEach(r => {
-        r.columns = this.currentColumns;
-        if (this.table) {
-          this.table.addRowDef(r);
-        }
-      });
+    if (changes.rows && this.rows && this.myColumns.length) {
+      this.initializeRowDefs([...this.rows]);
     }
   }
-  columns:string [] = [];
   ngOnInit() {
     if (this.SelectionColumn) {
       this.columns.push('select');
@@ -102,6 +98,7 @@ export class GenericTableComponent implements OnInit {
 
     this.state.on(this.columnInfos, columns => {
       columns.forEach( ci => this.addMetaData(ci) )});
+      this.initializeRowDefs([...this.rows]);
     this.state.on(this.state.displayedColumns$, keys => {
       this.keys = [...this.columns, ...keys]} );
   }
@@ -130,6 +127,18 @@ export class GenericTableComponent implements OnInit {
       this.myColumns[column.metaData.key] = component.instance;
     }
   }
+
+  initializeRowDefs = (defs:MatRowDef<any>[])=>{
+    this.rowDefArr.forEach(r=>this.table.removeRowDef(r));
+    this.rowDefArr = defs;
+    defs.forEach(r => {
+      r.columns = this.columns.concat(Object.values(this.myColumns).filter(c => c.metaData.fieldType !== FieldType.Hidden).map(c => c.metaData.key));
+      if (this.table) {
+        this.table.addRowDef(r);
+      }
+    });
+  }
+  
   selection : SelectionModel<any> = new SelectionModel<any>(true, []);
   @Output() selection$: Observable<any> = this.selection.changed;
   masterToggleChecked$ = this.selection$.pipe(map(()=>this.selection.hasValue() && this.isAllSelected()));

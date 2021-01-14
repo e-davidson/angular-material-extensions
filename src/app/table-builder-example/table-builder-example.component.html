@@ -29,7 +29,8 @@
           F {{element?.name}} !
       </mat-cell>
   </ng-container>
-
+  <mat-row *matRowDef="let row; let even = even; when: runWhen" [ngClass]="{'deleted': row.deletedAt!=null}">
+  </mat-row>
 </tb-table-container>
 
 <button (click)='addItem()'>Add Gold</button>
