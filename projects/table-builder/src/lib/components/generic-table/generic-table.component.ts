@@ -138,7 +138,7 @@ export class GenericTableComponent implements OnInit {
       }
     });
   }
-  
+
   selection : SelectionModel<any> = new SelectionModel<any>(true, []);
   @Output() selection$: Observable<any> = this.selection.changed;
   masterToggleChecked$ = this.selection$.pipe(map(()=>this.selection.hasValue() && this.isAllSelected()));
@@ -146,7 +146,6 @@ export class GenericTableComponent implements OnInit {
   isAllSelected() {
     const numSelected = this.selection.selected.length;
     const numRows = this.dataSource.data.length;
-    console.count('object')
     return numSelected === numRows;
   }
 
