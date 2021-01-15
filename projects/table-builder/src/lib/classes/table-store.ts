@@ -78,8 +78,10 @@ export class TableStore extends ComponentStore<TableState> {
       .map(md => md.key);
     const sorted = this.createPreSort(state.metaData);
     const cloneMeta = {...state.metaData}
-    Object.values(state.metaData).sort((a,b)=>a.order - b.order).filter(a => a.fieldType !== FieldType.Hidden).forEach((md,index)=>{
-      cloneMeta[md.key] = {...cloneMeta[md.key],_internalOrder:index}
+    Object.values(state.metaData).sort((a,b)=>a.order - b.order)
+      .filter(a => a.fieldType !== FieldType.Hidden)
+      .forEach((md,index)=>{
+        cloneMeta[md.key] = {...cloneMeta[md.key],_internalOrder:index}
     })
     return update(state, {
        hiddenKeys: { $set: [...hiddenColumns] }, 
@@ -214,21 +216,20 @@ export class TableStore extends ComponentStore<TableState> {
     const userDefinedOrder = state.userDefined.order;
     const mdsClone:Dictionary<InternalMetaData> = {...mds} as Dictionary<InternalMetaData> ;
     const userDefinedOrderArr = Object.values(userDefinedOrder);
-    if(userDefinedOrderArr.length){
-      const spots:number[] = new Array(metaDataArr.length).fill(0).map((_,index)=>index);
-      userDefinedOrderArr.forEach((udo)=>{spots[udo] = -1;});
+    if( thereIsSavedOrder()){
+      const spots:{available:boolean}[] = createArrayToTrackAvilableSpotsInTheOrder();
+
+      markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots);
 
       metaDataArr.forEach((md)=>{
-        const orderFromState = userDefinedOrder[md.key];
-        let internalOrder: number;
-        if(orderFromState != undefined){
-          internalOrder = orderFromState;
+        if( thereIsSavedOrderForTheMetaData(md)){
+          const orderFromState = getSavedOrder(md);
+          setMetaDataInternalOrder(md,orderFromState);
         } else {
-          let availIndex = spots.find(index => index > -1) ?? (spots.push()) -1;
-          internalOrder = availIndex;
-          spots[availIndex] = -1;
+          const availableSpot = findFirstAvailableSpot(spots);
+          setMetaDataInternalOrder(md,availableSpot);
+          markSpotAsNotAvailable(spots,availableSpot);
         }
-        mdsClone[md.key] = {...md, _internalOrder:internalOrder}
       })
 
       const {orderClone,mdsClone:mdsClone2} = this.consolidateOrder(userDefinedOrder,mdsClone);
@@ -237,7 +238,44 @@ export class TableStore extends ComponentStore<TableState> {
       metaDataArr.forEach((md,index)=>{mdsClone[md.key]={...md, _internalOrder:index}});
       return ({order:userDefinedOrder,mds:mdsClone});
     }
-    
+
+    function thereIsSavedOrder(){
+      return !!userDefinedOrderArr.length;
+    }
+
+    function createArrayToTrackAvilableSpotsInTheOrder():{available:boolean}[]{
+      return new Array(metaDataArr.length).fill({available:true})
+    };
+
+    function markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots:{available:boolean}[]){
+      userDefinedOrderArr.forEach((udo)=>markSpotAsNotAvailable(spots,udo));
+    }
+
+    function markSpotAsNotAvailable(spots:{available:boolean}[], spot:number){
+      spots[spot].available = false
+    }
+
+    function thereIsSavedOrderForTheMetaData(md: MetaData){
+      return !!userDefinedOrder[md.key];
+    }
+
+    function setMetaDataInternalOrder(md:MetaData, order:number){
+      mdsClone[md.key] = {...md, _internalOrder: order};
+    }
+
+    function getSavedOrder(md: MetaData){
+      return userDefinedOrder[md.key];
+    }
+
+    function findFirstAvailableSpot(spots:{available:boolean}[]){
+      const availIndex = spots.findIndex(spot => spot.available);
+      return availIndex > -1 ? availIndex : createSpotAndReturnItsIndex();
+
+      function createSpotAndReturnItsIndex(){
+        //e.g a column was programaticaly removed and all spota are unavailable due to userSavedOrder
+        return (spots.push({available:true})) -1;
+      }
+    }
   }
 
   
@@ -245,7 +283,8 @@ export class TableStore extends ComponentStore<TableState> {
     //in case there are spaces between _internalOrder (if some colums werer programaticly removed since last save)
     const orderClone = {...order};
     const mdsClone = {...mds};
-    this.orderViewableMetaData(mdsClone).forEach((md,index) => mdsClone[md.key]._internalOrder = index);
+    this.orderViewableMetaData(mdsClone)
+      .forEach((md,index) => mdsClone[md.key]._internalOrder = index);
     Object.keys(orderClone).forEach((key)=>{
       if(!mds[key]){delete orderClone[key]}else{orderClone[key] = mds[key]._internalOrder}
     });
