@@ -217,9 +217,9 @@ export class TableStore extends ComponentStore<TableState> {
     const mdsClone:Dictionary<InternalMetaData> = {...mds} as Dictionary<InternalMetaData> ;
     const userDefinedOrderArr = Object.values(userDefinedOrder);
     if( thereIsSavedOrder()){
-      const spots:{available:boolean}[] = createArrayToTrackAvilableSpotsInTheOrder();
+      const spots:{available:boolean}[] = createArrayToTrackAvailableSpotsInTheOrder();
 
-      markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots);
+      markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots, userDefinedOrderArr);
 
       metaDataArr.forEach((md)=>{
         if( thereIsSavedOrderForTheMetaData(md)){
@@ -234,8 +234,9 @@ export class TableStore extends ComponentStore<TableState> {
 
       const {orderClone,mdsClone:mdsClone2} = this.consolidateOrder(userDefinedOrder,mdsClone);
       return ({order:orderClone,mds:mdsClone2});
+
     } else {
-      metaDataArr.forEach((md,index)=>{mdsClone[md.key]={...md, _internalOrder:index}});
+      metaDataArr.forEach((md,index)=>setMetaDataInternalOrder(md,index));
       return ({order:userDefinedOrder,mds:mdsClone});
     }
 
@@ -243,12 +244,12 @@ export class TableStore extends ComponentStore<TableState> {
       return !!userDefinedOrderArr.length;
     }
 
-    function createArrayToTrackAvilableSpotsInTheOrder():{available:boolean}[]{
+    function createArrayToTrackAvailableSpotsInTheOrder():{available:boolean}[]{
       return new Array(metaDataArr.length).fill({available:true})
     };
 
-    function markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots:{available:boolean}[]){
-      userDefinedOrderArr.forEach((udo)=>markSpotAsNotAvailable(spots,udo));
+    function markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots:{available:boolean}[], userDefinedOrder){
+      userDefinedOrder.forEach((udo)=>markSpotAsNotAvailable(spots,udo));
     }
 
     function markSpotAsNotAvailable(spots:{available:boolean}[], spot:number){
