@@ -86,6 +86,7 @@ export class TableBuilderExampleComponent {
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
 
   isFilterChecked: Observable<FilterInfo>;
+  runWhen = ()=>true;
 
   constructor(private store: Store<any>, lcp:  LowerCasePipe) {
     const addedElements = this.newElement$.pipe(
