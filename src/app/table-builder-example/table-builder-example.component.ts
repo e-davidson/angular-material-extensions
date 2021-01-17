@@ -101,6 +101,11 @@ export class TableBuilderExampleComponent {
   }
 
 
+  emitter(d)
+  {
+    console.log(d);
+  }
+
 
   ngAfterViewInit() {
     setTimeout(() => {

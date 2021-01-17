@@ -8,9 +8,9 @@ import {
   ChangeDetectionStrategy,
   Inject,
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
-import { filter, first, map, tap } from 'rxjs/operators';
+import { filter, first, map, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
@@ -46,7 +46,11 @@ import { PersistedTableState } from '../../classes/TableState';
   }
   @Input() inputFilters: Observable<Array<(val: T) => boolean>>;
   @Output() selection$ = new EventEmitter();
-  @Output() data: Observable<T[]>;
+  dataSubject = new ReplaySubject<Observable<T[]>>(1);
+  @Output() data = this.dataSubject.pipe(
+    switchMap( d => d),
+    shareReplay({refCount: true, bufferSize: 1 })
+  );
 
   @ContentChildren(MatRowDef) customRows: QueryList<MatRowDef<any>>;
   @ContentChildren(CustomCellDirective) customCells: QueryList<CustomCellDirective>;
@@ -89,9 +93,10 @@ import { PersistedTableState } from '../../classes/TableState';
       this.currentStateKey$ = this.store.select(selectors.selectLocalProfileCurrentKey(this.tableId));
     }
     const filters$ = this.state.filters$.pipe(map( filters => Object.values(filters) ))
-    this.data = new DataFilter(this.inputFilters)
+    const data = new DataFilter(this.inputFilters)
       .appendFilters(filters$)
       .filterData(this.tableBuilder.getData$());
+    this.dataSubject.next(data);
   }
 
   saveState() {
