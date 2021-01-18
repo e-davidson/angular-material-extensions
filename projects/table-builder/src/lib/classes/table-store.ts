@@ -1,4 +1,4 @@
-import { FieldType, InternalMetaData, MetaData } from '../interfaces/report-def';
+import { FieldType, MetaData } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
 import { Observable } from 'rxjs';
 import { defaultTableState, PersistedTableState, TableState } from './TableState';
@@ -45,11 +45,10 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly metaData$ = this.select( state => state.metaData);
 
-  orderMetaData = (metaData:Dictionary<InternalMetaData>) => Object.values(metaData).sort( (a,b)=> a._internalOrder - b._internalOrder );
-  orderViewableMetaData = (metaData:Dictionary<InternalMetaData>) => this.orderMetaData(metaData).filter(a => a.fieldType !== FieldType.Hidden);
+  
   readonly metaDataArray$ = this.select(
-    this.metaData$,
-    this.orderMetaData
+    this.state$,
+    orderMetaData
   );
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
@@ -64,7 +63,7 @@ export class TableStore extends ComponentStore<TableState> {
     .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
     .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
   }
-  private displayedColumns =  (state:TableState) => this.orderMetaData(state.metaData).map(md => md.key)
+  private displayedColumns =  (state:TableState) => orderMetaData(state).map(md => md.key)
     .filter(key => !state.hiddenKeys.includes(key) && state.metaData[key].fieldType !== FieldType.Hidden);
   readonly displayedColumns$ = this.select(this.displayedColumns);
   readonly hideColumn = this.updater((state, key: string) => ({
@@ -77,18 +76,11 @@ export class TableStore extends ComponentStore<TableState> {
       .filter(md => md.fieldType === FieldType.Hidden)
       .map(md => md.key);
     const sorted = this.createPreSort(state.metaData);
-    const cloneMeta = {...state.metaData}
-    Object.values(state.metaData).sort((a,b)=>a.order - b.order)
-      .filter(a => a.fieldType !== FieldType.Hidden)
-      .forEach((md,index)=>{
-        cloneMeta[md.key] = {...cloneMeta[md.key],_internalOrder:index}
-    })
     return update(state, {
        hiddenKeys: { $set: [...hiddenColumns] }, 
        filters: { $set: {} }, 
        sorted: {$set: sorted},
        userDefined : {$set: {widths:{},order:{},table:{}}},
-       metaData : {$set:cloneMeta}
       });
   });
 
@@ -118,22 +110,16 @@ export class TableStore extends ComponentStore<TableState> {
     return {...state, userDefined: {...state.userDefined,widths:userDefinedWidths}};
   });
 
-  setUserDefinedOrder = this.updater((state,moved:{key:string,newOrder:number})=>{
+  setUserDefinedOrder = this.updater((state,moved:{newOrder:number,oldOrder:number})=>{
     const userDefinedOrder = {...state.userDefined.order};
 
-    const newOrder = moved.newOrder;
-    const oldOrder = state.metaData[moved.key]._internalOrder;
-    const mdsArr = this.orderViewableMetaData(state.metaData);
+    const {newOrder ,oldOrder} = moved;
+    const mdsArr = orderViewableMetaData(state);
     moveItemInArray(mdsArr,oldOrder,newOrder);
     const mds = {...state.metaData};
     mdsArr.forEach((md,index) => {
-      mds[md.key]._internalOrder = index;
-
-      if(userDefinedOrder[md.key] != undefined){
-        userDefinedOrder[md.key] = index;
-      }
+      userDefinedOrder[md.key] = index;
     });
-    userDefinedOrder[moved.key] = moved.newOrder;
     return({...state, metaData:mds,userDefined:{...state.userDefined,order:userDefinedOrder}})
   })
 
@@ -207,90 +193,48 @@ export class TableStore extends ComponentStore<TableState> {
     if(sorted.length === 0) {
       sorted = this.createPreSort(metaData);
     }
-    const {order,mds} = this.initializeOrder(state, metaData)
-    return {...state, metaData:mds, sorted, userDefined:{...state.userDefined,order:order}};
+    const order = this.initializeOrder(state, metaData);
+    return {...state, metaData, sorted, userDefined:{...state.userDefined,order:order}};
   });
 
-  private initializeOrder = (state:TableState,mds: Dictionary<MetaData>) : {order:Dictionary<number>,mds:Dictionary<InternalMetaData>}=> {
-    const metaDataArr = Object.values(mds).sort((a,b)=> a.order - b.order).filter(a => a.fieldType !== FieldType.Hidden);
+  private initializeOrder = (state:TableState,mds: Dictionary<MetaData>) : Dictionary<number> => {
+    const viewableMetaDataArr = Object.values(mds).sort((a,b)=>a.order-b.order).filter(a => a.fieldType !== FieldType.Hidden);
     const userDefinedOrder = state.userDefined.order;
-    const mdsClone:Dictionary<InternalMetaData> = {...mds} as Dictionary<InternalMetaData> ;
-    const userDefinedOrderArr = Object.values(userDefinedOrder);
-    if( thereIsSavedOrder()){
-      const spots:{available:boolean}[] = createArrayToTrackAvailableSpotsInTheOrder();
+    let userDefinedOrderArr = Object.entries(userDefinedOrder);
 
-      markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots, userDefinedOrderArr);
-
-      metaDataArr.forEach((md)=>{
-        if( thereIsSavedOrderForTheMetaData(md)){
-          const orderFromState = getSavedOrder(md);
-          setMetaDataInternalOrder(md,orderFromState);
-        } else {
-          const availableSpot = findFirstAvailableSpot(spots);
-          setMetaDataInternalOrder(md,availableSpot);
-          markSpotAsNotAvailable(spots,availableSpot);
-        }
+    if( thereIsSavedOrder() && viewableMetaAddedSinceLastSave()){
+      getAddedMetas().forEach(meta => {
+        var index = viewableMetaDataArr.findIndex(m => meta.key === m.key);
+        userDefinedOrderArr = [
+          ...userDefinedOrderArr.slice(0,index),
+          [meta.key,index],
+          ...userDefinedOrderArr.slice(index)
+        ]
       })
-
-      const {orderClone,mdsClone:mdsClone2} = this.consolidateOrder(userDefinedOrder,mdsClone);
-      return ({order:orderClone,mds:mdsClone2});
-
-    } else {
-      metaDataArr.forEach((md,index)=>setMetaDataInternalOrder(md,index));
-      return ({order:userDefinedOrder,mds:mdsClone});
+      userDefinedOrderArr.forEach(([key,order])=>userDefinedOrder[key]=order);
     }
-
+    return userDefinedOrder;
+    
     function thereIsSavedOrder(){
       return !!userDefinedOrderArr.length;
     }
 
-    function createArrayToTrackAvailableSpotsInTheOrder():{available:boolean}[]{
-      return new Array(metaDataArr.length).fill({available:true})
-    };
-
-    function markSpotsThatCorrelateToSavedOrderAsNotAvailable(spots:{available:boolean}[], userDefinedOrder){
-      userDefinedOrder.forEach((udo)=>markSpotAsNotAvailable(spots,udo));
+    function viewableMetaAddedSinceLastSave(){
+      return userDefinedOrderArr.length < viewableMetaDataArr.length
     }
 
-    function markSpotAsNotAvailable(spots:{available:boolean}[], spot:number){
-      spots[spot].available = false
-    }
-
-    function thereIsSavedOrderForTheMetaData(md: MetaData){
-      return !!userDefinedOrder[md.key];
-    }
-
-    function setMetaDataInternalOrder(md:MetaData, order:number){
-      mdsClone[md.key] = {...md, _internalOrder: order};
-    }
-
-    function getSavedOrder(md: MetaData){
-      return userDefinedOrder[md.key];
-    }
-
-    function findFirstAvailableSpot(spots:{available:boolean}[]){
-      const availIndex = spots.findIndex(spot => spot.available);
-      return availIndex > -1 ? availIndex : createSpotAndReturnItsIndex();
-
-      function createSpotAndReturnItsIndex(){
-        //e.g a column was programaticaly removed and all spota are unavailable due to userSavedOrder
-        return (spots.push({available:true})) -1;
-      }
+    function getAddedMetas(){
+      return viewableMetaDataArr.filter(meta => userDefinedOrder[meta.key] == null);
     }
   }
 
-  
-  private consolidateOrder(order:Dictionary<number>,mds:Dictionary<InternalMetaData>){
-    //in case there are spaces between _internalOrder (if some colums werer programaticly removed since last save)
-    const orderClone = {...order};
-    const mdsClone = {...mds};
-    this.orderViewableMetaData(mdsClone)
-      .forEach((md,index) => mdsClone[md.key]._internalOrder = index);
-    Object.keys(orderClone).forEach((key)=>{
-      if(!mds[key]){delete orderClone[key]}else{orderClone[key] = mds[key]._internalOrder}
-    });
+}
+export const orderViewableMetaData = (state:TableState) => orderMetaData(state).filter(a => a.fieldType !== FieldType.Hidden);
 
-    return ({orderClone,mdsClone})
-  }
-
+export const orderMetaData = (state:TableState) => {
+  const userOrderArr = Object.entries(state.userDefined.order);
+  return userOrderArr.length ?
+   Object.values(state.metaData).sort((a,b)=> state.userDefined.order[a.key] - state.userDefined.order[b.key])
+   :
+   Object.values(state.metaData).sort((a,b)=> a.order - b.order)
 }

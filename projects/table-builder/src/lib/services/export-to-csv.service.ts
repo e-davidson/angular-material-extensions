@@ -3,10 +3,10 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { first, map  } from 'rxjs/operators';
 import { combineLatest} from 'rxjs';
-import { TableStore } from '../classes/table-store';
+import { orderMetaData, TableStore } from '../classes/table-store';
 import { TableBuilderConfig, TableBuilderConfigToken } from '../classes/TableBuilderConfig';
 import { downloadData } from '../functions/download-data';
-import { ArrayAdditional, ArrayStyle, FieldType, InternalMetaData, MetaData } from '../interfaces/report-def';
+import { ArrayAdditional, ArrayStyle, FieldType, MetaData } from '../interfaces/report-def';
 import { TableState } from '../classes/TableState';
 import { isPipe } from './transform-creator';
 @Injectable()
@@ -28,7 +28,7 @@ export class ExportToCsvService<T> {
     ).subscribe(csv => downloadData(csv,'export.csv','text/csv') );
   }
 
-  csvData = (data:Array<T>, metaData: InternalMetaData<T>[]) => {
+  csvData = (data:Array<T>, metaData: MetaData<T>[]) => {
     const res = data.map(row => metaData.map(meta => this.metaToField(meta, row)).join(','));
     res.unshift(metaData.map(meta => meta.displayName || meta.key).join(','));
     return res.join('\n');
@@ -67,10 +67,9 @@ export class ExportToCsvService<T> {
 }
 
 export const removeFromMetaData = (state: TableState, keysToRemove: string[]) =>
-  Object.keys(state.metaData)
-  .filter( key => !keysToRemove.includes(key))
-  .map( key => state.metaData[key])
-  .sort((md1,md2) => md1._internalOrder - md2._internalOrder);
+
+  orderMetaData(state)
+  .filter( meta => !keysToRemove.includes(meta.key));
 
 
 export const nonExportableFields = (state: TableState) => Object.values( state.metaData)

@@ -43,9 +43,6 @@ export interface MetaData<T = any> {
     click?: (element: T, key: string ) => void;
 }
 
-export interface InternalMetaData<T = any> extends MetaData<T> {
-  _internalOrder : number;
-}
 export interface  ReportDef<DataType = any> {
     data: DataType[];
     metaData: MetaData [];

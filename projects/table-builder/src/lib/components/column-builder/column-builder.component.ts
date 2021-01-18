@@ -1,12 +1,12 @@
-import { Component, Input, ChangeDetectionStrategy, TemplateRef, ViewChild, OnInit } from '@angular/core';
-import { FieldType, InternalMetaData } from '../../interfaces/report-def';
+import { Component, Input, ChangeDetectionStrategy, TemplateRef, ViewChild, OnInit, HostBinding, ContentChild, ContentChildren } from '@angular/core';
+import { FieldType, MetaData } from '../../interfaces/report-def';
 import { MatColumnDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tb-column-builder',
@@ -17,12 +17,12 @@ import { map, startWith } from 'rxjs/operators';
 export class ColumnBuilderComponent implements OnInit {
   FieldType = FieldType;
   filter: FilterInfo;
-  _metaData: InternalMetaData;
-  @Input() set metaData(value: InternalMetaData) {
+  _metaData: MetaData;
+  @Input() set metaData(value: MetaData) {
     this._metaData = value;
     this.transform = this.transformCreator.createTransformer(this.metaData);
   };
-  get metaData() : InternalMetaData {
+  get metaData() : MetaData {
     return this._metaData;
   }
   @Input() customCell: CustomCellDirective;

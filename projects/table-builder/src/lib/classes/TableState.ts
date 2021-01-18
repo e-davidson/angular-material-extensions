@@ -1,7 +1,7 @@
-import { InternalMetaData } from '../interfaces/report-def';
 import { FilterInfo } from './filter-info';
 import { Dictionary } from '../interfaces/dictionary';
 import { Sort } from '@angular/material/sort';
+import { MetaData } from '../..';
 
 export interface SavedTableProfile {
   profileNames : string [];
@@ -21,7 +21,7 @@ export interface PersistedTableState {
 }
 
 export interface TableState extends PersistedTableState {
-  metaData?: Dictionary<InternalMetaData>;
+  metaData?: Dictionary<MetaData>;
 }
 
 export const defaultTableState: TableState = {

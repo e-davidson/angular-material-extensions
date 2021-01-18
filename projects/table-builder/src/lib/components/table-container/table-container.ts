@@ -9,7 +9,7 @@ import {
   Inject,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ArrayAdditional, FieldType, InternalMetaData, MetaData } from '../../interfaces/report-def';
+import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
 import { filter, first, map, tap } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
@@ -146,6 +146,6 @@ import { PersistedTableState } from '../../classes/TableState';
 }
 
 export interface ColumnInfo {
-  metaData: InternalMetaData;
+  metaData: MetaData;
   customCell: CustomCellDirective;
 }
