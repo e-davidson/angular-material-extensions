@@ -116,11 +116,10 @@ export class TableStore extends ComponentStore<TableState> {
     const {newOrder ,oldOrder} = moved;
     const mdsArr = orderViewableMetaData(state);
     moveItemInArray(mdsArr,oldOrder,newOrder);
-    const mds = {...state.metaData};
     mdsArr.forEach((md,index) => {
       userDefinedOrder[md.key] = index;
     });
-    return({...state, metaData:mds,userDefined:{...state.userDefined,order:userDefinedOrder}})
+    return({...state, userDefined:{...state.userDefined,order:userDefinedOrder}})
   })
 
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {
