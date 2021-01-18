@@ -111,14 +111,14 @@ export class TableStore extends ComponentStore<TableState> {
   });
 
   setUserDefinedOrder = this.updater((state,moved:{newOrder:number,oldOrder:number})=>{
-    const userDefinedOrder = {...state.userDefined.order};
-
     const {newOrder ,oldOrder} = moved;
     const mdsArr = orderViewableMetaData(state);
     moveItemInArray(mdsArr,oldOrder,newOrder);
-    mdsArr.forEach((md,index) => {
-      userDefinedOrder[md.key] = index;
-    });
+
+    const userDefinedOrder = mdsArr.reduce((aggregate,current,index) => {
+      aggregate[current.key] = index;
+      return aggregate
+    },{});
     return({...state, userDefined:{...state.userDefined,order:userDefinedOrder}})
   })
 
@@ -197,34 +197,12 @@ export class TableStore extends ComponentStore<TableState> {
   });
 
   private initializeOrder = (state:TableState,mds: Dictionary<MetaData>) : Dictionary<number> => {
-    const viewableMetaDataArr = Object.values(mds).sort((a,b)=>a.order-b.order).filter(a => a.fieldType !== FieldType.Hidden);
-    const userDefinedOrder = state.userDefined.order;
-    let userDefinedOrderArr = Object.entries(userDefinedOrder);
-
-    if( thereIsSavedOrder() && viewableMetaAddedSinceLastSave()){
-      getAddedMetas().forEach(meta => {
-        var index = viewableMetaDataArr.findIndex(m => meta.key === m.key);
-        userDefinedOrderArr = [
-          ...userDefinedOrderArr.slice(0,index),
-          [meta.key,index],
-          ...userDefinedOrderArr.slice(index)
-        ]
-      })
-      userDefinedOrderArr.forEach(([key,order])=>userDefinedOrder[key]=order);
+    const viewableMetaDataArr = Object.values(mds).filter(a => a.fieldType !== FieldType.Hidden);
+    let userDefinedOrder = state.userDefined.order;
+    if(viewableMetaDataArr.some(meta => userDefinedOrder[meta.key] == null)){
+      return {}
     }
     return userDefinedOrder;
-    
-    function thereIsSavedOrder(){
-      return !!userDefinedOrderArr.length;
-    }
-
-    function viewableMetaAddedSinceLastSave(){
-      return userDefinedOrderArr.length < viewableMetaDataArr.length
-    }
-
-    function getAddedMetas(){
-      return viewableMetaDataArr.filter(meta => userDefinedOrder[meta.key] == null);
-    }
   }
 
 }
