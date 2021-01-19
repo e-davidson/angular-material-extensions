@@ -40,8 +40,7 @@ import { ResizeColumnDirective } from './directives/resize-column.directive';
 import {ReactiveComponentModule} from '@ngrx/component'
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InitializationComponent } from './components/initialization-component/initialization-component';
-import { TableService } from './services/table-service';
-import { TransformPipe } from './pipes/transform-pipe';
+import { TableTemplateService } from './services/table-template-service';
 
 @NgModule({
   imports: [
@@ -85,7 +84,6 @@ import { TransformPipe } from './pipes/transform-pipe';
         KeyDisplayPipe,
         PhoneNumberPipe,
         FunctionPipe,
-        TransformPipe,
         FormatFilterValuePipe,
         FormatFilterTypePipe,
         StopPropagationDirective,
@@ -103,7 +101,7 @@ import { TransformPipe } from './pipes/transform-pipe';
       DatePipe,
       CurrencyPipe,
       PhoneNumberPipe,
-      TableService,
+      TableTemplateService,
     ]
 })
 export class TableBuilderModule {

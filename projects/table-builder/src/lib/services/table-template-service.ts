@@ -5,7 +5,7 @@ import { InitializationComponent } from "../components/initialization-component/
 import { FieldType } from "../interfaces/report-def";
 
 @Injectable({providedIn: 'root'})
-export class TableService {
+export class TableTemplateService {
   instance: InitializationComponent;
   templates;
 

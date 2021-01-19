@@ -7,7 +7,7 @@ import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
 import { map, startWith } from 'rxjs/operators';
-import { TableService } from '../../services/table-service';
+import { TableTemplateService } from '../../services/table-template-service';
 
 @Component({
   selector: 'tb-column-builder',
@@ -34,7 +34,7 @@ export class ColumnBuilderComponent implements OnInit {
     private transformCreator: TransformCreator,
     private table: MatTable<any>,
     public state: TableStore,
-    private templateService: TableService,
+    private templateService: TableTemplateService,
     ) { }
 
   getInnerTemplate() :TemplateRef<any> {
