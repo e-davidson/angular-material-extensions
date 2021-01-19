@@ -61,6 +61,8 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         MultiSortDirective,
         StopPropagationDirective,
         PreventEnterDirective,
+        StylerDirective,
+        ResizeColumnDirective,
     ],
     declarations: [
         SpaceCasePipe,

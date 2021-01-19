@@ -7,25 +7,25 @@
     </mat-select>
 </div>
 
-<tb-table-container (data)='emitter($event)' [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50" [SelectionColumn]='true' (selection$)="selectionEvent($event)">
+<tb-table-container [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50" [SelectionColumn]='true' (selection$)="selectionEvent($event)">
 
   <p *customCell="'testCell';let element = element;" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
   <ng-container customCell='date' matColumnDef="date"   >
-    <mat-footer-cell *matFooterCellDef  >
+    <mat-footer-cell *matFooterCellDef="let styles=styles" [styler]="styles" >
         date footer
     </mat-footer-cell>
-</ng-container>
+  </ng-container>
 
-  <ng-container customCell="blue" matColumnDef="blue" >
-      <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name && element?.name[0] === 'B'">
-          Hi {{element?.name}} !
-      </mat-cell>
+  <ng-container customCell="blue" matColumnDef="blue">
+        <mat-cell *matCellDef="let element = element;let styles = styles;" [class.makeMeBlue]="element?.name && element?.name[0] === 'B'" [styler]="styles">
+            Hi {{element?.name}} !
+        </mat-cell>
   </ng-container>
 
   <ng-container customCell="green" matColumnDef="green"  >
-      <mat-header-cell *matHeaderCellDef style="color: green;"  >Custom header</mat-header-cell>
-      <mat-cell *matCellDef="let element = element;" [class.makeMeBlue]="element?.name && element?.name[0] === 'H'">
+      <mat-header-cell *matHeaderCellDef="let styles=styles" style="color: green;" [styler]="styles" [resizeColumn]="true" [key]="'green'">Custom header</mat-header-cell >
+      <mat-cell *matCellDef="let element = element;let styles=styles;" [class.makeMeBlue]="element?.name && element?.name[0] === 'H'" [styler]="styles">
           F {{element?.name}} !
       </mat-cell>
   </ng-container>
