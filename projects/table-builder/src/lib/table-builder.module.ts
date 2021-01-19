@@ -39,6 +39,9 @@ import { DialogDirective } from './directives/dialog';
 import { ResizeColumnDirective } from './directives/resize-column.directive';
 import {ReactiveComponentModule} from '@ngrx/component'
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { InitializationComponent } from './components/initialization-component/initialization-component';
+import { TableService } from './services/table-service';
+import { TransformPipe } from './pipes/transform-pipe';
 
 @NgModule({
   imports: [
@@ -82,6 +85,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         KeyDisplayPipe,
         PhoneNumberPipe,
         FunctionPipe,
+        TransformPipe,
         FormatFilterValuePipe,
         FormatFilterTypePipe,
         StopPropagationDirective,
@@ -92,8 +96,15 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
         AutoFocusDirective,
         DialogOpenDirective,
         DialogDirective,
+        InitializationComponent,
     ],
-    providers : [SpaceCasePipe, DatePipe, CurrencyPipe, PhoneNumberPipe]
+    providers : [
+      SpaceCasePipe,
+      DatePipe,
+      CurrencyPipe,
+      PhoneNumberPipe,
+      TableService,
+    ]
 })
 export class TableBuilderModule {
   static forRoot(config: TableBuilderConfig): ModuleWithProviders {

@@ -2,38 +2,9 @@
 
   <ng-template #body let-element='element' >
     <mat-cell [styler]='styles'  (click)='cellClicked(element, metaData.key)' *ngrxLet="styles$ as styles">
-      <ng-container [ngSwitch]="metaData.fieldType">
-        <span *ngSwitchCase="FieldType.Boolean">
-            <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
-        </span>
-        <span *ngSwitchCase="FieldType.Link">
-          <a *ngIf="metaData.additional.useRouterLink; else hrefLink" target="{{metaData.additional?.target || '_blank'}}" [routerLink]="[metaData.additional.base, metaData.additional.urlKey ? element[metaData.additional.urlKey] : element[metaData.key]]">
-              {{element[metaData.key]}}
-          </a>
-          <ng-template #hrefLink>
-            <a target="{{metaData.additional?.target || '_blank'}}" href="{{metaData.additional.base}}{{metaData.additional.urlKey? element[metaData.additional.urlKey] : element[metaData.key]}}">
-                {{element[metaData.key]}}
-            </a>
-          </ng-template>
-        </span>
-        <span *ngSwitchCase="FieldType.ImageUrl">
-            <img src="{{element[metaData.key]}}" height="75px" width="75px" />
-        </span>
-        <span *ngSwitchCase="FieldType.Currency" [class.negative-currency]="element[metaData.key] < 0">
-            {{element[metaData.key] | currency }}
-        </span>
-        <tb-array-column *ngSwitchCase="FieldType.Array" [array]='element[metaData.key]' ></tb-array-column>
-        <span *ngSwitchCase='FieldType.Expression'>{{element | func : transform }}</span>
-        <span *ngSwitchDefault> {{ element[metaData.key] | func: transform  }} </span>
-      </ng-container>
+        <ng-container *ngTemplateOutlet="innerTemplate;context: {metaData: metaData, element: element }">
+        </ng-container>
     <span class="no-val" *ngIf="metaData.fieldType !== FieldType.Expression && ( element[metaData.key]===null || element[metaData.key]===undefined)">-</span>
-    </mat-cell>
-  </ng-template>
-
-  <ng-template #customCellWrapper let-element='element' >
-    <mat-cell [styler]='styles'  (click)='cellClicked(element, metaData.key)'  *ngrxLet="styles$ as styles">
-      <ng-container *ngTemplateOutlet="customCell.TemplateRef ;context: {metaData: metaData, element: element }">
-      </ng-container>
     </mat-cell>
   </ng-template>
 
@@ -67,9 +38,7 @@
 
 
   <ng-container *matCellDef="let element;">
-      <ng-container *ngrxLet="styles$ as styles">
-        <ng-container *ngTemplateOutlet="template; context: {metaData: metaData, element: element, styles : styles}">
-        </ng-container>
+      <ng-container *ngTemplateOutlet="outerTemplate; context: {metaData: metaData, element: element }">
       </ng-container>
   </ng-container>
 
