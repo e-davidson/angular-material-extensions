@@ -10,6 +10,7 @@ import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
 import { map, tap } from 'rxjs/operators'
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Injectable({
   providedIn: 'root',
@@ -44,25 +45,25 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly metaData$ = this.select( state => state.metaData);
 
+  
   readonly metaDataArray$ = this.select(
-    this.metaData$,
-    md => Object.values(md)
-      .sort( (a,b)=> a.order - b.order )
+    this.state$,
+    orderMetaData
   );
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
     return this.select( state => state.metaData[key]  )
   }
 
-  getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefinedWidths[key]);
-  getUserDefinedWidths$ = this.select(state => state.userDefinedWidths);
+  getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefined.widths[key]);
+  getUserDefinedWidths$ = this.select(state => state.userDefined.widths);
 
   createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
     return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
     .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
     .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
   }
-  private displayedColumns =  (state:TableState) => Object.keys(state.metaData)
+  private displayedColumns =  (state:TableState) => orderMetaData(state).map(md => md.key)
     .filter(key => !state.hiddenKeys.includes(key) && state.metaData[key].fieldType !== FieldType.Hidden);
   readonly displayedColumns$ = this.select(this.displayedColumns);
   readonly hideColumn = this.updater((state, key: string) => ({
@@ -79,8 +80,7 @@ export class TableStore extends ComponentStore<TableState> {
        hiddenKeys: { $set: [...hiddenColumns] }, 
        filters: { $set: {} }, 
        sorted: {$set: sorted},
-       userDefinedTableWidth: {$set: null},
-       userDefinedWidths : {$set: {}}
+       userDefined : {$set: {widths:{},order:{},table:{}}},
       });
   });
 
@@ -103,12 +103,24 @@ export class TableStore extends ComponentStore<TableState> {
 
 
   setUserDefinedWidth = this.updater((state,colWidths:{key: string, widthInPixel:number}[]) => {
-    const userDefinedWidths = {...state.userDefinedWidths};
+    const userDefinedWidths = {...state.userDefined.widths};
     colWidths.forEach(cw => {
       userDefinedWidths[cw.key] = cw.widthInPixel;
     });
-    return {...state, userDefinedWidths: userDefinedWidths};
+    return {...state, userDefined: {...state.userDefined,widths:userDefinedWidths}};
   });
+
+  setUserDefinedOrder = this.updater((state,moved:{newOrder:number,oldOrder:number})=>{
+    const {newOrder ,oldOrder} = moved;
+    const mdsArr = orderViewableMetaData(state);
+    moveItemInArray(mdsArr,oldOrder,newOrder);
+
+    const userDefinedOrder = mdsArr.reduce((aggregate,current,index) => {
+      aggregate[current.key] = index;
+      return aggregate
+    },{});
+    return({...state, userDefined:{...state.userDefined,order:userDefinedOrder}})
+  })
 
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {
     if (!filter.filterId) {
@@ -145,8 +157,8 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly updateState = this.updater<TableState>(this.updateStateFunc);
 
-  getUserDefinedTableSize$ = this.select(state => state.userDefinedTableWidth);
-  setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDefinedTableWidth:widthInpixels})) ;
+  getUserDefinedTableSize$ = this.select(state => state.userDefined.table.width);
+  setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDefined: {...state.userDefined,table:{width:widthInpixels}}})) ;
 
   mergeMeta = (orig: MetaData, merge: MetaData): MetaData => {
     return {
@@ -167,7 +179,7 @@ export class TableStore extends ComponentStore<TableState> {
   }
 
   readonly setMetaData = this.updater((state, md: MetaData[] | MetaData ) => {
-    const metaData = ( Array.isArray(md) ? [...md] : [md] ).sort((a,b)=> a.order - b.order)
+    const metaData = ( Array.isArray(md) ? [...md] : [md] )
       .reduce((prev: Dictionary<MetaData>,curr) => {
         if(prev[curr.key]) {
           prev[curr.key] = this.mergeMeta(prev[curr.key],curr);
@@ -180,7 +192,26 @@ export class TableStore extends ComponentStore<TableState> {
     if(sorted.length === 0) {
       sorted = this.createPreSort(metaData);
     }
-    return {...state, metaData, sorted};
+    const order = this.initializeOrder(state, metaData);
+    return {...state, metaData, sorted, userDefined:{...state.userDefined,order:order}};
   });
 
+  private initializeOrder = (state:TableState,mds: Dictionary<MetaData>) : Dictionary<number> => {
+    const viewableMetaDataArr = Object.values(mds).filter(a => a.fieldType !== FieldType.Hidden);
+    let userDefinedOrder = state.userDefined.order;
+    if(viewableMetaDataArr.some(meta => userDefinedOrder[meta.key] == null)){
+      return {}
+    }
+    return userDefinedOrder;
+  }
+
+}
+export const orderViewableMetaData = (state:TableState) => orderMetaData(state).filter(a => a.fieldType !== FieldType.Hidden);
+
+export const orderMetaData = (state:TableState) => {
+  const userOrderArr = Object.entries(state.userDefined.order);
+  return userOrderArr.length ?
+   Object.values(state.metaData).sort((a,b)=> state.userDefined.order[a.key] - state.userDefined.order[b.key])
+   :
+   Object.values(state.metaData).sort((a,b)=> a.order - b.order)
 }

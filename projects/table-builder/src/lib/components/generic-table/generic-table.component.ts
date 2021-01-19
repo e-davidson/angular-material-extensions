@@ -100,7 +100,11 @@ export class GenericTableComponent implements OnInit {
       columns.forEach( ci => this.addMetaData(ci) )});
       this.initializeRowDefs([...this.rows]);
     this.state.on(this.state.displayedColumns$, keys => {
-      this.keys = [...this.columns, ...keys]} );
+      this.keys = [...this.columns, ...keys];
+      this.rowDefArr?.forEach(row => row.columns = this.keys)
+    
+    } );
+     
   }
 
   createDataSource() { 

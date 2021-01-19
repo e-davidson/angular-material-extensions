@@ -2,8 +2,8 @@ import { Component, ChangeDetectionStrategy} from '@angular/core';
 import { DisplayCol } from '../../classes/display-col';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TableStore } from '../../classes/table-store';
-import { FieldType } from '../../interfaces/report-def';
+import { orderViewableMetaData, TableStore } from '../../classes/table-store';
+import {CdkDragDrop} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'tb-col-displayer',
@@ -16,8 +16,7 @@ export class GenColDisplayerComponent {
   constructor( private tableState: TableStore ) {
     this.columns$ = this.tableState.state$.pipe(
       map( state =>
-        Object.values(state.metaData)
-          .filter( md => md.fieldType !== FieldType.Hidden )
+        orderViewableMetaData(state)
           .map( md => ({
             key: md.key,
             displayName: md.displayName,
@@ -31,7 +30,9 @@ export class GenColDisplayerComponent {
     displayCols.forEach(c => c.isVisible = true);
     this.emit(displayCols);
   }
-
+  drop(event: CdkDragDrop<string[]>) {
+    this.tableState.setUserDefinedOrder({newOrder:event.currentIndex,oldOrder:event.previousIndex})
+  }
   unset(displayCols: DisplayCol[]) {
     displayCols.forEach(c => c.isVisible = false);
     this.emit(displayCols);

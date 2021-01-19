@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { first, map  } from 'rxjs/operators';
 import { combineLatest} from 'rxjs';
-import { TableStore } from '../classes/table-store';
+import { orderMetaData, TableStore } from '../classes/table-store';
 import { TableBuilderConfig, TableBuilderConfigToken } from '../classes/TableBuilderConfig';
 import { downloadData } from '../functions/download-data';
 import { ArrayAdditional, ArrayStyle, FieldType, MetaData } from '../interfaces/report-def';
@@ -43,7 +43,7 @@ export class ExportToCsvService<T> {
     }
     switch (meta.fieldType) {
       case FieldType.Date:
-        const dateFormat = meta.additional?.export?.dateFormat || this.config?.export?.dateFormat;
+        const dateFormat = meta.additional?.export?.dateFormat || this.config?.export?.dateFormat || meta.additional?.dateFormat;
         val = this.datePipe.transform(val, dateFormat);
         break;
       case FieldType.String:
@@ -67,10 +67,9 @@ export class ExportToCsvService<T> {
 }
 
 export const removeFromMetaData = (state: TableState, keysToRemove: string[]) =>
-  Object.keys(state.metaData)
-  .filter( key => !keysToRemove.includes(key))
-  .map( key => state.metaData[key])
-  .sort((md1,md2) => md1.order - md2.order);
+
+  orderMetaData(state)
+  .filter( meta => !keysToRemove.includes(meta.key));
 
 
 export const nonExportableFields = (state: TableState) => Object.values( state.metaData)

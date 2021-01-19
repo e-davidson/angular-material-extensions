@@ -38,6 +38,7 @@ import { DialogOpenDirective } from './directives/buttonSubject';
 import { DialogDirective } from './directives/dialog';
 import { ResizeColumnDirective } from './directives/resize-column.directive';
 import {ReactiveComponentModule} from '@ngrx/component'
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import {ReactiveComponentModule} from '@ngrx/component'
     FormsModule,
     RouterModule,
     ReactiveComponentModule,
+    DragDropModule
   ],
     exports: [
         GenericTableComponent,

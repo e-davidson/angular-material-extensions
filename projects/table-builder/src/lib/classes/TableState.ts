@@ -1,7 +1,7 @@
-import { MetaData } from '../interfaces/report-def';
 import { FilterInfo } from './filter-info';
 import { Dictionary } from '../interfaces/dictionary';
 import { Sort } from '@angular/material/sort';
+import { MetaData } from '../..';
 
 export interface SavedTableProfile {
   profileNames : string [];
@@ -17,8 +17,7 @@ export interface PersistedTableState {
   initialized : boolean;
   sorted : Sort [];
   currentProfile?: string;
-  userDefinedWidths:Dictionary<number>
-  userDefinedTableWidth?:number;
+  userDefined : {order:Dictionary<number>,widths:Dictionary<number>,table:{width?:number}}
 }
 
 export interface TableState extends PersistedTableState {
@@ -31,5 +30,5 @@ export const defaultTableState: TableState = {
   hiddenKeys: [],
   initialized : false,
   sorted: [],
-  userDefinedWidths:{},
+  userDefined:{order:{},widths:{},table:{}}
 };
