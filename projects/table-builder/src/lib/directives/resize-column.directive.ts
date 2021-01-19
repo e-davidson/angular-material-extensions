@@ -15,7 +15,6 @@ export class ResizeColumnDirective implements OnInit{
   ngOnInit(){
     if (this.resizable){
       const {table, columnHead} = this.getTableAndColumnHeadHtmlElements();
-
       const resizer = this.createResizerSpanInColumnHead(columnHead);
 
       const aggregateMouseEventsMapped$ = this.mouseDownThroghMouseUpEventMapper(resizer,columnHead,table)
@@ -46,6 +45,14 @@ export class ResizeColumnDirective implements OnInit{
   createResizerSpanInColumnHead(columnHead:HTMLElement){
     const resizer = this.renderer.createElement("span");
     this.renderer.addClass(resizer, "resize-holder");
+    resizer.style['cursor']='col-resize';
+    resizer.style['user-select']='none';
+    resizer.style['width']='10px';
+    resizer.style['height']='100%';
+    resizer.style['position']='absolute';
+    resizer.style['right']='0';
+    resizer.style['top']='0';
+    resizer.style['z-index']='1';
     this.renderer.appendChild(columnHead, resizer);
     return resizer;
   }

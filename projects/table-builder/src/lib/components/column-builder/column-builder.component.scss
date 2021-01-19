@@ -11,14 +11,4 @@
 
 .column-head{
   position: relative;
-    .resize-holder {
-      cursor: col-resize;
-      user-select: none;
-      width: 10px;
-      height: 100%;
-      position: absolute;
-      right: 0;
-      top: 0;
-      z-index: 1;
-  }
 }
