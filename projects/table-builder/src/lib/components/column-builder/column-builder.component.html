@@ -1,8 +1,8 @@
-<ng-container [matColumnDef]="metaData.key">
+<ng-container [matColumnDef]="metaData.key" *ngrxLet="styles$ as styles">
 
   <ng-template #body let-element='element' >
-    <mat-cell [styler]='styles'  (click)='cellClicked(element, metaData.key)' *ngrxLet="styles$ as styles">
-        <ng-container *ngTemplateOutlet="innerTemplate;context: {metaData: metaData, element: element }">
+    <mat-cell [styler]='styles'  (click)='cellClicked(element, metaData.key)'  >
+        <ng-container *ngTemplateOutlet="innerTemplate;context: {metaData: metaData, element: element, transform: transform }">
         </ng-container>
     <span class="no-val" *ngIf="metaData.fieldType !== FieldType.Expression && ( element[metaData.key]===null || element[metaData.key]===undefined)">-</span>
     </mat-cell>
@@ -11,7 +11,7 @@
   <ng-template matHeaderCellDef #myHeader>
 
     <ng-container *ngIf="customCell?.columnDef?.headerCell;else header;">
-      <ng-container *ngrxLet="styles$ as styles">
+      <ng-container>
         <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData, styles:  styles} ">
         </ng-container>
       </ng-container>
@@ -19,7 +19,7 @@
 
     <ng-template #header>
 
-      <mat-header-cell  [styler]='styles' [resizeColumn]="true" [key]="metaData.key"  *ngrxLet="styles$ as styles" class="column-head" #headref>
+      <mat-header-cell  [styler]='styles' [resizeColumn]="true" [key]="metaData.key"   class="column-head" #headref>
         <div class="header-container">
           <div *ngIf="!metaData._internalNotUserDefined || !customCell?.columnDef?.cell ; else headerWithoutMenu" mat-sort-header style="width: 100%">
             {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
@@ -38,12 +38,12 @@
 
 
   <ng-container *matCellDef="let element;">
-      <ng-container *ngTemplateOutlet="outerTemplate; context: {metaData: metaData, element: element }">
+     <ng-container *ngTemplateOutlet="outerTemplate; context: {metaData: metaData, element: element , styles: styles }">
       </ng-container>
   </ng-container>
 
   <ng-template matFooterCellDef>
-    <ng-container *ngrxLet="styles$ as styles">
+    <ng-container >
       <ng-container *ngIf="customCell?.columnDef?.footerCell;else footer">
         <ng-container
           *ngTemplateOutlet="customCell.columnDef.footerCell.template;context: {metaData: metaData, data: data$, styles : styles }">
@@ -51,7 +51,7 @@
       </ng-container>
     </ng-container>
     <ng-template #footer>
-      <mat-footer-cell  [styler]='styles'  *ngrxLet="styles$ as styles" >
+      <mat-footer-cell  [styler]='styles'  >
         <span *ngIf="metaData.additional?.footer" [ngSwitch]="metaData.fieldType">
           <span *ngSwitchCase="FieldType.Currency">
             {{ data$ | columnTotal: metaData | async | currency }}

@@ -4,6 +4,7 @@ import { MatColumnDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
+import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
 import { map, startWith } from 'rxjs/operators';
 import { TableService } from '../../services/table-service';
@@ -24,13 +25,13 @@ export class ColumnBuilderComponent implements OnInit {
   @ViewChild(MatColumnDef) columnDef: MatColumnDef;
   outerTemplate: TemplateRef<any>;
   innerTemplate: TemplateRef<any>;
+  transform: (o: any, ...args: any[])=> any ;
 
-  @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
-  @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
-
+  @ViewChild('body') bodyTemplate: TemplateRef<any>;
 
 
   constructor(
+    private transformCreator: TransformCreator,
     private table: MatTable<any>,
     public state: TableStore,
     private templateService: TableService,
@@ -43,17 +44,7 @@ export class ColumnBuilderComponent implements OnInit {
   }
 
   getOuterTemplate() {
-    if(this.metaData.template) {
-      return this.bodyTemplate;
-    }
-    if (this.customCell?.columnDef) {
-      if (this.customCell.columnDef.cell) {
-        return this.customCell.columnDef.cell.template;
-      } else {
-        return this.bodyTemplate;
-      }
-    }
-    return this.bodyTemplate;
+    return this.customCell?.columnDef?.cell?.template ?? this.bodyTemplate;
   }
 
   ngOnInit() {
@@ -70,6 +61,7 @@ export class ColumnBuilderComponent implements OnInit {
   ngAfterViewInit() {
     this.outerTemplate = this.getOuterTemplate();
     this.innerTemplate = this.getInnerTemplate();
+    this.transform = this.transformCreator.createTransformer(this.metaData);
     this.table.addColumnDef(this.columnDef);
   }
 

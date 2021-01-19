@@ -1,11 +1,9 @@
 import { Component, TemplateRef, ViewChild } from "@angular/core";
-import { ReplaySubject } from "rxjs";
 
 @Component({
   templateUrl: './initialization-component.html'
 })
 export class InitializationComponent {
-  initialized = new ReplaySubject();
   @ViewChild('boolean', {static: true}) booleanTemplate : TemplateRef<any>;
   @ViewChild('link', {static: true}) linkTemplate : TemplateRef<any>;
   @ViewChild('imageUrl', {static: true}) imageUrlTemplate : TemplateRef<any>;
@@ -14,7 +12,4 @@ export class InitializationComponent {
   @ViewChild('expression', {static: true}) expressionTemplate : TemplateRef<any>;
   @ViewChild('default', {static: true}) defaultTemplate : TemplateRef<any>;
 
-  ngAfterViewInit() {
-    this.initialized.next();
-  }
 }
