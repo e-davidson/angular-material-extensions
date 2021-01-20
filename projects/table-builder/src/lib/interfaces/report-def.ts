@@ -1,4 +1,4 @@
-import { PipeTransform } from '@angular/core';
+import { PipeTransform, TemplateRef } from '@angular/core';
 
 export enum FieldType {
     Unknown = 0,
@@ -41,6 +41,7 @@ export interface MetaData<T = any> {
     customCell?: boolean;
     transform?: ( (o: T | string, ...args: any[])=> any ) | PipeTransform;
     click?: (element: T, key: string ) => void;
+    template?: TemplateRef<any>;
 }
 
 export interface  ReportDef<DataType = any> {

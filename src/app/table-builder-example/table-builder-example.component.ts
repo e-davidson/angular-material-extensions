@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
 import { Subject, Observable, of, ReplaySubject } from 'rxjs';
 import { map, scan, startWith } from 'rxjs/operators';
@@ -52,7 +52,7 @@ const META_DATA: MetaData[] = [
     additional: {
       export: { prepend: "'" },
       FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
-      styles: { color: 'yellow'  },
+      //styles: { color: 'yellow'  },
     },
     transform: (o: string) => o + ' #'
   },
@@ -85,18 +85,15 @@ export class TableBuilderExampleComponent {
 
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
 
+  @ViewChild('myTemplate')  t : TemplateRef<any>;
+
   isFilterChecked: Observable<FilterInfo>;
   runWhen = ()=>true;
 
-  constructor(private store: Store<any>, lcp:  LowerCasePipe) {
-    const addedElements = this.newElement$.pipe(
-      scan((acc, value) => { acc.push(value); return acc; }, []),
-      startWith([]),
-    );
-    META_DATA[1].transform = lcp;
-    const all = combineArrays([of(ELEMENT_DATA), addedElements]);
-    this.metaData$.next(META_DATA);
-    this.tableBuilder = new TableBuilder(all, this.metaData$);
+  constructor(private store: Store<any>, private lcp:  LowerCasePipe) {
+
+
+
     // this.tableBuilder = new TableBuilder(all, of([{key:'date',fieldType: FieldType.Date , displayName: 'The Date'}]),{metaDataPlusRestOfFields:true});
   }
 
@@ -108,9 +105,19 @@ export class TableBuilderExampleComponent {
 
 
   ngAfterViewInit() {
+    const addedElements = this.newElement$.pipe(
+      scan((acc, value) => { acc.push(value); return acc; }, []),
+      startWith([]),
+    );
+    META_DATA[1].transform = this.lcp;
+    META_DATA[3].template = this.t;
+    const all = combineArrays([of(ELEMENT_DATA), addedElements]);
+    this.metaData$.next(META_DATA);
+
     setTimeout(() => {
-      this.isFilterChecked = this.tableContainer.state.getFilter$('test')
-      this.isFilterChecked.subscribe();
+      this.tableBuilder = new TableBuilder(all, this.metaData$);
+      //this.isFilterChecked = this.tableContainer.state.getFilter$('test')
+      //this.isFilterChecked.subscribe();
     }, 0);
   }
 
