@@ -1,4 +1,5 @@
 import { PipeTransform } from '@angular/core';
+import { Dictionary } from './dictionary';
 
 export enum FieldType {
     Unknown = 0,
@@ -68,7 +69,12 @@ export interface Additional   {
   export?: any;
   dateFormat?: string;
   FilterOptions?: FilterOptions;
-  styles?: any;
+  styles?: Dictionary<string>;
+  columnPartStyles?: {
+    head: Dictionary<string>,
+    body: Dictionary<string>,
+    footer: Dictionary<string>,
+  } 
 }
 
 export enum ArrayStyle {
