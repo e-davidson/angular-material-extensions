@@ -6,7 +6,8 @@ import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
-import { map, startWith, tap } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
+import { TableTemplateService } from '../../services/table-template-service';
 
 @Component({
   selector: 'tb-column-builder',
@@ -17,41 +18,33 @@ import { map, startWith, tap } from 'rxjs/operators';
 export class ColumnBuilderComponent implements OnInit {
   FieldType = FieldType;
   filter: FilterInfo;
-  _metaData: MetaData;
-  @Input() set metaData(value: MetaData) {
-    this._metaData = value;
-    this.transform = this.transformCreator.createTransformer(this.metaData);
-  };
-  get metaData() : MetaData {
-    return this._metaData;
-  }
+  @Input() metaData: MetaData
   @Input() customCell: CustomCellDirective;
   @Input() data$: Observable<any[]>;
 
   @ViewChild(MatColumnDef) columnDef: MatColumnDef;
-
-  @ViewChild('body', {static: true}) bodyTemplate: TemplateRef<any>;
-  @ViewChild('customCellWrapper') customCellWrapper: TemplateRef<any>;
-
-  template: TemplateRef<any>;
+  outerTemplate: TemplateRef<any>;
+  innerTemplate: TemplateRef<any>;
   transform: (o: any, ...args: any[])=> any ;
 
-  constructor( private transformCreator: TransformCreator, private table: MatTable<any>, 
+  @ViewChild('body') bodyTemplate: TemplateRef<any>;
+
+
+  constructor(
+    private transformCreator: TransformCreator,
+    private table: MatTable<any>,
     public state: TableStore,
+    private templateService: TableTemplateService,
     ) { }
 
-  getTemplate() {
-    if (this.customCell?.columnDef) {
-      if (this.customCell.columnDef.cell) {
-        return this.customCell.columnDef.cell.template;
-      } else {
-        return this.bodyTemplate;
-      }
-    }
-    if (this.customCell) {
-      return this.customCellWrapper;
-    }
-    return this.bodyTemplate;
+  getInnerTemplate() :TemplateRef<any> {
+    if(this.metaData.template) return this.metaData.template;
+    if (this.customCell?.TemplateRef)  return this.customCell.TemplateRef;
+    return this.templateService.getTemplate(this.metaData.fieldType);
+  }
+
+  getOuterTemplate() {
+    return this.customCell?.columnDef?.cell?.template ?? this.bodyTemplate;
   }
 
   ngOnInit() {
@@ -92,7 +85,9 @@ export class ColumnBuilderComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.template = this.getTemplate();
+    this.outerTemplate = this.getOuterTemplate();
+    this.innerTemplate = this.getInnerTemplate();
+    this.transform = this.transformCreator.createTransformer(this.metaData);
     this.table.addColumnDef(this.columnDef);
   }
 

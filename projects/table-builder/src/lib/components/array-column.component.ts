@@ -1,10 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, Inject } from '@angular/core';
-import { ColumnBuilderComponent } from './column-builder/column-builder.component';
-import { ArrayStyle, ArrayAdditional } from '../interfaces/report-def';
+import { ArrayStyle, ArrayAdditional, MetaData } from '../interfaces/report-def';
 import { TableBuilderConfigToken, TableBuilderConfig } from '../classes/TableBuilderConfig';
-
-
-
 
 
 @Component({
@@ -28,14 +24,16 @@ export class ArrayColumnComponent {
   ArrayStyle = ArrayStyle;
   additional: ArrayAdditional;
   @Input() array: any[];
+  @Input() metaData: MetaData;
 
-  constructor(private parent: ColumnBuilderComponent,
-    @Inject(TableBuilderConfigToken) private config: TableBuilderConfig
+  constructor( @Inject(TableBuilderConfigToken) private config: TableBuilderConfig
     ) {
-    this.additional = this.parent.metaData?.additional as ArrayAdditional;
+
   }
 
   ngOnInit() {
-    this.array = (this.array ?? []).slice(0, this.additional.limit);
+    this.additional = this.metaData?.additional ??  this.config.arrayInfo ?? { limit: 3, arrayStyle: ArrayStyle.NewLine } as ArrayAdditional;
+    this.array = (this.array ?? []).slice(0, this.additional.limit );
+
   }
 }

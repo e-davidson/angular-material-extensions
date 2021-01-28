@@ -1,0 +1,36 @@
+<ng-template #boolean  let-element='element' let-metaData='metaData'>
+  <span>
+    <mat-icon *ngIf="element[metaData.key]">check</mat-icon>
+  </span>
+</ng-template>
+<ng-template #link  let-element='element' let-metaData='metaData'>
+  <a *ngIf="metaData.additional.useRouterLink; else hrefLink" target="{{metaData.additional?.target || '_blank'}}"
+    [routerLink]="[metaData.additional.base, metaData.additional.urlKey ? element[metaData.additional.urlKey] : element[metaData.key]]">
+    {{element[metaData.key]}}
+  </a>
+  <ng-template #hrefLink  let-element='element' let-metaData='metaData'>
+    <a target="{{metaData.additional?.target || '_blank'}}"
+      href="{{metaData.additional.base}}{{metaData.additional.urlKey? element[metaData.additional.urlKey] : element[metaData.key]}}">
+      {{element[metaData.key]}}
+    </a>
+  </ng-template>
+</ng-template>
+<ng-template #imageUrl  let-element='element' let-metaData='metaData'>
+  <span>
+    <img src="{{element[metaData.key]}}" height="75px" width="75px" />
+  </span>
+</ng-template>
+<ng-template #currency  let-element='element' let-metaData='metaData' >
+  <span [class.negative-currency]="element[metaData.key] < 0">
+    {{element[metaData.key] | currency }}
+  </span>
+</ng-template>
+<ng-template #array let-element='element' let-metaData='metaData'>
+  <tb-array-column  [array]='element[metaData.key]'></tb-array-column>
+</ng-template>
+<ng-template #expression let-element='element' let-metaData='metaData'>
+  <span>{{element | func : metaData.transform }}</span>
+</ng-template>
+<ng-template #default let-element='element' let-metaData='metaData' let-transform='transform'>
+  <span>{{  element[metaData.key] | func : transform }}</span>
+</ng-template>
