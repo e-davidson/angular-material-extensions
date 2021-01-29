@@ -48,6 +48,7 @@ export class ColumnBuilderComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('object')
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
     const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(map(w => w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {}));
     this.styles$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(
@@ -63,23 +64,23 @@ export class ColumnBuilderComponent implements OnInit {
         const fullMetaStyles = this.metaData.additional?.styles;
         const headerStyles = this.metaData.additional?.columnPartStyles?.head;
         const totalStyles = {...fullMetaStyles,...headerStyles, ...width};
+        console.log(headerStyles,'s')
         return totalStyles;
     }));
     this.bodyStyles$ = width$.pipe(
       startWith(null),
       map(width => {
         const fullMetaStyles = this.metaData.additional?.styles;
-        const headerStyles = this.metaData.additional?.columnPartStyles?.head;
-        const totalStyles = {...fullMetaStyles,...headerStyles, ...width};
+        const bodystyles = this.metaData.additional?.columnPartStyles?.body;
+        const totalStyles = {...fullMetaStyles,...bodystyles, ...width};
         return totalStyles;
     }));
     this.footerStyles$ = width$.pipe(
       startWith(null),
-      map(w => {
-        const width = w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {};
+      map(width => {
         const fullMetaStyles = this.metaData.additional?.styles;
-        const headerStyles = this.metaData.additional?.columnPartStyles?.head;
-        const totalStyles = {...fullMetaStyles,...headerStyles, ...width};
+        const footerStyles = this.metaData.additional?.columnPartStyles?.footer;
+        const totalStyles = {...fullMetaStyles,...footerStyles, ...width};
         return totalStyles;
     }));
   }

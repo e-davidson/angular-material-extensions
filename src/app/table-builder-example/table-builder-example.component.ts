@@ -45,14 +45,14 @@ const META_DATA: MetaData[] = [
   {key: 'symbol', order:2, fieldType: FieldType.String },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
-    additional: {dateFormat: 'shortDate'},
+    additional: {dateFormat: 'shortDate',columnPartStyles:{footer:{color: 'rgb(194 210 67 / 61%)'}}},
     click: (element, key) => console.log(element,key)
   },
   {key: 'name', order: 1,fieldType: FieldType.String,
     additional: {
       export: { prepend: "'" },
       FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
-      //styles: { color: 'yellow'  },
+      styles: { color: 'yellow'  },
     },
     transform: (o: string) => o + ' #'
   },
@@ -62,9 +62,10 @@ const META_DATA: MetaData[] = [
   {key: 'phone', fieldType: FieldType.PhoneNumber, order:undefined },
   {key: 'moreInfo', fieldType: FieldType.Array, additional},
   {key:'expression', fieldType: FieldType.Expression,
-    transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + o.name,
+    transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + (o.name ??''),
     additional: {
-      styles: {color: 'green', flex: '0 0 200px'}
+      styles: {color: 'green', flex: '0 0 200px'},
+      columnPartStyles:{head:{color: 'rgb(194 210 67 / 61%)'}}
     },
     click: (element, key) => console.log(element,key)
   }

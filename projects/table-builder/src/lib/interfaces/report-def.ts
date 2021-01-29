@@ -72,9 +72,9 @@ export interface Additional   {
   FilterOptions?: FilterOptions;
   styles?: Dictionary<string>;
   columnPartStyles?: {
-    head: Dictionary<string>,
-    body: Dictionary<string>,
-    footer: Dictionary<string>,
+    head?: Dictionary<string>,
+    body?: Dictionary<string>,
+    footer?: Dictionary<string>,
   } 
 }
 
