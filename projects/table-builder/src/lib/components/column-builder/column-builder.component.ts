@@ -8,6 +8,7 @@ import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
 import { map, startWith } from 'rxjs/operators';
 import { TableTemplateService } from '../../services/table-template-service';
+import { Dictionary } from '../../interfaces/dictionary';
 
 @Component({
   selector: 'tb-column-builder',
@@ -51,26 +52,13 @@ export class ColumnBuilderComponent implements OnInit {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
     const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(map(w => w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {}));
     const fullMetaStyles = this.metaData.additional?.styles;
-    this.headerStyles$ = width$.pipe(
-      startWith(null),
-      map(width => {
-        const headerStyles = this.metaData.additional?.columnPartStyles?.head;
-        const totalStyles = {...fullMetaStyles,...headerStyles, ...width};
-        return totalStyles;
-    }));
-    this.bodyStyles$ = width$.pipe(
-      startWith(null),
-      map(width => {
-        const bodystyles = this.metaData.additional?.columnPartStyles?.body;
-        const totalStyles = {...fullMetaStyles,...bodystyles, ...width};
-        return totalStyles;
-    }));
-    this.footerStyles$ = width$.pipe(
-      startWith(null),
-      map(width => {
-        const footerStyles = this.metaData.additional?.columnPartStyles?.footer;
-        const totalStyles = {...fullMetaStyles,...footerStyles, ...width};
-        return totalStyles;
+    this.styles$= width$.pipe(map(width => {
+      const styles = {
+        header : {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.head, ...width},
+        footer: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.footer, ...width},
+        body: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.body, ...width},
+      };
+      return styles;
     }));
   }
 
@@ -87,8 +75,6 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
-  headerStyles$;
-  footerStyles$;
-  bodyStyles$;
+  styles$:Observable<{body:Dictionary<string>,header:Dictionary<string>,footer:Dictionary<string>}>
 
 }

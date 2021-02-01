@@ -42,7 +42,8 @@ const additional: ArrayAdditional = {
 
 const META_DATA: MetaData[] = [
   {key: 'position', fieldType: FieldType.Hidden, order: 3, additional : {footer:{type : 'sum' }} },
-  {key: 'symbol', order:2, fieldType: FieldType.String },
+  {key: 'symbol', order:2, fieldType: FieldType.String,
+  additional: {columnPartStyles:{body:{color: 'rgb(194 210 67 / 61%)'}}}, },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
     additional: {dateFormat: 'shortDate',columnPartStyles:{footer:{color: 'rgb(194 210 67 / 61%)'}}},
