@@ -54,7 +54,7 @@ export class ColumnBuilderComponent implements OnInit {
     const fullMetaStyles = this.metaData.additional?.styles;
     this.styles$= width$.pipe(map(width => {
       const styles = {
-        header : {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.head, ...width},
+        header : {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.header, ...width},
         footer: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.footer, ...width},
         body: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.body, ...width},
       };

@@ -66,7 +66,7 @@ const META_DATA: MetaData[] = [
     transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + (o.name ??''),
     additional: {
       styles: {color: 'green', flex: '0 0 200px'},
-      columnPartStyles:{head:{color: 'rgb(194 210 67 / 61%)'}}
+      columnPartStyles:{header:{color: 'rgb(194 210 67 / 61%)'}}
     },
     click: (element, key) => console.log(element,key)
   }
