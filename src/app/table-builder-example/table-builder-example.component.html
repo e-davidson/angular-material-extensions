@@ -13,7 +13,7 @@
 
   <ng-container customCell='date' matColumnDef="date"   >
     <mat-footer-cell *matFooterCellDef="let styles=styles" [styler]="styles" >
-        date footer
+        date footer {{(styles | json) + 'a'}}
     </mat-footer-cell>
   </ng-container>
 

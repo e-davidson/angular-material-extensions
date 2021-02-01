@@ -8,6 +8,7 @@ import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
 import { map, startWith } from 'rxjs/operators';
 import { TableTemplateService } from '../../services/table-template-service';
+import { Dictionary } from '../../interfaces/dictionary';
 
 @Component({
   selector: 'tb-column-builder',
@@ -49,11 +50,14 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
-    this.styles$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(
-      startWith(null),
-      map(w => {
-      const width = w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {};
-      const styles = this.metaData.additional?.styles || w ? {...this.metaData.additional?.styles,...width} : null;
+    const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(map(w => w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {}));
+    const fullMetaStyles = this.metaData.additional?.styles;
+    this.styles$= width$.pipe(map(width => {
+      const styles = {
+        header : {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.head, ...width},
+        footer: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.footer, ...width},
+        body: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.body, ...width},
+      };
       return styles;
     }));
   }
@@ -71,6 +75,6 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
-  styles$;
+  styles$:Observable<{body:Dictionary<string>,header:Dictionary<string>,footer:Dictionary<string>}>
 
 }
