@@ -12,9 +12,7 @@
   <ng-template matHeaderCellDef #myHeader>
 
     <ng-container *ngIf="customCell?.columnDef?.headerCell;else header;">
-      <ng-container>
-        <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData, styles:  styles.header} ">
-        </ng-container>
+      <ng-container *ngTemplateOutlet="customCell.columnDef.headerCell.template; context: {metaData: metaData, styles:  styles.header} ">
       </ng-container>
     </ng-container>
 
@@ -39,20 +37,17 @@
 
 
   <ng-container *matCellDef="let element;">
-     <ng-container>
-       <ng-container *ngTemplateOutlet="outerTemplate; context: {metaData: metaData, element: element , styles: styles.body }">
-        </ng-container>
-     </ng-container>
+    <ng-container *ngTemplateOutlet="outerTemplate; context: {metaData: metaData, element: element , styles: styles.body }">
+    </ng-container>
   </ng-container>
 
   <ng-template matFooterCellDef>
-    <ng-container>
-      <ng-container *ngIf="customCell?.columnDef?.footerCell;else footer">
-        <ng-container
-          *ngTemplateOutlet="customCell.columnDef.footerCell.template;context: {metaData: metaData, data: data$, styles : styles.footer }">
-        </ng-container>
+    <ng-container *ngIf="customCell?.columnDef?.footerCell;else footer">
+      <ng-container
+        *ngTemplateOutlet="customCell.columnDef.footerCell.template;context: {metaData: metaData, data: data$, styles : styles.footer }">
       </ng-container>
     </ng-container>
+  
 
     <ng-template #footer>
       <mat-footer-cell  [styler]='styles.footer'>
