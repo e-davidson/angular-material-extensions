@@ -18,7 +18,7 @@ export class MultiSortDirective extends MatSort implements OnInit, OnDestroy {
     super();
     this.state.setSort(this.sortChange.pipe(map(sc => ({ key: sc.active, direction: sc.direction }))));
     this.state.on(
-      this.state.select(this.state.state$, state => state.sorted),
+      this.state.sorted$,
       rules => {
         this.rules = rules;
 
