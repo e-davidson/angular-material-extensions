@@ -1,15 +1,15 @@
 {
   "name": "mx-table-builder",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "peerDependencies": {
     "@angular/common": "~11.0.0",
     "@angular/core": "~11.0.0",
     "@angular/material": "^11.0.0",
-    "@ngrx/store": "^10.0.0",
-    "@ngrx/effects": "^10.0.0",
+    "@ngrx/store": "^11.0.0",
+    "@ngrx/effects": "^11.0.0",
     "immutability-helper": "^3.0.1",
     "rxjs": "6.6.0",
-    "@ngrx/component": "10.1.2",
+    "@ngrx/component": "11.0.0",
     "uuid4": "^1.1.4",
     "@angular/cdk": "11.0.3"
   },
