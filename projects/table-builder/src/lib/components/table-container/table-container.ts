@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
-import { filter, first, map, shareReplay, switchMap, tap } from 'rxjs/operators';
+import { filter, first, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
@@ -26,6 +26,7 @@ import * as selectors from '../../ngrx/selectors';
 import { select, Store } from '@ngrx/store';
 import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from '../../ngrx/actions';
 import { PersistedTableState } from '../../classes/TableState';
+import { sortData } from '../../functions/sort-data-function';
 
 @Component({
   selector: 'tb-table-container',
@@ -97,6 +98,14 @@ import { PersistedTableState } from '../../classes/TableState';
       .appendFilters(filters$)
       .filterData(this.tableBuilder.getData$());
     this.dataSubject.next(data);
+  }
+
+  exportToCsv(): void {
+    const sorted = this.data.pipe(
+      withLatestFrom(this.state.sorted$),
+      map(([data, sorted]) => sortData(data, sorted))
+    );
+    this.exportToCsvService.exportToCsv(sorted);
   }
 
   saveState() {

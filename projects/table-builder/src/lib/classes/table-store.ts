@@ -38,6 +38,7 @@ export class TableStore extends ComponentStore<TableState> {
   }
 
   readonly filters$ = this.select(state => state.filters );
+  readonly sorted$ = this.select(state => state.sorted);
 
   getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
     return this.select( state => state.filters[filterId] );
@@ -45,7 +46,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly metaData$ = this.select( state => state.metaData);
 
-  
+
   readonly metaDataArray$ = this.select(
     this.state$,
     orderMetaData
@@ -77,8 +78,8 @@ export class TableStore extends ComponentStore<TableState> {
       .map(md => md.key);
     const sorted = this.createPreSort(state.metaData);
     return update(state, {
-       hiddenKeys: { $set: [...hiddenColumns] }, 
-       filters: { $set: {} }, 
+       hiddenKeys: { $set: [...hiddenColumns] },
+       filters: { $set: {} },
        sorted: {$set: sorted},
        userDefined : {$set: {widths:{},order:{},table:{}}},
       });
