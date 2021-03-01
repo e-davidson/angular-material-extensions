@@ -51,7 +51,7 @@
           <mat-form-field  >
             <input style='width:90%' matInput #addedKey  />
           </mat-form-field>
-          <button mat-button (click)='setProfileState(addedKey.value); add.next(false);'>Add</button>
+          <button mat-button (click)='setProfileState(addedKey.value); add.next(false);' [disabled]="!addedKey.value">Add</button>
         </div>
 
       </div>
