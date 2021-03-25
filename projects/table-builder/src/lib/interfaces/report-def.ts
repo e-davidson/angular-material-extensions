@@ -14,6 +14,7 @@ export enum FieldType {
     Boolean = 9,
     PhoneNumber = 10,
     Expression = 11,
+    Enum = 12,
 }
 
 export enum SortDirection {
@@ -75,7 +76,8 @@ export interface Additional   {
     header?: Dictionary<string>,
     body?: Dictionary<string>,
     footer?: Dictionary<string>,
-  } 
+  }
+  enumMap?: any;
 }
 
 export enum ArrayStyle {

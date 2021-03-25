@@ -4,7 +4,7 @@
     <mat-cell [styler]='styles.body'  (click)='cellClicked(element, metaData.key)'>
         <ng-container *ngTemplateOutlet="innerTemplate;context: {metaData: metaData, element: element, transform: transform }">
         </ng-container>
-    <span class="no-val" *ngIf="metaData.fieldType !== FieldType.Expression && ( element[metaData.key]===null || element[metaData.key]===undefined) &&
+    <span class="no-val" *ngIf="metaData.fieldType !== FieldType.Expression && ( element[metaData.key] == null ) &&
      !((customCell && customCell.TemplateRef) || metaData.template)">-</span>
     </mat-cell>
   </ng-template>
@@ -21,14 +21,13 @@
       <mat-header-cell  [styler]='styles.header' [resizeColumn]="true" [key]="metaData.key"   class="column-head" #headref >
         <div class="header-container">
           <div *ngIf="!metaData._internalNotUserDefined || !customCell?.columnDef?.cell ; else headerWithoutMenu" mat-sort-header style="width: 100%">
-            {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+            {{ metaData.displayName ?  metaData.displayName : ( metaData.key | spaceCase ) }}
           </div>
           <ng-template #headerWithoutMenu >
             <div *ngIf="metaData._internalNotUserDefined;" style="width: 100%">
-              {{ metaData.displayName ?  metaData.displayName : (metaData.key | spaceCase ) }}
+              {{ metaData.displayName ?  metaData.displayName : ( metaData.key | spaceCase ) }}
             </div>
           </ng-template>
-
           <tb-header-menu *ngIf="(!metaData._internalNotUserDefined || !customCell?.columnDef?.cell) && (!metaData.noFilter)" #menu [metaData]='metaData' [filter]='filter' ></tb-header-menu>
         </div>
       </mat-header-cell>
@@ -47,7 +46,7 @@
         *ngTemplateOutlet="customCell.columnDef.footerCell.template;context: {metaData: metaData, data: data$, styles : styles.footer }">
       </ng-container>
     </ng-container>
-  
+
 
     <ng-template #footer>
       <mat-footer-cell  [styler]='styles.footer'>

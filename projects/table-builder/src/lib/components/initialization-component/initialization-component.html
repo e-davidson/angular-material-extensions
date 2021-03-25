@@ -31,6 +31,9 @@
 <ng-template #expression let-element='element' let-metaData='metaData'>
   <span>{{element | func : metaData.transform }}</span>
 </ng-template>
+<ng-template #enum let-element='element' let-metaData='metaData' let-transform='transform'>
+  <span>{{ metaData.additional.enumMap[element[metaData.key]] }}</span>
+</ng-template>
 <ng-template #default let-element='element' let-metaData='metaData' let-transform='transform'>
   <span>{{  element[metaData.key] | func : transform }}</span>
 </ng-template>
