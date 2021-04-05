@@ -14,7 +14,7 @@
 
       <ng-container *ngIf="valueList; else defaultFilter">
         <input type='hidden' name='filterValue' [ngModel]='myFilterValue' />
-        <div *ngFor="let item of valueList; index as i" >
+        <div *ngFor="let item of valueList" >
           <mat-checkbox stop-propagation (change)='selectFilterChanged($event, item)' >{{item}}</mat-checkbox>
         </div>
       </ng-container>

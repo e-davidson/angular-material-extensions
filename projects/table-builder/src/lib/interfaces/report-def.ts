@@ -77,7 +77,7 @@ export interface Additional   {
     body?: Dictionary<string>,
     footer?: Dictionary<string>,
   }
-  enumMap?: any;
+  enumMap?: {[key:number]:string};
 }
 
 export enum ArrayStyle {
