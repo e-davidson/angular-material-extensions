@@ -8,7 +8,7 @@
     [routerLink]="[metaData.additional.base, metaData.additional.urlKey ? element[metaData.additional.urlKey] : element[metaData.key]]">
     {{element[metaData.key]}}
   </a>
-  <ng-template #hrefLink  let-element='element' let-metaData='metaData'>
+  <ng-template #hrefLink>
     <a target="{{metaData.additional?.target || '_blank'}}"
       href="{{metaData.additional.base}}{{metaData.additional.urlKey? element[metaData.additional.urlKey] : element[metaData.key]}}">
       {{element[metaData.key]}}
