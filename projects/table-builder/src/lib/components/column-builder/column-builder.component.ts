@@ -6,7 +6,7 @@ import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { TableTemplateService } from '../../services/table-template-service';
 import { Dictionary } from '../../interfaces/dictionary';
 

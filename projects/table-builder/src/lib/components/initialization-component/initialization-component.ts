@@ -11,5 +11,6 @@ export class InitializationComponent {
   @ViewChild('array', {static: true}) arrayTemplate : TemplateRef<any>;
   @ViewChild('expression', {static: true}) expressionTemplate : TemplateRef<any>;
   @ViewChild('default', {static: true}) defaultTemplate : TemplateRef<any>;
+  @ViewChild('enum', {static: true}) enumTemplate : TemplateRef<any>;
 
 }

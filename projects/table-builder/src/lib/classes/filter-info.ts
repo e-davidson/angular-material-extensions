@@ -6,7 +6,12 @@ import { BooleanFilterFuncs } from '../functions/boolean-filter-function';
 import { FieldType } from '../interfaces/report-def';
 
 type FilterTypeMapType = { [key in FieldType]: FilterToFiltersMap};
-type UnmappedTypes = FieldType.Expression | FieldType.Hidden | FieldType.ImageUrl | FieldType.Link;
+type UnmappedTypes = FieldType.Expression |
+  FieldType.Hidden |
+  FieldType.ImageUrl |
+  FieldType.Link |
+  FieldType.Enum;
+
 export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.Unknown] : StringFilterMap,
   [FieldType.Date] : DateFilterMap,
@@ -17,8 +22,6 @@ export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.Boolean] : BooleanFilterMap,
   [FieldType.PhoneNumber] : StringFilterMap,
 };
-
-
 
 const filterFactoryMap = {
   [FilterType.Or] : (filter: FilterInfo ): (obj: any) => boolean =>  {
@@ -40,6 +43,7 @@ const filterTypeFuncMap = {
   [FieldType.Number] : NumberFilterFuncs,
   [FieldType.Boolean] : BooleanFilterFuncs,
   [FieldType.Unknown] : StringFilterFuncs,
+  [FieldType.Enum] : StringFilterFuncs,
 };
 export interface FilterInfo<T = any> {
     filterId?: string;
@@ -60,8 +64,8 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
   const cannotBeTrueForNull = !FalseyValueCanBeIncludedFilterTypes.includes(filter.filterType);
   return (rowObj) => {
     const value = rowObj[filter.key];
-    return ((value == undefined) && cannotBeTrueForNull) 
-      ? false 
+    return ((value == undefined) && cannotBeTrueForNull)
+      ? false
       : func( value);
   };
 }

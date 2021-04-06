@@ -22,7 +22,7 @@
 </ng-template>
 <ng-template #currency  let-element='element' let-metaData='metaData' >
   <span [class.negative-currency]="element[metaData.key] < 0">
-    {{element[metaData.key] | currency }}
+    {{ element[metaData.key] | currency }}
   </span>
 </ng-template>
 <ng-template #array let-element='element' let-metaData='metaData'>
@@ -30,6 +30,9 @@
 </ng-template>
 <ng-template #expression let-element='element' let-metaData='metaData'>
   <span>{{element | func : metaData.transform }}</span>
+</ng-template>
+<ng-template #enum let-element='element' let-metaData='metaData' >
+  <span>{{ metaData.additional.enumMap[element[metaData.key]] | spaceCase }}</span>
 </ng-template>
 <ng-template #default let-element='element' let-metaData='metaData' let-transform='transform'>
   <span>{{  element[metaData.key] | func : transform }}</span>

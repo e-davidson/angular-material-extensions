@@ -12,9 +12,9 @@
       <input type="hidden" name="key"  [ngModel]="metaData.key" />
       <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType" />
 
-      <ng-container *ngIf="metaData.additional?.FilterOptions?.FilterableValues?.length > 0; else defaultFilter">
+      <ng-container *ngIf="valueList; else defaultFilter">
         <input type='hidden' name='filterValue' [ngModel]='myFilterValue' />
-        <div *ngFor='let item of metaData.additional.FilterOptions.FilterableValues; index as i'>
+        <div *ngFor="let item of valueList" >
           <mat-checkbox stop-propagation (change)='selectFilterChanged($event, item)' >{{item}}</mat-checkbox>
         </div>
       </ng-container>

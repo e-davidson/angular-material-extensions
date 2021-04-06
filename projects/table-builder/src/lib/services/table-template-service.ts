@@ -1,6 +1,5 @@
 import { ComponentFactoryResolver, Injector } from "@angular/core";
 import { Injectable, TemplateRef } from "@angular/core";
-
 import { InitializationComponent } from "../components/initialization-component/initialization-component";
 import { FieldType } from "../interfaces/report-def";
 
@@ -22,6 +21,7 @@ export class TableTemplateService {
     this.templates[FieldType.PhoneNumber] = this.instance.defaultTemplate;
     this.templates[FieldType.String] = this.instance.defaultTemplate;
     this.templates[FieldType.Unknown] = this.instance.defaultTemplate;
+    this.templates[FieldType.Enum] = this.instance.enumTemplate;
   }
   getTemplate(fieldType: FieldType) : TemplateRef<any> {
     return this.templates[fieldType];

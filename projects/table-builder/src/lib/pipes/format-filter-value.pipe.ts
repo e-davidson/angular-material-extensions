@@ -17,6 +17,10 @@ export class FormatFilterValuePipe implements PipeTransform {
       map( md => {
         if(filterType === FilterType.Or) {
           const filters = value as FilterInfo [];
+          if(md.fieldType === FieldType.Enum) {
+            const res =  filters.reduce( (prev,curr) => prev + md.additional.enumMap[curr.filterValue] + ' or ' ,'');
+            return res.substr(0, res.length - 4);
+          }
           const res =  filters.reduce( (prev,curr) => prev  + curr.filterValue + ' or ' ,'');
           return res.substr(0, res.length - 4);
         }

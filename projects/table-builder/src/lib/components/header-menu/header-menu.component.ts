@@ -31,9 +31,12 @@ export class HeaderMenuComponent {
     this.resetFilterType();
   }
 
+  valueList: string[]
+
   resetFilterType() {
     if(this.metaData.additional?.FilterOptions?.FilterableValues) {
       this.myFilterType = FilterType.Or;
+      this.valueList = this.metaData.additional.FilterOptions.FilterableValues;
       return;
     }
     switch (this.metaData.fieldType) {
@@ -53,6 +56,10 @@ export class HeaderMenuComponent {
       case FieldType.Date:
           this.myFilterType = FilterType.DateIsOn;
           break;
+      case FieldType.Enum:
+        this.valueList = Object.values(this.metaData.additional.enumMap);
+        this.myFilterType = FilterType.Or;
+        break;
     }
   }
 
@@ -71,6 +78,9 @@ export class HeaderMenuComponent {
   selectedFilters = [];
 
   selectFilterChanged($event, val) {
+    if(this.metaData.fieldType === FieldType.Enum) {
+      val = Object.keys(this.metaData.additional.enumMap).filter( key => this.metaData.additional.enumMap[key] === val)[0];
+    }
     if($event.checked) {
       this.selectedFilters.push(val);
     } else {
