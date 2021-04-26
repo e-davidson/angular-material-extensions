@@ -3,7 +3,7 @@
     <input type="hidden" name="filterId" [ngModel]="filter.filterId" />
     <input type="hidden" name="key" [ngModel]="filter.key" />
     <input type="hidden" name="fieldType" [ngModel]="filter.fieldType" />
-    <div class="row">
+    <div class="row" >
       <h4 class="filter-name">{{(filter.key | spaceCase)}} Filter</h4>
       <button class="cancel-button" color="primary" mat-icon-button (click)="close.emit();" type="button"
           matTooltip="Close">
@@ -11,7 +11,7 @@
       </button>
     </div>
     <div class="row">
-        <mat-form-field class="my-filter">
+        <mat-form-field class="my-filter" *ngIf='filter.fieldType !== FieldType.Enum' >
             <mat-select  placeholder="Select Filter Type" name="filterType"  [(ngModel)]="currentFilterType" >
                 <mat-option *ngFor="let kvp of filterTypes[filter.fieldType] | keyvalue " [value]="filterTypes[filter.fieldType][kvp.key][0]">
                     {{ kvp.key }}
@@ -19,7 +19,7 @@
             </mat-select>
         </mat-form-field>
         <ng-container [ngSwitch]="true">
-            <ng-container *ngSwitchCase="filter.fieldType === FieldType.String || filter.fieldType === FieldType.Array ||
+            <ng-container *ngSwitchCase="filter.fieldType === FieldType.String || filter.fieldType === FieldType.Array || filter.fieldType === FieldType.Link ||
                                           filter.fieldType === FieldType.Unknown || filter.fieldType === FieldType.PhoneNumber" >
                 <ng-container *ngTemplateOutlet="String"></ng-container>
             </ng-container>
@@ -31,6 +31,10 @@
             </ng-container>
             <ng-container class="switch" *ngSwitchCase="filter.fieldType === FieldType.Date">
                 <tb-date-filter [info]="filter" [CurrentFilterType]="currentFilterType"></tb-date-filter>
+            </ng-container>
+            <ng-container *ngSwitchCase='filter.fieldType === FieldType.Enum' >
+              <input type="hidden" name="filterType"  [(ngModel)]="currentFilterType" />
+              <tb-in-list-filter [key]='filter.key' name='filterValue' [(ngModel)]='filter.filterValue' ></tb-in-list-filter>
             </ng-container>
         </ng-container>
 

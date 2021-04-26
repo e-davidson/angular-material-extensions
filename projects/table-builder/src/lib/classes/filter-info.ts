@@ -9,7 +9,6 @@ type FilterTypeMapType = { [key in FieldType]: FilterToFiltersMap};
 type UnmappedTypes = FieldType.Expression |
   FieldType.Hidden |
   FieldType.ImageUrl |
-  FieldType.Link |
   FieldType.Enum;
 
 export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
@@ -21,6 +20,7 @@ export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.String] : StringFilterMap,
   [FieldType.Boolean] : BooleanFilterMap,
   [FieldType.PhoneNumber] : StringFilterMap,
+  [FieldType.Link] : StringFilterMap,
 };
 
 const filterFactoryMap = {
@@ -44,6 +44,7 @@ const filterTypeFuncMap = {
   [FieldType.Boolean] : BooleanFilterFuncs,
   [FieldType.Unknown] : StringFilterFuncs,
   [FieldType.Enum] : StringFilterFuncs,
+  [FieldType.Link] : StringFilterFuncs,
 };
 export interface FilterInfo<T = any> {
     filterId?: string;

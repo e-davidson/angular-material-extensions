@@ -41,6 +41,7 @@ import {ReactiveComponentModule} from '@ngrx/component'
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InitializationComponent } from './components/initialization-component/initialization-component';
 import { TableTemplateService } from './services/table-template-service';
+import { InListFilterComponent } from './components/filter/in-list/in-list-filter.component';
 
 @NgModule({
   imports: [
@@ -95,6 +96,7 @@ import { TableTemplateService } from './services/table-template-service';
         DialogOpenDirective,
         DialogDirective,
         InitializationComponent,
+        InListFilterComponent,
     ],
     providers : [
       SpaceCasePipe,
