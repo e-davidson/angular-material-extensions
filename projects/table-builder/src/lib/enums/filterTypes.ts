@@ -22,6 +22,7 @@ export enum FilterType {
     StringIn = 'Is In',
     Or = 'Or',
     And = 'And',
+    In = 'In',
 }
 
 export const NumberFilterMap:FilterToFiltersMap = {

@@ -8,8 +8,7 @@ import { FieldType } from '../interfaces/report-def';
 type FilterTypeMapType = { [key in FieldType]: FilterToFiltersMap};
 type UnmappedTypes = FieldType.Expression |
   FieldType.Hidden |
-  FieldType.ImageUrl |
-  FieldType.Enum;
+  FieldType.ImageUrl;
 
 export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.Unknown] : StringFilterMap,
@@ -21,6 +20,10 @@ export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.Boolean] : BooleanFilterMap,
   [FieldType.PhoneNumber] : StringFilterMap,
   [FieldType.Link] : StringFilterMap,
+  [FieldType.Enum] : {
+    [FilterType.IsNull] : [FilterType.IsNull],
+    [FilterType.In] : [FilterType.In]
+  }
 };
 
 const filterFactoryMap = {
@@ -31,7 +34,11 @@ const filterFactoryMap = {
   [FilterType.And] : (filter: FilterInfo ): (obj: any) => boolean =>  {
     const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
     return (obj: any) : boolean => filters.every( f => f(obj));
-  }
+  },
+  [FilterType.In] : (filter: FilterInfo ): (obj: any) => boolean =>  {
+    const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
+    return (obj: any) : boolean => filters.some( f => f(obj));
+  },
 };
 
 const filterTypeFuncMap = {
