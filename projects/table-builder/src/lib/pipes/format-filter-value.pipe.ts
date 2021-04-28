@@ -27,7 +27,7 @@ export class FormatFilterValuePipe implements PipeTransform {
         if(filterType === FilterType.IsNull){
           return '';
         }
-        if(value && (filterType === FilterType.NumberIn || filterType === FilterType.StringIn)){
+        if(value && (filterType === FilterType.In )){
           return (value as {value:any}[]).map(v => v.value).join(', ') ?? value;
         }
         if(filterType === FilterType.NumberBetween){

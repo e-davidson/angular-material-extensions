@@ -41,7 +41,7 @@ export const StringFilterFuncs = {
     [FilterType.StringStartWith]: stringStartsWithFunc,
     [FilterType.StringEndsWith]: stringEndsWithFunc,
     [FilterType.IsNull]: isNull,
-    [FilterType.StringIn]: multipleStringValuesEqualsFunc,
+    [FilterType.In]: multipleStringValuesEqualsFunc,
 };
 
 export const prepareForStringCompare = (val : any):string => val?.toString().trim().toLowerCase();

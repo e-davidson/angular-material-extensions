@@ -65,10 +65,14 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
   if (filter.filterValue === undefined) {
     return () => true;
   }
-  if(filterFactoryMap[filter.filterType]){
-    return filterFactoryMap[filter.filterType](filter);
-  }
+
   const func = filterTypeFuncMap[filter.fieldType][filter.filterType](filter);
+  if(!func) {
+    if(filterFactoryMap[filter.filterType]){
+      return filterFactoryMap[filter.filterType](filter);
+    }
+  }
+
   const cannotBeTrueForNull = !FalseyValueCanBeIncludedFilterTypes.includes(filter.filterType);
   return (rowObj) => {
     const value = rowObj[filter.key];

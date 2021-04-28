@@ -173,7 +173,7 @@ export class TableBuilderExampleComponent {
   multipleValuesTest(change: MatSelectChange) {
     const fi = {
       filterId: 'multipleValuesTest',
-      filterType: FilterType.StringIn,
+      filterType: FilterType.In,
       filterValue: change.value.map(v => ({value:v})),
       key: 'name',
       fieldType: FieldType.String
