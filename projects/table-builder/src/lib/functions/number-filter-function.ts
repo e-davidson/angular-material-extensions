@@ -1,5 +1,4 @@
 import { Range, FilterFunc, FilterInfo } from '../classes/filter-info';
-import { FilterInput } from '../components/in-filter/in-filter.component';
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
 
@@ -27,8 +26,8 @@ const  numberBetweenFunc:FilterFunc<Range<number>,number> = (filterInfo : Filter
   return ((val)=>(val > startVal) && (val < endVal));
 }
 
-const multipleNumberValuesEqualsFunc:FilterFunc<FilterInput[],number> = (filterInfo:FilterInfo<FilterInput[]>) => {
-  return ((val)=>filterInfo.filterValue.some(({value}) => val === value));
+export const multipleNumberValuesEqualsFunc:FilterFunc<number[],number> = (filterInfo:FilterInfo<number[]>) => {
+  return ((val)=>filterInfo.filterValue.some((value) => val === value));
 }
 
 export const NumberFilterFuncs = {

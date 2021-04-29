@@ -53,7 +53,7 @@
     <input matInput name="filterValue" [ngModel]="filter.filterValue" />
   </mat-form-field>
   <ng-container *ngIf="currentFilterType === FilterType.In">
-    <lib-in-filter [type]="FieldType.String" [info]="filter"></lib-in-filter>
+    <lib-in-filter [type]="FieldType.String" name='filterValue' [(ngModel)]="filter.filterValue" ></lib-in-filter>
   </ng-container>
 </ng-template>
 

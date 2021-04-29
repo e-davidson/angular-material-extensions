@@ -12,7 +12,7 @@
       <input type="hidden" name="key"  [ngModel]="metaData.key" />
       <input type="hidden" name="fieldType"  [ngModel]="metaData.fieldType" />
 
-      <ng-container *ngIf="myFilterType === FilterType.Or; else defaultFilter">
+      <ng-container *ngIf="(myFilterType === FilterType.Or || myFilterType === FilterType.In); else defaultFilter">
         <tb-in-list-filter name='filterValue' [key]='metaData.key' [(ngModel)]='myFilterValue' ></tb-in-list-filter>
       </ng-container>
 

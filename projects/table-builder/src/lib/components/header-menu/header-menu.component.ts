@@ -54,7 +54,7 @@ export class HeaderMenuComponent {
           this.myFilterType = FilterType.DateIsOn;
           break;
       case FieldType.Enum:
-        this.myFilterType = FilterType.Or;
+        this.myFilterType = FilterType.In;
         break;
     }
   }

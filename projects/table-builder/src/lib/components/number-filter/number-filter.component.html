@@ -17,5 +17,5 @@
 </ng-container>
 
 <div class="inline" *ngIf="CurrentFilterType === FilterType.In">
-  <lib-in-filter [type]="FieldType.Number" [info]="info"></lib-in-filter>
+  <lib-in-filter [type]="FieldType.Number" [(ngModle)]='info.filterValue'  ></lib-in-filter>
 </div>

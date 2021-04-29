@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@a
 import { ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { FilterInfo } from '../../../classes/filter-info';
 import { TableStore } from '../../../classes/table-store';
-import { FilterType } from '../../../enums/filterTypes';
 import { Dictionary } from '../../../interfaces/dictionary';
 import { FieldType, MetaData } from '../../../interfaces/report-def';
 
@@ -25,12 +23,12 @@ import { FieldType, MetaData } from '../../../interfaces/report-def';
 })
 export class InListFilterComponent implements ControlValueAccessor {
   constructor(private ref: ChangeDetectorRef, private tableState: TableStore) {}
-  value: FilterInfo[] = [];
-  writeValue(obj: FilterInfo[]): void {
+  value: string[] = [];
+  writeValue(obj: string[]): void {
     this.value = obj;
 
     if(this.value) {
-      this.selectedKeys = this.value.map( f => f.filterValue);
+      this.selectedKeys = this.value.map( f => f );
     }
     this.ref.markForCheck();
   }
@@ -46,8 +44,8 @@ export class InListFilterComponent implements ControlValueAccessor {
   }
   @Input() key: string;
 
-  keyValues$ : Observable<Dictionary<string | number>>;
-  selectedKeys : (string | number)[] = [];
+  keyValues$ : Observable<Dictionary<string>>;
+  selectedKeys : string[] = [];
   metaData: MetaData;
 
   ngOnInit() {
@@ -72,12 +70,7 @@ export class InListFilterComponent implements ControlValueAccessor {
       this.selectedKeys = this.selectedKeys.filter( item => item !== val);
     }
 
-   this.value = this.selectedKeys.map<FilterInfo>( it => ({
-      fieldType: this.metaData.fieldType,
-      filterValue: it,
-      key: this.metaData.key,
-      filterType: FilterType.StringEquals
-    }) );
+   this.value = this.selectedKeys;
     this.onChange(this.value);
   }
 

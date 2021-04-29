@@ -1,5 +1,5 @@
 import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, FilterType, FilterToFiltersMap } from '../enums/filterTypes';
-import { StringFilterFuncs } from '../functions/string-filter-function';
+import { EnumFilterFuncs, StringFilterFuncs } from '../functions/string-filter-function';
 import { NumberFilterFuncs } from '../functions/number-filter-function';
 import { DateFilterFuncs } from '../functions/date-filter-function';
 import { BooleanFilterFuncs } from '../functions/boolean-filter-function';
@@ -50,7 +50,7 @@ const filterTypeFuncMap = {
   [FieldType.Number] : NumberFilterFuncs,
   [FieldType.Boolean] : BooleanFilterFuncs,
   [FieldType.Unknown] : StringFilterFuncs,
-  [FieldType.Enum] : StringFilterFuncs,
+  [FieldType.Enum] : EnumFilterFuncs ,
   [FieldType.Link] : StringFilterFuncs,
 };
 export interface FilterInfo<T = any> {
