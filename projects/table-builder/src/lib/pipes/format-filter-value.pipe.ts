@@ -24,11 +24,14 @@ export class FormatFilterValuePipe implements PipeTransform {
           const res =  filters.reduce( (prev,curr) => prev  + curr.filterValue + ' or ' ,'');
           return res.substr(0, res.length - 4);
         }
-        if(filterType === FilterType.IsNull){
+        if(filterType === FilterType.IsNull) {
           return '';
         }
-        if(value && (filterType === FilterType.NumberIn || filterType === FilterType.StringIn)){
-          return (value as {value:any}[]).map(v => v.value).join(', ') ?? value;
+        if(value && (filterType === FilterType.In )){
+          if(md.fieldType === FieldType.Enum) {
+            return value.map( v => md.additional.enumMap[v]).join(', ') ?? value;
+          }
+          return value.join(', ') ?? value;
         }
         if(filterType === FilterType.NumberBetween){
           if(md.fieldType === FieldType.Date){

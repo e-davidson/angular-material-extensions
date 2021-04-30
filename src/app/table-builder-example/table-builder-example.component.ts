@@ -1,7 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
 import { Subject, Observable, of, ReplaySubject } from 'rxjs';
-import { map, scan, startWith } from 'rxjs/operators';
+import { scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType, ArrayAdditional, ArrayStyle } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
@@ -61,11 +61,11 @@ const META_DATA: MetaData[] = [
     additional: {dateFormat: 'shortDate',columnPartStyles:{footer:{color: 'rgb(194 210 67 / 61%)'}}},
     click: (element, key) => console.log(element,key)
   },
-  {key: 'name', order: 1,fieldType: FieldType.String,
+  {key: 'name', order: 1,fieldType: FieldType.Link,
     additional: {
       export: { prepend: "'" },
       FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
-      styles: { color: 'yellow'  },
+
     },
     transform: (o: string) => o + ' #'
   },
@@ -173,7 +173,7 @@ export class TableBuilderExampleComponent {
   multipleValuesTest(change: MatSelectChange) {
     const fi = {
       filterId: 'multipleValuesTest',
-      filterType: FilterType.StringIn,
+      filterType: FilterType.In,
       filterValue: change.value.map(v => ({value:v})),
       key: 'name',
       fieldType: FieldType.String

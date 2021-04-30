@@ -1,5 +1,5 @@
 import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, FilterType, FilterToFiltersMap } from '../enums/filterTypes';
-import { StringFilterFuncs } from '../functions/string-filter-function';
+import { EnumFilterFuncs, StringFilterFuncs } from '../functions/string-filter-function';
 import { NumberFilterFuncs } from '../functions/number-filter-function';
 import { DateFilterFuncs } from '../functions/date-filter-function';
 import { BooleanFilterFuncs } from '../functions/boolean-filter-function';
@@ -8,9 +8,7 @@ import { FieldType } from '../interfaces/report-def';
 type FilterTypeMapType = { [key in FieldType]: FilterToFiltersMap};
 type UnmappedTypes = FieldType.Expression |
   FieldType.Hidden |
-  FieldType.ImageUrl |
-  FieldType.Link |
-  FieldType.Enum;
+  FieldType.ImageUrl;
 
 export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.Unknown] : StringFilterMap,
@@ -21,6 +19,11 @@ export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.String] : StringFilterMap,
   [FieldType.Boolean] : BooleanFilterMap,
   [FieldType.PhoneNumber] : StringFilterMap,
+  [FieldType.Link] : StringFilterMap,
+  [FieldType.Enum] : {
+    [FilterType.IsNull] : [FilterType.IsNull],
+    [FilterType.In] : [FilterType.In]
+  }
 };
 
 const filterFactoryMap = {
@@ -31,7 +34,11 @@ const filterFactoryMap = {
   [FilterType.And] : (filter: FilterInfo ): (obj: any) => boolean =>  {
     const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
     return (obj: any) : boolean => filters.every( f => f(obj));
-  }
+  },
+  [FilterType.In] : (filter: FilterInfo ): (obj: any) => boolean =>  {
+    const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
+    return (obj: any) : boolean => filters.some( f => f(obj));
+  },
 };
 
 const filterTypeFuncMap = {
@@ -43,7 +50,8 @@ const filterTypeFuncMap = {
   [FieldType.Number] : NumberFilterFuncs,
   [FieldType.Boolean] : BooleanFilterFuncs,
   [FieldType.Unknown] : StringFilterFuncs,
-  [FieldType.Enum] : StringFilterFuncs,
+  [FieldType.Enum] : EnumFilterFuncs ,
+  [FieldType.Link] : StringFilterFuncs,
 };
 export interface FilterInfo<T = any> {
     filterId?: string;
@@ -57,10 +65,14 @@ export function createFilterFunc(filter: FilterInfo): (val: any) => boolean  {
   if (filter.filterValue === undefined) {
     return () => true;
   }
-  if(filterFactoryMap[filter.filterType]){
-    return filterFactoryMap[filter.filterType](filter);
-  }
+
   const func = filterTypeFuncMap[filter.fieldType][filter.filterType](filter);
+  if(!func) {
+    if(filterFactoryMap[filter.filterType]){
+      return filterFactoryMap[filter.filterType](filter);
+    }
+  }
+
   const cannotBeTrueForNull = !FalseyValueCanBeIncludedFilterTypes.includes(filter.filterType);
   return (rowObj) => {
     const value = rowObj[filter.key];

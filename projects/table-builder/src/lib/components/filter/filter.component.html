@@ -3,7 +3,7 @@
     <input type="hidden" name="filterId" [ngModel]="filter.filterId" />
     <input type="hidden" name="key" [ngModel]="filter.key" />
     <input type="hidden" name="fieldType" [ngModel]="filter.fieldType" />
-    <div class="row">
+    <div class="row" >
       <h4 class="filter-name">{{(filter.key | spaceCase)}} Filter</h4>
       <button class="cancel-button" color="primary" mat-icon-button (click)="close.emit();" type="button"
           matTooltip="Close">
@@ -11,7 +11,7 @@
       </button>
     </div>
     <div class="row">
-        <mat-form-field class="my-filter">
+        <mat-form-field class="my-filter" >
             <mat-select  placeholder="Select Filter Type" name="filterType"  [(ngModel)]="currentFilterType" >
                 <mat-option *ngFor="let kvp of filterTypes[filter.fieldType] | keyvalue " [value]="filterTypes[filter.fieldType][kvp.key][0]">
                     {{ kvp.key }}
@@ -19,18 +19,21 @@
             </mat-select>
         </mat-form-field>
         <ng-container [ngSwitch]="true">
-            <ng-container *ngSwitchCase="filter.fieldType === FieldType.String || filter.fieldType === FieldType.Array ||
+            <ng-container *ngSwitchCase="filter.fieldType === FieldType.String || filter.fieldType === FieldType.Array || filter.fieldType === FieldType.Link ||
                                           filter.fieldType === FieldType.Unknown || filter.fieldType === FieldType.PhoneNumber" >
                 <ng-container *ngTemplateOutlet="String"></ng-container>
             </ng-container>
-            <ng-container class="switch" *ngSwitchCase="filter.fieldType === FieldType.Number || filter.fieldType === FieldType.Currency">
+            <ng-container   *ngSwitchCase="filter.fieldType === FieldType.Number || filter.fieldType === FieldType.Currency">
                 <tb-number-filter [info]="filter" [CurrentFilterType]="currentFilterType" ></tb-number-filter>
             </ng-container>
-            <ng-container class="switch" *ngSwitchCase="filter.fieldType === FieldType.Boolean">
-              <ng-container class="switch" *ngTemplateOutlet="Boolean"></ng-container>
+            <ng-container  *ngSwitchCase="filter.fieldType === FieldType.Boolean">
+              <ng-container   *ngTemplateOutlet="Boolean"></ng-container>
             </ng-container>
-            <ng-container class="switch" *ngSwitchCase="filter.fieldType === FieldType.Date">
+            <ng-container *ngSwitchCase="filter.fieldType === FieldType.Date">
                 <tb-date-filter [info]="filter" [CurrentFilterType]="currentFilterType"></tb-date-filter>
+            </ng-container>
+            <ng-container *ngSwitchCase='filter.fieldType === FieldType.Enum' >
+              <ng-container  *ngTemplateOutlet="Enum"></ng-container>
             </ng-container>
         </ng-container>
 
@@ -46,11 +49,11 @@
 
 
 <ng-template #String>
-  <mat-form-field class="my-filter" *ngIf="currentFilterType !== FilterType.IsNull && currentFilterType !== FilterType.StringIn">
+  <mat-form-field class="my-filter" *ngIf="currentFilterType !== FilterType.IsNull && currentFilterType !== FilterType.In">
     <input matInput name="filterValue" [ngModel]="filter.filterValue" />
   </mat-form-field>
-  <ng-container *ngIf="currentFilterType === FilterType.StringIn">
-    <lib-in-filter [type]="FieldType.String" [info]="filter"></lib-in-filter>
+  <ng-container *ngIf="currentFilterType === FilterType.In">
+    <lib-in-filter [type]="FieldType.String" name='filterValue' [(ngModel)]="filter.filterValue" ></lib-in-filter>
   </ng-container>
 </ng-template>
 
@@ -64,6 +67,12 @@
     </div>
   </div>
 </ng-template>
+
+  <ng-template #Enum>
+    <ng-container *ngIf='currentFilterType === FilterType.In' >
+      <tb-in-list-filter [key]='filter.key' name='filterValue' [(ngModel)]='filter.filterValue' ></tb-in-list-filter>
+    </ng-container>
+  </ng-template>
 
   </form>
 </mat-card>

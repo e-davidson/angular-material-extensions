@@ -1,4 +1,3 @@
-import { FilterFunc } from '../classes/filter-info';
 
 export enum FilterType {
     NumberEquals = 'Equals',
@@ -18,10 +17,9 @@ export enum FilterType {
     DateBetween = 'Between',
     BooleanEquals = 'Is',
     IsNull = 'Is Blank',
-    NumberIn = 'In',
-    StringIn = 'Is In',
     Or = 'Or',
     And = 'And',
+    In = 'In',
 }
 
 export const NumberFilterMap:FilterToFiltersMap = {
@@ -31,7 +29,7 @@ export const NumberFilterMap:FilterToFiltersMap = {
     [FilterType.NumberLessThen]: [FilterType.NumberLessThen],
     [FilterType.NumberBetween]: [FilterType.NumberBetween],
     [FilterType.IsNull]: [FilterType.IsNull],
-    [FilterType.NumberIn]: [FilterType.NumberIn],
+    [FilterType.In]: [FilterType.In],
 };
 
 export const StringFilterMap:FilterToFiltersMap = {
@@ -41,7 +39,7 @@ export const StringFilterMap:FilterToFiltersMap = {
     [FilterType.StringStartWith]: [FilterType.StringStartWith],
     [FilterType.StringEndsWith]: [FilterType.StringEndsWith],
     [FilterType.IsNull]: [FilterType.IsNull],
-    [FilterType.StringIn]: [FilterType.StringIn],
+    [FilterType.In]: [FilterType.In],
 };
 
 export const DateFilterMap:FilterToFiltersMap = {

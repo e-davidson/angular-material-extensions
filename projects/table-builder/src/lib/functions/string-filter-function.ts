@@ -1,5 +1,4 @@
 import { FilterFunc, FilterInfo } from '../classes/filter-info';
-import { FilterInput } from '../components/in-filter/in-filter.component';
 import { FilterType } from '../enums/filterTypes';
 import { isNull } from './null-filter-function';
 
@@ -29,8 +28,8 @@ const stringEndsWithFunc:FilterFunc<string> = (filterInfo:FilterInfo<string>) =>
   return ((val)=>prepareForStringCompare(val).endsWith(startsWith));
 }
 
-const multipleStringValuesEqualsFunc:FilterFunc<FilterInput[],string> = (filterInfo:FilterInfo<FilterInput[]>) => {
-  const filterVals = filterInfo.filterValue.map(v => prepareForStringCompare(v.value));
+const multipleStringValuesEqualsFunc:FilterFunc<string[],string> = (filterInfo:FilterInfo<string[]>) => {
+  const filterVals = filterInfo.filterValue.map(v => prepareForStringCompare(v));
   return ((val)=> filterVals.some((s) => prepareForStringCompare(val) === s));
 }
 
@@ -41,7 +40,18 @@ export const StringFilterFuncs = {
     [FilterType.StringStartWith]: stringStartsWithFunc,
     [FilterType.StringEndsWith]: stringEndsWithFunc,
     [FilterType.IsNull]: isNull,
-    [FilterType.StringIn]: multipleStringValuesEqualsFunc,
+    [FilterType.In]: multipleStringValuesEqualsFunc,
+};
+
+export const EnumFilterFuncs = {
+  [FilterType.StringEquals]: stringEqualFunc,
+  [FilterType.StringContains]: stringContainsFunc,
+  [FilterType.StringDoesNotContain]: stringDoesNotContainFunc,
+  [FilterType.StringStartWith]: stringStartsWithFunc,
+  [FilterType.StringEndsWith]: stringEndsWithFunc,
+  [FilterType.IsNull]: isNull,
+  [FilterType.In] : multipleStringValuesEqualsFunc,
+  [FilterType.Or] : multipleStringValuesEqualsFunc,
 };
 
 export const prepareForStringCompare = (val : any):string => val?.toString().trim().toLowerCase();
