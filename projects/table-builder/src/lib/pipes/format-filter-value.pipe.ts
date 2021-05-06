@@ -15,15 +15,6 @@ export class FormatFilterValuePipe implements PipeTransform {
   transform(value: any, key: string, filterType: FilterType): Observable<string> {
     return this.tableState.getMetaData$(key).pipe(
       map( md => {
-        if(filterType === FilterType.Or) {
-          const filters = value as FilterInfo [];
-          if(md.fieldType === FieldType.Enum) {
-            const res =  filters.reduce( (prev,curr) => prev + md.additional.enumMap[curr.filterValue] + ' or ' ,'');
-            return res.substr(0, res.length - 4);
-          }
-          const res =  filters.reduce( (prev,curr) => prev  + curr.filterValue + ' or ' ,'');
-          return res.substr(0, res.length - 4);
-        }
         if(filterType === FilterType.IsNull) {
           return '';
         }

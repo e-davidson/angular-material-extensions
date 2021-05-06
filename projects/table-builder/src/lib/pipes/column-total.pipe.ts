@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { MetaData } from '../interfaces/report-def';
-import { map, tap } from 'rxjs/operators';
-import * as _ from 'lodash';
+import { map } from 'rxjs/operators';
+import {sumBy} from 'lodash';
 
 @Pipe({ name: 'columnTotal' })
 export class ColumnTotalPipe implements PipeTransform {
@@ -10,7 +10,7 @@ export class ColumnTotalPipe implements PipeTransform {
       switch (metaData.additional.footer.type) {
         case 'sum':
         return data$.pipe(
-            map( data => _.sumBy(data, metaData.key ) )
+            map( data => sumBy(data, metaData.key ) )
           );
       }
       return of(null);

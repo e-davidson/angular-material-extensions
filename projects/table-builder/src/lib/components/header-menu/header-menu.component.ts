@@ -33,7 +33,7 @@ export class HeaderMenuComponent {
 
   resetFilterType() {
     if(this.metaData.additional?.FilterOptions?.FilterableValues) {
-      this.myFilterType = FilterType.Or;
+      this.myFilterType = FilterType.In;
       return;
     }
     switch (this.metaData.fieldType) {

@@ -17,7 +17,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
-import * as _ from 'lodash';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
 import { tap, map, distinct } from 'rxjs/operators';

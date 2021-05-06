@@ -56,4 +56,9 @@ export const BooleanFilterMap :FilterToFiltersMap = {
     [FilterType.IsNull]: [FilterType.IsNull],
 };
 
+export const EnumFilterMap : FilterToFiltersMap = {
+  [FilterType.IsNull] : [FilterType.IsNull],
+  [FilterType.In] : [FilterType.In]
+}
+
 export type FilterToFiltersMap = Partial<{[key in FilterType]: FilterType[]}>;

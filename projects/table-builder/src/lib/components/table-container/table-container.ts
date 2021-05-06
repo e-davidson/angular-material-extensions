@@ -15,7 +15,6 @@ import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
 import {  TableStore } from '../../classes/table-store';
-import * as _ from 'lodash';
 import { DataFilter } from '../../classes/data-filter';
 import { mapArray, skipOneWhen } from '../../functions/rxjs-operators';
 import { ExportToCsvService } from '../../services/export-to-csv.service';

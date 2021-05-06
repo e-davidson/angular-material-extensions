@@ -1,4 +1,4 @@
-import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, FilterType, FilterToFiltersMap } from '../enums/filterTypes';
+import { StringFilterMap, DateFilterMap, NumberFilterMap, BooleanFilterMap, FilterType, FilterToFiltersMap, EnumFilterMap } from '../enums/filterTypes';
 import { EnumFilterFuncs, StringFilterFuncs } from '../functions/string-filter-function';
 import { NumberFilterFuncs } from '../functions/number-filter-function';
 import { DateFilterFuncs } from '../functions/date-filter-function';
@@ -20,17 +20,10 @@ export const filterTypeMap: Omit<FilterTypeMapType, UnmappedTypes> = {
   [FieldType.Boolean] : BooleanFilterMap,
   [FieldType.PhoneNumber] : StringFilterMap,
   [FieldType.Link] : StringFilterMap,
-  [FieldType.Enum] : {
-    [FilterType.IsNull] : [FilterType.IsNull],
-    [FilterType.In] : [FilterType.In]
-  }
+  [FieldType.Enum] : EnumFilterMap,
 };
 
 const filterFactoryMap = {
-  [FilterType.Or] : (filter: FilterInfo ): (obj: any) => boolean =>  {
-    const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
-    return (obj: any) : boolean => filters.some( f => f(obj));
-  },
   [FilterType.And] : (filter: FilterInfo ): (obj: any) => boolean =>  {
     const filters = (filter.filterValue as FilterInfo[]).map(createFilterFunc);
     return (obj: any) : boolean => filters.every( f => f(obj));

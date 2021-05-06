@@ -21,9 +21,6 @@ export class FilterComponent {
 
   ngOnInit() {
     this.currentFilterType = this.filter.filterType;
-    if(this.filter.fieldType === FieldType.Enum) {
-      this.currentFilterType = FilterType.Or;
-    }
   }
   onEnter(filter: FilterInfo, event) {
     event.preventDefault();
