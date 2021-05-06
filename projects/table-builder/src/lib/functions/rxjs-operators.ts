@@ -1,4 +1,4 @@
-import { flatten } from '@angular/compiler';
+import { flatten } from 'lodash';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
