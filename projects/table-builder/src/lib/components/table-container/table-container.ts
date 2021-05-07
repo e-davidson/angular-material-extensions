@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
-import { filter, first, map, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { filter, first, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
@@ -70,6 +70,11 @@ import { sortData } from '../../functions/sort-data-function';
     @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
     private store: Store<{globalStorageState: GlobalStorageState}>
   ) {
+    this.state.onLast( finalState => {
+      if(this.tableId) {
+        this.store.dispatch(setLocalProfile({key:this.tableId,value: finalState}));
+      }
+    });
   }
 
   ngOnInit() {
@@ -77,15 +82,6 @@ import { sortData } from '../../functions/sort-data-function';
       this.state.updateState(
         this.store.pipe(
           select(selectors.selectLocalProfileState<PersistedTableState>(this.tableId)),
-          tap( state => {
-            // for backwards compatability we want to load the state from the old schema.
-            if(!state) {
-              const oldLocalState = localStorage.getItem(this.tableId);
-              if(oldLocalState){
-                this.store.dispatch(setLocalProfile({ key: this.tableId, value: JSON.parse( oldLocalState), persist: true} ));
-              }
-            }
-          }),
           filter( state => !!state ),
           skipOneWhen(this.OnSaveState),
         )
