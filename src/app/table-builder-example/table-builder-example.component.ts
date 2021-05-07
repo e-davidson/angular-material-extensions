@@ -37,7 +37,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 6, name: undefined, weight: 12.0107, symbol: 'C', gas: false, date: new Date(2020, 9, 6), phone: '2346783425' , moreInfo: ['hi'] , W: Weight.lo},
   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N', gas: true, date: new Date(2020, 9, 7), phone: '23909085656' , W: Weight.hi},
   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O', gas: false, date: new Date(2020, 9, 1), phone: '8456782345', W: Weight.hi },
-  {position: 9, name: 'Neon', weight: 20.1797, symbol: 'Ne', gas: true, date: undefined, phone: '2341234456' , W: Weight.hi},
+  {position: 9, name: 'Neon', weight: 20.1797, symbol: 'Ne', gas: true, date: undefined, phone: '2341234456' , W: Weight.med},
   {position: null, name: null, weight: 18.9984, symbol: 'F', gas: false, date: new Date(2020, 9, 9), phone: '123456789012' , W: Weight.hi},
 ];
 
@@ -53,9 +53,9 @@ const WeightMap = keys.reduce((prev,key )=> {
 },{});
 
 const META_DATA: MetaData[] = [
-  {key: 'position', fieldType: FieldType.Hidden, order: 3, additional : {footer:{type : 'sum' }} },
+  {key: 'position', fieldType: FieldType.Number, order: 3, additional : {footer:{type : 'sum' }} },
   {key: 'symbol', order:2, fieldType: FieldType.String,
-  additional: {columnPartStyles:{body:{color: 'rgb(194 210 67 / 61%)'}}}, },
+    additional: {columnPartStyles:{body:{color: 'rgb(194 210 67 / 61%)'}}}, },
   {key: 'date', fieldType: FieldType.Date , displayName: 'The Date',
     preSort: {direction: SortDirection.asc, precedence: 1},
     additional: {dateFormat: 'shortDate',columnPartStyles:{footer:{color: 'rgb(194 210 67 / 61%)'}}},
@@ -174,7 +174,9 @@ export class TableBuilderExampleComponent {
     const fi = {
       filterId: 'multipleValuesTest',
       filterType: FilterType.In,
-      filterValue: change.value.map(v => ({value:v})),
+      filterValue: change.value.map(v => {
+        console.log(v)
+        return v}),
       key: 'name',
       fieldType: FieldType.String
     }

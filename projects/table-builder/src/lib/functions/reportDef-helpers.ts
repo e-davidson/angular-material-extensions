@@ -1,8 +1,7 @@
 import { MetaData, FieldType, ReportDef } from '../interfaces/report-def';
-import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 import { first, switchMap, map } from 'rxjs/operators';
-
+import { orderBy } from 'lodash';
 export const  cleanVal = (val: any, metaData: MetaData): any =>  {
   switch ( metaData.fieldType ) {
     case FieldType.Currency:
@@ -37,7 +36,7 @@ export const GenerateMetaData = (data: any[], metaData: MetaData[]): MetaData []
       additional: null,
       order: ++maxOrd
     }) );
-  return  _.orderBy([...missingMetaData, ...metaData], ['order']);
+  return  orderBy([...missingMetaData, ...metaData], ['order']);
 };
 
 export const GenerateReportDef = (data: any[], metaData: MetaData[] ): ReportDef =>  {

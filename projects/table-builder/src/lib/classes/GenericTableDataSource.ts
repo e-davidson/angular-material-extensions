@@ -1,6 +1,4 @@
 import { Observable } from 'rxjs';
-import { orderBy } from 'lodash';
-import { direc } from '../components/generic-table/generic-table.component';
 import { MultiSortDirective } from '../directives/multi-sort.directive';
 import {MatTableObservableDataSource} from './MatTableObservableDataSource'
 import { sortData } from '../functions/sort-data-function';

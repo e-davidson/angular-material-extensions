@@ -1,5 +1,5 @@
 import { Observable, combineLatest, of } from 'rxjs';
-import { map, shareReplay } from 'rxjs/operators';
+import { map, scan, shareReplay } from 'rxjs/operators';
 import { combineArrays } from '../functions/rxjs-operators';
 import { createFilterFunc, FilterInfo } from './filter-info';
 

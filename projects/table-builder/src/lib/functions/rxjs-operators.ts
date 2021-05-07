@@ -1,6 +1,6 @@
+import { flatten } from 'lodash';
 import { Observable, combineLatest, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import * as _ from 'lodash';
 
 export const mapArray = <T, U>(mapFunc: (src: T) => U ) => (source: Observable<T[]>) =>
   source.pipe( map( src => src.map(mapFunc) ) );
@@ -28,7 +28,7 @@ export const combineArrays = <T>(sources: Observable<T[]>[]): Observable<T[]> =>
   return combineLatest(
     sources.map( src => src.pipe(onWait([])))
   ).pipe(
-    map( res => _.flatten(res) )
+    map( res => flatten(res) )
   );
 };
 
