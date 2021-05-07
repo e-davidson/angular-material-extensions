@@ -9,7 +9,7 @@ import { Sort, SortDirection }  from '@angular/material/sort' ;
 import { ComponentStore } from '@ngrx/component-store'  ;
 import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
-import { map, tap } from 'rxjs/operators'
+import { last, map, tap } from 'rxjs/operators'
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Injectable({
@@ -31,10 +31,15 @@ export class TableStore extends ComponentStore<TableState> {
     );
   }
 
+
   on = <V>(srcObservable: Observable<V>, func: (obj: V) => void) => {
-    this.effect((src: Observable<V>) => {
-      return src.pipe(tap(func));
-    })(srcObservable);
+    this.effect(() => srcObservable.pipe(
+      tap(func)
+    ))
+  }
+
+  onLast(callback: (state: TableState) => void ) {
+    this.on(this.state$.pipe(last()),callback);
   }
 
   readonly filters$ = this.select(state => state.filters );

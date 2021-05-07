@@ -25,7 +25,16 @@ import { LowerCasePipe } from '@angular/common';
     MatCheckboxModule,
     MatSelectModule,
     BrowserAnimationsModule,
-    StoreModule.forRoot({}),
+    StoreModule.forRoot({},{
+      runtimeChecks: {
+        strictStateImmutability: false,
+        strictActionImmutability: false,
+        strictStateSerializability: false,
+        strictActionSerializability: false,
+        strictActionWithinNgZone: false,
+        strictActionTypeUniqueness: false,
+      },
+    }),
     EffectsModule.forRoot([]),
     TableBuilderModule.forRoot({
       defaultSettings: { dateFormat: 'short' },
