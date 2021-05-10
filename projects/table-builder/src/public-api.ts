@@ -13,3 +13,5 @@ export * from './lib/classes/table-builder';
 export * from './lib/components';
 
 export * from './lib/directives';
+
+export {FilterType} from './lib/enums/filterTypes';
