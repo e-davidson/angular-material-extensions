@@ -38,6 +38,7 @@ export class HeaderMenuComponent {
     }
     switch (this.metaData.fieldType) {
       case FieldType.String:
+      case FieldType.Link:
       case FieldType.PhoneNumber:
       case FieldType.Array:
       case FieldType.Unknown:

@@ -18,7 +18,7 @@
 
 
       <ng-template #defaultFilter>
-        <ng-container *ngSwitchCase="metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown || metaData.fieldType === FieldType.PhoneNumber">
+        <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Link || metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown || metaData.fieldType === FieldType.PhoneNumber">
           <mat-form-field stop-propagation class="example-full-width font" style="padding: 0 16px">
             <mat-icon matPrefix class="search-icon">search</mat-icon>
             <input matInput [placeholder]="myFilterType === FilterType.StringDoesNotContain ? 'Does Not Contain...' : 'Contains...'" name="filterValue" [ngModel]="filter.filterValue" />
