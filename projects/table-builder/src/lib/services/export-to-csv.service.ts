@@ -44,7 +44,7 @@ export class ExportToCsvService<T> {
     switch (meta.fieldType) {
       case FieldType.Date:
         const dateFormat = meta.additional?.export?.dateFormat || this.config?.export?.dateFormat || meta.additional?.dateFormat;
-        val = this.datePipe.transform(val, dateFormat);
+        val = this.transform(val, dateFormat);
         break;
       case FieldType.String:
         const prepend: string = meta.additional?.export?.prepend || '';
@@ -63,6 +63,13 @@ export class ExportToCsvService<T> {
       val = '"' + val + '"';
     }
     return val;
+  }
+
+  private transform(val: any, dateFormat: any) {
+    if (this.config.transformers && this.config.transformers[FieldType.Date]) {
+      return this.config.transformers[FieldType.Date](val);
+    }
+    return this.datePipe.transform(val, dateFormat);
   }
 }
 
