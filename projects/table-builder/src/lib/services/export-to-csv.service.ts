@@ -44,7 +44,7 @@ export class ExportToCsvService<T> {
     switch (meta.fieldType) {
       case FieldType.Date:
         const dateFormat = meta.additional?.export?.dateFormat || this.config?.export?.dateFormat || meta.additional?.dateFormat;
-        const datePipe = (this.config?.transformers[FieldType.Date] || this.datePipe) as DatePipe;
+        const datePipe = this.getDatePipe() as DatePipe;
         val = datePipe.transform(val, dateFormat);
         break;
       case FieldType.String:
@@ -64,6 +64,13 @@ export class ExportToCsvService<T> {
       val = '"' + val + '"';
     }
     return val;
+  }
+
+  private getDatePipe() {
+    if (this.config.transformers && this.config.transformers[FieldType.Date]) {
+      return this.config.transformers[FieldType.Date];
+    }
+    return this.datePipe;
   }
 }
 
