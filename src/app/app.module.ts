@@ -13,9 +13,7 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools'
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { LowerCasePipe } from '@angular/common';
-import { FieldType } from 'projects/table-builder/src';
 
-export const transform = () => new Date;
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,7 +39,6 @@ export const transform = () => new Date;
     TableBuilderModule.forRoot({
       defaultSettings: { dateFormat: 'short' },
       defaultTableState: { pageSize: 20 },
-      transformers: { [FieldType.Date]: transform }
     }),
     MatTableModule,
     StoreDevtoolsModule.instrument({maxAge:50}),
