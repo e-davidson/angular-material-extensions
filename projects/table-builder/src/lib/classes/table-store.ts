@@ -31,7 +31,6 @@ export class TableStore extends ComponentStore<TableState> {
     );
   }
 
-
   on = <V>(srcObservable: Observable<V>, func: (obj: V) => void) => {
     this.effect(() => srcObservable.pipe(
       tap(func)
@@ -42,15 +41,7 @@ export class TableStore extends ComponentStore<TableState> {
     this.on(this.state$.pipe(last()),callback);
   }
 
-  readonly filters$ = this.select(state => state.filters );
-  readonly sorted$ = this.select(state => state.sorted);
-
-  getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
-    return this.select( state => state.filters[filterId] );
-  }
-
   readonly metaData$ = this.select( state => state.metaData);
-
 
   readonly metaDataArray$ = this.select(
     this.state$,
@@ -63,12 +54,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefined.widths[key]);
   getUserDefinedWidths$ = this.select(state => state.userDefined.widths);
-
-  createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
-    return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
-    .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
-    .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
-  }
+  
   private displayedColumns =  (state:TableState) => orderMetaData(state).map(md => md.key)
     .filter(key => !state.hiddenKeys.includes(key) && state.metaData[key].fieldType !== FieldType.Hidden);
   readonly displayedColumns$ = this.select(this.displayedColumns);
@@ -128,20 +114,49 @@ export class TableStore extends ComponentStore<TableState> {
     return({...state, userDefined:{...state.userDefined,order:userDefinedOrder}})
   })
 
+
+  readonly filters$ = this.select(state => state.filters );
+
+  readonly getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
+    return this.select( state => state.filters[filterId] );
+  }
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {
-    if (!filter.filterId) {
-      filter.filterId = uuid();
-    }
+    return this.addFiltersToState(state, [filter]);
+  });
+
+  readonly addFilters = this.updater((state,filters:FilterInfo[])=>{
+    return this.addFiltersToState(state, filters);
+  })
+
+  private addFiltersToState = (state:TableState,filters:FilterInfo[]) : TableState => {
+    const filtersObj = filters.reduce((filtersObj,filter)=>{
+      if (!filter.filterId) {
+        filter.filterId = uuid();
+      }
+      filtersObj[filter.filterId] = filter;
+      return filtersObj;
+    },{})
     return {
       ...state,
-      filters : {...state.filters, [filter.filterId] : filter }
+      filters : {...state.filters, ...filtersObj }
     };
-  });
+  }
 
   readonly removeFilter = this.updater( (state, filterId: string) =>
     update(state, {filters: {$unset : [filterId ]}})
   );
 
+  readonly clearFilters = this.updater((state)=>
+    ({...state,filters:{}}))
+
+
+  readonly sorted$ = this.select(state => state.sorted);
+
+  createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
+    return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
+    .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
+    .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
+  }
   readonly setSort = this.updater<{key: string, direction?: SortDirection}>((state, {key, direction} ) => {
     const sortArray = state.sorted.filter( s => s.active !== key );
     if(direction) {
