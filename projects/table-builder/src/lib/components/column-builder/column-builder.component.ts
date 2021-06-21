@@ -79,22 +79,19 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
-  mapWidth = (previousAndCurrentUserDefinedWidths : [number, number]) => {
-    const [previousUserDefinedWidth, currentUserDefinedWidth] = previousAndCurrentUserDefinedWidths;
-    if( thereIsACurrentUserDefinedWidth() ){
+  mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
+ 
+    if( currentUserDefinedWidth ){
       return ({flex:`0 0 ${currentUserDefinedWidth}px`, maxWidth:'none'});
-    } if( userDefinedWidthWasReset() ){
+    } if( wasReset() ){
       return ({flex:'1'});
     }
     return ({});
-
-    function thereIsACurrentUserDefinedWidth(){
-      return currentUserDefinedWidth >= 0;
-    }
-    function userDefinedWidthWasReset(){
-      return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
+    function wasReset(){
+      return previousUserDefinedWidth >=0 ;
     }
   }
+
   styles$:Observable<{body:Dictionary<string>,header:Dictionary<string>,footer:Dictionary<string>}>
 
 }

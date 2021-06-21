@@ -162,19 +162,15 @@ export class GenericTableComponent implements OnInit {
 
   tableWidth = this.state.getUserDefinedTableSize$.pipe(
     previousAndCurrent(0),
-    map(previousAndCurrentUserDefinedWidths => {
-      const [previousUserDefinedWidth, currentUserDefinedWidth] = previousAndCurrentUserDefinedWidths;
-      if( thereIsACurrentUserDefinedWidth() ){
+    map(([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
+      if( currentUserDefinedWidth ){
         return ({width:`${currentUserDefinedWidth}px`});
-      } if( userDefinedWidthWasReset() ){
+      } if( wasReset() ){
         return ({width:'initial'});
       }
       return ({});
 
-      function thereIsACurrentUserDefinedWidth(){
-        return currentUserDefinedWidth >= 0;
-      }
-      function userDefinedWidthWasReset(){
+      function wasReset(){
         return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
       }
     }));
