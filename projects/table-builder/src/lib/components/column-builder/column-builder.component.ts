@@ -6,9 +6,10 @@ import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
-import { map } from 'rxjs/operators';
+import { map, pairwise, startWith } from 'rxjs/operators';
 import { TableTemplateService } from '../../services/table-template-service';
 import { Dictionary } from '../../interfaces/dictionary';
+import { previousAndCurrent } from '../../functions/rxjs-operators';
 
 @Component({
   selector: 'tb-column-builder',
@@ -50,7 +51,10 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
-    const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(map(w => w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {}));
+    const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(
+      previousAndCurrent(0),
+      map(this.mapWidth),
+    );
     const fullMetaStyles = this.metaData.additional?.styles;
     this.styles$= width$.pipe(map(width => {
       const styles = {
@@ -72,6 +76,19 @@ export class ColumnBuilderComponent implements OnInit {
   cellClicked(element, key) {
     if(this.metaData.click) {
       this.metaData.click(element,key);
+    }
+  }
+
+  mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
+ 
+    if( currentUserDefinedWidth ){
+      return ({flex:`0 0 ${currentUserDefinedWidth}px`, maxWidth:'none'});
+    } if( wasReset() ){
+      return ({flex:'1'});
+    }
+    return ({});
+    function wasReset(){
+      return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
     }
   }
 

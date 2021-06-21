@@ -19,12 +19,13 @@ import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
-import { tap, map, distinct } from 'rxjs/operators';
+import { tap, map, distinct, pairwise, startWith } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
 import { GenericTableDataSource } from '../../classes/GenericTableDataSource';
 import { FieldType } from '../../interfaces/report-def';
+import { previousAndCurrent } from '../../functions/rxjs-operators';
 
 @Component({
   selector: 'tb-generic-table',
@@ -159,7 +160,20 @@ export class GenericTableComponent implements OnInit {
       this.selection.select(...this.dataSource.data);
   }
 
-  tableWidth = this.state.getUserDefinedTableSize$.pipe(map(w => ({width:`${w}px`})));
+  tableWidth = this.state.getUserDefinedTableSize$.pipe(
+    previousAndCurrent(0),
+    map(([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
+      if( currentUserDefinedWidth ){
+        return ({width:`${currentUserDefinedWidth}px`});
+      } if( wasReset() ){
+        return ({width:'initial'});
+      }
+      return ({});
+
+      function wasReset(){
+        return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
+      }
+    }));
 }
 
 export type direc = 'asc' | 'desc' | boolean;
