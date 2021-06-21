@@ -25,6 +25,7 @@ import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
 import { GenericTableDataSource } from '../../classes/GenericTableDataSource';
 import { FieldType } from '../../interfaces/report-def';
+import { previousAndCurrent } from '../../functions/rxjs-operators';
 
 @Component({
   selector: 'tb-generic-table',
@@ -160,17 +161,22 @@ export class GenericTableComponent implements OnInit {
   }
 
   tableWidth = this.state.getUserDefinedTableSize$.pipe(
-    startWith(0),
-    pairwise(),
-    map(currentAndPrevious => {
-      const previousWidth = currentAndPrevious[0];
-      const currentWidth = currentAndPrevious[1];
-      if(currentWidth >= 0){
-        return ({width:`${currentAndPrevious[1]}px`});
-      } else if (previousWidth >=0 && currentWidth == null){
+    previousAndCurrent(0),
+    map(previousAndCurrentUserDefinedWidths => {
+      const [previousUserDefinedWidth, currentUserDefinedWidth] = previousAndCurrentUserDefinedWidths;
+      if( thereIsACurrentUserDefinedWidth() ){
+        return ({width:`${currentUserDefinedWidth}px`});
+      } if( userDefinedWidthWasReset() ){
         return ({width:'initial'});
       }
       return ({});
+
+      function thereIsACurrentUserDefinedWidth(){
+        return currentUserDefinedWidth >= 0;
+      }
+      function userDefinedWidthWasReset(){
+        return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
+      }
     }));
 }
 

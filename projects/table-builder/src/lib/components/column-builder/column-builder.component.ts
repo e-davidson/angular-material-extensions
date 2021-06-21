@@ -9,6 +9,7 @@ import { TableStore } from '../../classes/table-store';
 import { map, pairwise, startWith } from 'rxjs/operators';
 import { TableTemplateService } from '../../services/table-template-service';
 import { Dictionary } from '../../interfaces/dictionary';
+import { previousAndCurrent } from '../../functions/rxjs-operators';
 
 @Component({
   selector: 'tb-column-builder',
@@ -51,8 +52,7 @@ export class ColumnBuilderComponent implements OnInit {
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
     const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(
-      startWith(0),
-      pairwise(),
+      previousAndCurrent(0),
       map(this.mapWidth),
     );
     const fullMetaStyles = this.metaData.additional?.styles;
@@ -79,15 +79,21 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
-  mapWidth = (currentAndPrevious : [number, number]) => {
-    const previousWidth = currentAndPrevious[0];
-    const currentWidth = currentAndPrevious[1]
-    if(currentWidth >= 0){
-      return ({flex:`0 0 ${currentWidth}px`, maxWidth:'none'});
-    } if(previousWidth >=0 && currentWidth == null){
+  mapWidth = (previousAndCurrentUserDefinedWidths : [number, number]) => {
+    const [previousUserDefinedWidth, currentUserDefinedWidth] = previousAndCurrentUserDefinedWidths;
+    if( thereIsACurrentUserDefinedWidth() ){
+      return ({flex:`0 0 ${currentUserDefinedWidth}px`, maxWidth:'none'});
+    } if( userDefinedWidthWasReset() ){
       return ({flex:'1'});
     }
     return ({});
+
+    function thereIsACurrentUserDefinedWidth(){
+      return currentUserDefinedWidth >= 0;
+    }
+    function userDefinedWidthWasReset(){
+      return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
+    }
   }
   styles$:Observable<{body:Dictionary<string>,header:Dictionary<string>,footer:Dictionary<string>}>
 
