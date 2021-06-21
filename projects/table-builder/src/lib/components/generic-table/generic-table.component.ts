@@ -19,7 +19,7 @@ import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
-import { tap, map, distinct } from 'rxjs/operators';
+import { tap, map, distinct, pairwise, startWith } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
@@ -159,7 +159,19 @@ export class GenericTableComponent implements OnInit {
       this.selection.select(...this.dataSource.data);
   }
 
-  tableWidth = this.state.getUserDefinedTableSize$.pipe(map(w => ({width:`${w}px`})));
+  tableWidth = this.state.getUserDefinedTableSize$.pipe(
+    startWith(0),
+    pairwise(),
+    map(currentAndPrevious => {
+      const previousWidth = currentAndPrevious[0];
+      const currentWidth = currentAndPrevious[1];
+      if(currentWidth >= 0){
+        return ({width:`${currentAndPrevious[1]}px`});
+      } else if (previousWidth >=0 && currentWidth == null){
+        return ({width:'initial'});
+      }
+      return ({});
+    }));
 }
 
 export type direc = 'asc' | 'desc' | boolean;

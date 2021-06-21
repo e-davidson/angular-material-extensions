@@ -6,7 +6,7 @@ import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
-import { map } from 'rxjs/operators';
+import { map, pairwise, startWith } from 'rxjs/operators';
 import { TableTemplateService } from '../../services/table-template-service';
 import { Dictionary } from '../../interfaces/dictionary';
 
@@ -50,7 +50,11 @@ export class ColumnBuilderComponent implements OnInit {
 
   ngOnInit() {
     this.filter = {key: this.metaData.key, fieldType: this.metaData.fieldType};
-    const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(map(w => w ? {flex:`0 0 ${w}px`, maxWidth:'none'} : {}));
+    const width$ = this.state.getUserDefinedWidth$(this.metaData.key).pipe(
+      startWith(0),
+      pairwise(),
+      map(this.mapWidth),
+    );
     const fullMetaStyles = this.metaData.additional?.styles;
     this.styles$= width$.pipe(map(width => {
       const styles = {
@@ -75,6 +79,16 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
+  mapWidth = (currentAndPrevious : [number, number]) => {
+    const previousWidth = currentAndPrevious[0];
+    const currentWidth = currentAndPrevious[1]
+    if(currentWidth >= 0){
+      return ({flex:`0 0 ${currentWidth}px`, maxWidth:'none'});
+    } if(previousWidth >=0 && currentWidth == null){
+      return ({flex:'1'});
+    }
+    return ({});
+  }
   styles$:Observable<{body:Dictionary<string>,header:Dictionary<string>,footer:Dictionary<string>}>
 
 }
