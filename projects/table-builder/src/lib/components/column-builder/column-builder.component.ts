@@ -79,7 +79,7 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
-  const mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
+  mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
  
     if( currentUserDefinedWidth ){
       return ({flex:`0 0 ${currentUserDefinedWidth}px`, maxWidth:'none'});
