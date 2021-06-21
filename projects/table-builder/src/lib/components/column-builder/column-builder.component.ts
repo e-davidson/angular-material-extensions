@@ -79,7 +79,7 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
-  mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
+  const mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
  
     if( currentUserDefinedWidth ){
       return ({flex:`0 0 ${currentUserDefinedWidth}px`, maxWidth:'none'});
@@ -88,7 +88,7 @@ export class ColumnBuilderComponent implements OnInit {
     }
     return ({});
     function wasReset(){
-      return previousUserDefinedWidth >=0 ;
+      return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
     }
   }
 
