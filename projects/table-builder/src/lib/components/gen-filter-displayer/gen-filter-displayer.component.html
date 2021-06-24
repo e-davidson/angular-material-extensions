@@ -21,6 +21,10 @@
       {{ filter.key | keyDisplay | async  }} {{filter.filterType | formatFilterType : filter.filterValue}} {{ filter.filterValue | formatFilterValue: filter.key : filter.filterType  | async }}
       <mat-icon matChipRemove>cancel</mat-icon>
     </mat-chip>
+    <mat-chip *ngIf="(filters$ | async).length >= 2" (removed)="tableState.clearFilters()">
+      Clear All
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
   </mat-chip-list>
   <button class="filter-button" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Add Filter">
     <mat-icon class="filter-icon" color="primary">filter_list</mat-icon>
