@@ -156,18 +156,17 @@ import { sortData } from '../../functions/sort-data-function';
 
   cleanStateFiltersOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => obs.pipe(
     withLatestFrom(this.tableBuilder.metaData$),
-    scan((obj,[state,metas])=>{
-      if (!obj.ran) {
-        state.filters = Object.values(state.filters).filter(fltr => metas.some(m => m.key === fltr.key)).reduce((obj, filter) => {
+    map(([state,metas],index)=>{
+      if (index === 0) {
+
+        const filters = Object.values(state.filters).filter(fltr => metas.some(m => m.key === fltr.key)).reduce((obj, filter) => {
           obj[filter.filterId] = state.filters[filter.filterId];
           return obj;
         }, {});
-        obj.ran = true;
+        return ({...state,filters})
       }
-      obj.state = state;
-      return obj;
-    },{ran:false,state:null} as {ran:boolean,state:PersistedTableState}),
-    map(({state})=>state)
+      return state
+    })
   )
 }
 
