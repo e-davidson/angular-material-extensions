@@ -11,6 +11,7 @@ import update from 'immutability-helper';
 import { Dictionary } from '../interfaces/dictionary';
 import { last, map, tap } from 'rxjs/operators'
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { notNull } from '../functions/rxjs-operators';
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +50,9 @@ export class TableStore extends ComponentStore<TableState> {
   );
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
-    return this.select( state => state.metaData[key]  )
+    return this.select( state => state.metaData[key]  ).pipe(
+      tap(meta => {if(!meta)console.warn(`Meta data with ${key} not found`)}),
+      notNull())
   }
 
   getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefined.widths[key]);
@@ -129,13 +132,15 @@ export class TableStore extends ComponentStore<TableState> {
   })
 
   private addFiltersToState = (state:TableState,filters:FilterInfo[]) : TableState => {
-    const filtersObj = filters.reduce((filtersObj,filter)=>{
-      if (!filter.filterId) {
-        filter.filterId = uuid();
-      }
-      filtersObj[filter.filterId] = filter;
-      return filtersObj;
-    },{})
+    const filtersObj = filters
+      .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key) || console.warn(`Meta data with ${fltr.key} not found`))
+      .reduce((filtersObj,filter)=>{
+        if (!filter.filterId) {
+          filter.filterId = uuid();
+        }
+        filtersObj[filter.filterId] = filter;
+        return filtersObj;
+      },{});
     return {
       ...state,
       filters : {...state.filters, ...filtersObj }
@@ -144,6 +149,10 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly removeFilter = this.updater( (state, filterId: string) =>
     update(state, {filters: {$unset : [filterId ]}})
+  );
+
+  readonly removeFilters = this.updater( (state, filterIds: string[]) =>
+    update(state, {filters: {$unset : [...filterIds ]}})
   );
 
   readonly clearFilters = this.updater((state)=>

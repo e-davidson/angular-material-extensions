@@ -1,6 +1,6 @@
-import { flatten, startsWith } from 'lodash';
+import { flatten } from 'lodash';
 import { Observable, combineLatest, Subscription } from 'rxjs';
-import { map, pairwise, startWith } from 'rxjs/operators';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 
 export const mapArray = <T, U>(mapFunc: (src: T) => U ) => (source: Observable<T[]>) =>
   source.pipe( map( src => src.map(mapFunc) ) );
@@ -76,3 +76,6 @@ export function skipOneWhen( skipper: Observable<any> ) {
 
 export const previousAndCurrent = <T>(startingValue : T) => (obs : Observable<T>) => 
   obs.pipe(startWith(startingValue), pairwise());
+export const notNull = <T>() => (obs:Observable<T>)=>obs.pipe(
+  filter(data => data != null)
+)
