@@ -50,7 +50,9 @@ export class TableStore extends ComponentStore<TableState> {
   );
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
-    return this.select( state => state.metaData[key]  ).pipe(notNull())
+    return this.select( state => state.metaData[key]  ).pipe(
+      tap(meta => {if(!meta)console.warn(`Meta data with ${key} not found`)}),
+      notNull())
   }
 
   getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefined.widths[key]);
@@ -131,7 +133,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   private addFiltersToState = (state:TableState,filters:FilterInfo[]) : TableState => {
     const filtersObj = filters
-      .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key))
+      .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key) || console.warn(`Meta data with ${fltr.key} not found`))
       .reduce((filtersObj,filter)=>{
         if (!filter.filterId) {
           filter.filterId = uuid();
