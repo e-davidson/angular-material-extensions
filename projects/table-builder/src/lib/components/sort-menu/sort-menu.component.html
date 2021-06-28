@@ -1,0 +1,89 @@
+<ng-container  *ngIf="sorted$ | async as sorted">
+  <ng-container *ngIf="notSorted$ | async as notSorted">
+    <!-- Menu Trigger -->
+    <span matTooltip="Sort" class="pull-right">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon color="primary">swap_vert</mat-icon>
+      </button>
+    </span>
+
+    <!-- Menu -->
+    <mat-menu #menu="matMenu"  class="my-mat-menu">
+
+      <!-- Apply Button -->
+      <div class="apply-button-wrapper">
+        <button mat-button color="primary" (click)="apply()"
+          stop-propagation [class.apply-border]="(applicable$ | async)"
+          [disabled]="!(applicable$ | async)">
+            Apply
+            <ng-container *ngIf="(applicable$ | async)">Unsaved Changes</ng-container>
+        </button>
+      </div>
+
+      <!-- Default Sorting Text -->
+      <div *ngIf="!sorted.length" class="tip" >
+        Sorting List
+      </div>
+
+      <!-- Sorted Menu List -->
+      <div class="list"
+        cdkDropList
+        #sortedGroup="cdkDropList"
+        [cdkDropListConnectedTo]="[notSortedGroup]"
+        [cdkDropListData]="sorted"
+        (cdkDropListDropped)="dropIntoSorted($event)">
+
+        <!-- Menu Item Wrapper -->
+        <ng-container *ngFor="let sort of sorted;let i=index">
+
+          <!-- Menu Item Headers -->
+          <span *ngIf="sorted.length > 1 && i === 0 " class="description" class="sort-header">First By</span>
+          <span *ngIf="sorted.length > 1 && i !== 0 " class="description"  class="sort-header">Then By</span>
+          
+          <!-- Menu Item -->
+          <div mat-menu-item   cdkDrag class="menu-item">
+            <div class="sort-item">
+              <span class="sorted-name">
+                {{sort.displayName || sort.active | spaceCase}}
+                <span class="direction-text">{{sort.direction}}</span>
+              </span>
+
+              <!-- Sort Direction Buttons -->
+              <div class="up-down-buttons-wrapper">
+                <button  class="up-down-button up-button" stop-propagation
+                (click)="setDirection({active:sort.active,direction:SortDirection.asc,displayName:sort.displayName})">
+                  <mat-icon [ngClass]="sort.direction !== SortDirection.asc ? 'light-arrow' : 'dark-arrow'" class="up-down-icon">
+                  arrow_upward
+                  </mat-icon>
+                </button>
+          
+                <button class="up-down-button" stop-propagation
+                (click)="setDirection({active:sort.active,direction:SortDirection.desc,displayName:sort.displayName})">
+                  <mat-icon [ngClass]="sort.direction === SortDirection.asc ? 'light-arrow' : 'dark-arrow'" class="up-down-icon">
+                    arrow_downward
+                  </mat-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- Default Not Sorted Text -->
+      <div *ngIf="!notSorted.length" class="tip" >
+        Not Sorted List
+      </div>
+      <!-- Not Sorted Menu List -->
+      <div class="list"
+        cdkDropList
+        #notSortedGroup="cdkDropList"
+        [cdkDropListConnectedTo]="[sortedGroup]"
+        [cdkDropListData]="notSorted"
+        (cdkDropListDropped)="dropIntoNotSorted($event)">
+        <div mat-menu-item *ngFor="let sort of notSorted"  class="menu-item" cdkDrag>
+          <span class="not-sorted-name">{{sort.displayName || sort.active | spaceCase}}</span>
+        </div>
+      </div>
+    </mat-menu>
+  </ng-container>
+</ng-container>
