@@ -44,7 +44,7 @@
           <div mat-menu-item   cdkDrag class="menu-item">
             <div class="sort-item">
               <span class="sorted-name">
-                {{sort.displayName || sort.active | spaceCase}}
+                {{sort.displayName || (sort.active | spaceCase)}}
                 <span class="direction-text">{{sort.direction}}</span>
               </span>
 
@@ -81,7 +81,7 @@
         [cdkDropListData]="notSorted"
         (cdkDropListDropped)="dropIntoNotSorted($event)">
         <div mat-menu-item *ngFor="let sort of notSorted"  class="menu-item" cdkDrag>
-          <span class="not-sorted-name">{{sort.displayName || sort.active | spaceCase}}</span>
+          <span class="not-sorted-name">{{sort.displayName || (sort.active | spaceCase)}}</span>
         </div>
       </div>
     </mat-menu>
