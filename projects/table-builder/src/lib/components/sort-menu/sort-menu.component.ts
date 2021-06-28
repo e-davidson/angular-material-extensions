@@ -20,7 +20,6 @@ export class SortMenuComponent implements OnInit {
   SortDirection = SortDirection;
   applicable$ = new BehaviorSubject(false);
   constructor(private tableState: TableStore, private store: SortMenuComponentStore) {
-    console.log('con')
     const sorted = this.tableState.sorted$.pipe(
       mergeMap(sort => this.tableState.metaData$.pipe(map(
         meta => sort.map(s => {
