@@ -10,7 +10,7 @@ import { SortMenuComponentStore, SortWithName } from './sort-menu.component-stor
 @Component({
   selector: 'tb-sort-menu',
   templateUrl: './sort-menu.component.html',
-  styleUrls: ['./sort-menu.component.css'],
+  styleUrls: ['./sort-menu.component.scss'],
   providers:[SortMenuComponentStore]
 })
 export class SortMenuComponent implements OnInit {
@@ -20,6 +20,14 @@ export class SortMenuComponent implements OnInit {
   SortDirection = SortDirection;
   applicable$ = new BehaviorSubject(false);
   constructor(private tableState: TableStore, private store: SortMenuComponentStore) {
+    this.init();
+    this.sorted$=this.store.sorted$;
+    this.notSorted$=this.store.notSorted$;
+  }
+
+  init(){
+    this.applicable$.next(false);
+
     const sorted = this.tableState.sorted$.pipe(
       mergeMap(sort => this.tableState.metaData$.pipe(map(
         meta => sort.map(s => {
@@ -35,8 +43,6 @@ export class SortMenuComponent implements OnInit {
     this.store.init(combineLatest([
       sorted,notSorted
     ]).pipe(map(([sorted,notSorted])=>({sorted,notSorted}))));
-    this.sorted$=this.store.sorted$;
-    this.notSorted$=this.store.notSorted$;
   }
 
   ngOnInit(): void {

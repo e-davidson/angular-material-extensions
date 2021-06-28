@@ -9,6 +9,16 @@
 
     <!-- Menu -->
     <mat-menu #menu="matMenu"  class="my-mat-menu">
+      <div mat-menu-item class="menu-button">
+        <div class="close-button-wrapper">
+          <span matTooltip="Close">
+            <mat-icon>close</mat-icon>
+          </span>
+          <span *ngIf="(applicable$ | async)" matTooltip="Undo" stop-propagation (click)="init()">
+            <mat-icon>undo</mat-icon>
+          </span>
+        </div>
+      </div>
 
       <!-- Apply Button -->
       <div class="apply-button-wrapper">
