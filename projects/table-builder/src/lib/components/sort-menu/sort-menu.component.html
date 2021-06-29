@@ -8,7 +8,7 @@
     </span>
 
     <!-- Menu -->
-    <mat-menu #menu="matMenu"  class="my-mat-menu">
+    <mat-menu #menu="matMenu"  class="my-mat-menu" (closed)="init()">
       <div mat-menu-item class="menu-button">
         <div class="close-button-wrapper">
           <span matTooltip="Close">
