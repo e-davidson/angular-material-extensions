@@ -8,13 +8,13 @@
     </span>
 
     <!-- Menu -->
-    <mat-menu #menu="matMenu"  class="my-mat-menu" (closed)="init()">
+    <mat-menu #menu="matMenu"  class="my-mat-menu" (closed)="reset()">
       <div mat-menu-item class="menu-button">
         <div class="close-button-wrapper">
           <span matTooltip="Close">
             <mat-icon>close</mat-icon>
           </span>
-          <span *ngIf="(applicable$ | async)" matTooltip="Undo" stop-propagation (click)="init()">
+          <span *ngIf="(applicable$ | async)" matTooltip="Undo" stop-propagation (click)="reset()">
             <mat-icon>undo</mat-icon>
           </span>
         </div>
