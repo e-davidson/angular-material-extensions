@@ -37,13 +37,13 @@
             <input matInput type='number'  name="filterValue" [ngModel]="filter.filterValue" />
             <span matPrefix>
               <button mat-icon-button disableRipple>
-                <mat-icon (click)="setFilterType(FilterType.NumberLessThen)" class="suffix-icons"
-                  [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberLessThen }">
+                <mat-icon (click)="setFilterType(FilterType.NumberLessThan)" class="suffix-icons"
+                  [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberLessThan }">
                   arrow_back_ios</mat-icon>
               </button>
               <button mat-icon-button disableRipple>
-                <mat-icon (click)="setFilterType(FilterType.NumberGreaterThen)" class="suffix-icons"
-                [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberGreaterThen }">
+                <mat-icon (click)="setFilterType(FilterType.NumberGreaterThan)" class="suffix-icons"
+                [ngClass]="{'chosen-icon': myFilterType === FilterType.NumberGreaterThan }">
                   arrow_forward_ios</mat-icon>
               </button>
               <button mat-icon-button disableRipple>
