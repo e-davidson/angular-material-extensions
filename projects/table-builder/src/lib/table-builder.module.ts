@@ -42,6 +42,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { InitializationComponent } from './components/initialization-component/initialization-component';
 import { TableTemplateService } from './services/table-template-service';
 import { InListFilterComponent } from './components/filter/in-list/in-list-filter.component';
+import { SortMenuComponent } from './components/sort-menu/sort-menu.component';
 
 @NgModule({
   imports: [
@@ -97,6 +98,7 @@ import { InListFilterComponent } from './components/filter/in-list/in-list-filte
         DialogDirective,
         InitializationComponent,
         InListFilterComponent,
+        SortMenuComponent,
     ],
     providers : [
       SpaceCasePipe,

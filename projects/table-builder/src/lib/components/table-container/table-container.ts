@@ -82,7 +82,7 @@ import { sortData } from '../../functions/sort-data-function';
         this.store.pipe(
           select(selectors.selectLocalProfileState<PersistedTableState>(this.tableId)),
           filter( state => !!state ),
-          this.cleanStateFiltersOnInitialLoad(),
+          this.cleanStateOnInitialLoad(),
           skipOneWhen(this.OnSaveState),
         )
       );
@@ -154,7 +154,7 @@ import { sortData } from '../../functions/sort-data-function';
     return meta;
   }
 
-  cleanStateFiltersOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => obs.pipe(
+  cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => obs.pipe(
     withLatestFrom(this.tableBuilder.metaData$),
     map(([state,metas],index)=>{
       if (index === 0) {
@@ -163,7 +163,8 @@ import { sortData } from '../../functions/sort-data-function';
           obj[filter.filterId] = state.filters[filter.filterId];
           return obj;
         }, {});
-        return ({...state,filters})
+        const sorted = state.sorted.filter(s => metas.some(m => m.key === s.active));
+        return ({...state,filters,sorted})
       }
       return state
     })

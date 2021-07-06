@@ -177,6 +177,13 @@ export class TableStore extends ComponentStore<TableState> {
     };
   });
 
+  readonly setAllSort = this.updater((state,sortArray:Sort[])=>{
+    return {
+      ...state,
+      sorted: sortArray,
+    };
+  })
+
   updateStateFunc = (state: TableState, incomingTableState: Partial<TableState>) : TableState => {
     const metaData = state.metaData;
     const sorted = incomingTableState.sorted?.length ? incomingTableState.sorted : this.createPreSort(metaData);

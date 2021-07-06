@@ -64,7 +64,7 @@ const META_DATA: MetaData[] = [
   {key: 'name', order: 1,fieldType: FieldType.Link,
     additional: {
       export: { prepend: "'" },
-    //  FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
+     FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
 
     },
     transform: (o: string) => o + ' #'
@@ -74,7 +74,7 @@ const META_DATA: MetaData[] = [
   } },
   {key: 'phone', fieldType: FieldType.PhoneNumber, order:undefined },
   {key: 'moreInfo', fieldType: FieldType.Array, additional},
-  {key:'expression', fieldType: FieldType.Expression,
+  {key:'expression', fieldType: FieldType.Expression, displayName:'Expressify',
     transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + (o.name ??''),
     additional: {
       styles: {color: 'green', flex: '0 0 200px'},
