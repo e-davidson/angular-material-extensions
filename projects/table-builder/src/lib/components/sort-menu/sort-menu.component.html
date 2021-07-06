@@ -1,3 +1,4 @@
+<ng-container *ngrxLet="dirty$ as dirty">
 <ng-container  *ngIf="sorted$ | async as sorted">
   <ng-container *ngIf="notSorted$ | async as notSorted">
     <!-- Menu Trigger -->
@@ -14,7 +15,7 @@
           <span matTooltip="Close">
             <mat-icon>close</mat-icon>
           </span>
-          <span *ngIf="(applicable$ | async)" matTooltip="Undo" stop-propagation (click)="reset()">
+          <span *ngIf="dirty" matTooltip="Undo" stop-propagation (click)="reset()">
             <mat-icon>undo</mat-icon>
           </span>
         </div>
@@ -23,10 +24,10 @@
       <!-- Apply Button -->
       <div class="apply-button-wrapper">
         <button mat-button color="primary" (click)="apply()"
-          stop-propagation [class.apply-border]="(applicable$ | async)"
-          [disabled]="!(applicable$ | async)">
+          stop-propagation [class.apply-border]="dirty"
+          [disabled]="!dirty">
             Apply
-            <ng-container *ngIf="(applicable$ | async)">Unsaved Changes</ng-container>
+            <ng-container *ngIf="dirty">Unsaved Changes</ng-container>
         </button>
       </div>
 
@@ -96,4 +97,5 @@
       </div>
     </mat-menu>
   </ng-container>
+</ng-container>
 </ng-container>

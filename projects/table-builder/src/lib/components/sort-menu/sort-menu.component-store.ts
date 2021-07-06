@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { ComponentStore } from '@ngrx/component-store';
-import { combineLatest, Observable } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { combineLatest } from 'rxjs';
+import { distinctUntilChanged, map, mergeMap } from 'rxjs/operators';
 import { TableStore } from '../../classes/table-store';
+import { notNull } from '../../functions/rxjs-operators';
 @Injectable()
 export class SortMenuComponentStore extends ComponentStore<ComponenStoreState> {
   constructor(private tableState: TableStore){
@@ -24,7 +25,9 @@ export class SortMenuComponentStore extends ComponentStore<ComponenStoreState> {
   })
   reset = () => {
     const sorted = this.tableState.sorted$.pipe(
-      mergeMap(sort => this.tableState.metaData$.pipe(map(
+      mergeMap(sort => this.tableState.metaData$.pipe(
+        notNull(),
+        map(
         meta => sort.map(s => {
           return ({...s,displayName:meta[s.active]?.displayName} as SortWithName)})
       )))
@@ -36,7 +39,7 @@ export class SortMenuComponentStore extends ComponentStore<ComponenStoreState> {
       )
     ));
     this.set(combineLatest([
-      sorted,notSorted
+      sorted.pipe(distinctSortArray),notSorted.pipe(distinctSortArray)
     ]).pipe(map(([sorted,notSorted])=>({sorted,notSorted}))));
   }
 }
@@ -50,3 +53,6 @@ export interface SortWithName extends Sort{
   displayName : string;
 }
 
+const equalSortArray = (arr1:SortWithName[],arr2:SortWithName[]) =>
+  arr1.length === arr2.length && arr2.every(s1 => arr1.some(s2 => s1.active === s2.active));
+const distinctSortArray = distinctUntilChanged<SortWithName[]>(equalSortArray);

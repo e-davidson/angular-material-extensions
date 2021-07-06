@@ -1,8 +1,8 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { combineLatest, Observable } from 'rxjs';
-import { first, map, mergeMap, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { first, map, tap } from 'rxjs/operators';
 import { TableStore } from '../../classes/table-store';
 import { SortDirection } from '../../interfaces/report-def';
 import { SortMenuComponentStore, SortWithName } from './sort-menu.component-store'
@@ -18,7 +18,7 @@ export class SortMenuComponent{
   sorted$:Observable<SortWithName[]>;
   notSorted$:Observable<SortWithName[]>;
   SortDirection = SortDirection;
-  applicable$ = new BehaviorSubject(false);
+  dirty$ = new BehaviorSubject(false);
   constructor(private tableState: TableStore, public store: SortMenuComponentStore) {
     this.store.reset();
     this.sorted$=this.store.sorted$.pipe(map(data=>[...data]));
@@ -26,11 +26,11 @@ export class SortMenuComponent{
   }
 
   reset(){
-    this.applicable$.next(false);
+    this.dirty$.next(false);
     this.store.reset();
   }
   dropIntoSorted(event: CdkDragDrop<SortWithName[]>) {
-    this.applicable$.next(true);
+    this.dirty$.next(true);
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -49,7 +49,7 @@ export class SortMenuComponent{
     if (event.previousContainer === event.container) {
       return;
     } else {
-      this.applicable$.next(true);
+      this.dirty$.next(true);
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
@@ -63,12 +63,12 @@ export class SortMenuComponent{
 
   apply = this.store.effect((obs:Observable<null>)=>
     obs.pipe(tap(()=>{
-      this.applicable$.next(false);
+      this.dirty$.next(false);
       this.tableState.setAllSort(this.store.sorted$.pipe(first()))
   })));
 
   setDirection(sort:SortWithName){
-    this.applicable$.next(true);
+    this.dirty$.next(true);
     this.store.setDirection(sort);
   }
 
