@@ -2,8 +2,8 @@
 export enum FilterType {
     NumberEquals = 'Equals',
     NumberNotEqual = 'Does Not Equal',
-    NumberGreaterThen = 'Greater Then',
-    NumberLessThen = 'Less Then',
+    NumberGreaterThan = 'Greater Than',
+    NumberLessThan = 'Less Than',
     NumberBetween = 'Between',
     StringEquals = 'Equals',
     StringContains = 'Contains',
@@ -25,8 +25,8 @@ export enum FilterType {
 export const NumberFilterMap:FilterToFiltersMap = {
     [FilterType.NumberEquals]: [FilterType.NumberEquals],
     [FilterType.NumberNotEqual]: [FilterType.NumberNotEqual],
-    [FilterType.NumberGreaterThen]: [FilterType.NumberGreaterThen],
-    [FilterType.NumberLessThen]: [FilterType.NumberLessThen],
+    [FilterType.NumberGreaterThan]: [FilterType.NumberGreaterThan],
+    [FilterType.NumberLessThan]: [FilterType.NumberLessThan],
     [FilterType.NumberBetween]: [FilterType.NumberBetween],
     [FilterType.IsNull]: [FilterType.IsNull],
     [FilterType.In]: [FilterType.In],

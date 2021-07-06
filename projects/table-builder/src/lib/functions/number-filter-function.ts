@@ -12,11 +12,11 @@ const numberNotEqualFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => 
   return val !== filterInfo.filterValue;
 }
 
-const  numberGreaterThenFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => (val: number): boolean  => {
+const  numberGreaterThanFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => (val: number): boolean  => {
     return val > filterInfo.filterValue;
 }
 
-const numberLessThenFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => (val: number): boolean  => {
+const numberLessThanFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => (val: number): boolean  => {
     return val < filterInfo.filterValue;
 }
 
@@ -33,8 +33,8 @@ export const multipleNumberValuesEqualsFunc:FilterFunc<number[],number> = (filte
 export const NumberFilterFuncs = {
     [FilterType.NumberEquals]: numberEqalsFunc,
     [FilterType.NumberNotEqual]: numberNotEqualFunc,
-    [FilterType.NumberGreaterThen]: numberGreaterThenFunc,
-    [FilterType.NumberLessThen]: numberLessThenFunc,
+    [FilterType.NumberGreaterThan]: numberGreaterThanFunc,
+    [FilterType.NumberLessThan]: numberLessThanFunc,
     [FilterType.NumberBetween]: numberBetweenFunc,
     [FilterType.IsNull]: isNull,
     [FilterType.In]: multipleNumberValuesEqualsFunc,
