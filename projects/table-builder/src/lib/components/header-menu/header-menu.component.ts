@@ -32,7 +32,7 @@ export class HeaderMenuComponent {
   }
 
   resetFilterType() {
-    if(this.metaData.additional?.FilterOptions?.FilterableValues) {
+    if(this.metaData.additional?.filterOptions?.filterableValues) {
       this.myFilterType = FilterType.In;
       return;
     }

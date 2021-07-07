@@ -52,8 +52,8 @@ export class InListFilterComponent implements ControlValueAccessor {
     this.keyValues$ = this.tableState.getMetaData$(this.key).pipe(
       tap(metaData => this.metaData = metaData),
       map( metaData => {
-        if(metaData.additional?.FilterOptions?.FilterableValues ) {
-          return  metaData.additional.FilterOptions.FilterableValues.reduce( (prev, cur)=> { prev[cur] = cur; return prev }, {});
+        if(metaData.additional?.filterOptions?.filterableValues ) {
+          return  metaData.additional.filterOptions.filterableValues.reduce( (prev, cur)=> { prev[cur] = cur; return prev }, {});
         } else {
           if(metaData.fieldType === FieldType.Enum ) {
             return metaData.additional.enumMap;

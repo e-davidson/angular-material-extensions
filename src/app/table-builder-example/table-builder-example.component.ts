@@ -64,7 +64,7 @@ const META_DATA: MetaData[] = [
   {key: 'name', order: 1,fieldType: FieldType.Link,
     additional: {
       export: { prepend: "'" },
-     FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
+     filterOptions: { filterableValues : ['Oxygen', 'Nitrogen','Neon']},
 
     },
     transform: (o: string) => o + ' #'
