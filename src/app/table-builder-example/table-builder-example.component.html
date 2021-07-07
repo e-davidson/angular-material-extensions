@@ -1,5 +1,5 @@
-<mat-checkbox (change)="Checked($event)" [checked]="isFilterChecked && (isFilterChecked | async)" ></mat-checkbox>
-
+<mat-checkbox (change)="Checked($event)" [checked]="!!(isFilterChecked && (isFilterChecked | async))" ></mat-checkbox>
+<button (click)="clearAllFilters()">Cleart All Filters</button>
 <div style="width: 25%;">
     <mat-select multiple (selectionChange)="multipleValuesTest($event)">
       <mat-option [value]="'Hydrogen'">Hydrogen</mat-option>

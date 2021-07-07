@@ -25,7 +25,7 @@ export interface PeriodicElement {
   date: Date;
   moreInfo?: string []
   phone: string;
-  W : Weight;
+  W? : Weight;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -38,7 +38,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N', gas: true, date: new Date(2020, 9, 7), phone: '23909085656' , W: Weight.hi},
   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O', gas: false, date: new Date(2020, 9, 1), phone: '8456782345', W: Weight.hi },
   {position: 9, name: 'Neon', weight: 20.1797, symbol: 'Ne', gas: true, date: undefined, phone: '2341234456' , W: Weight.med},
-  {position: null, name: null, weight: 18.9984, symbol: 'F', gas: false, date: new Date(2020, 9, 9), phone: '123456789012' , W: Weight.hi},
+  {position: null, name: null, weight: 18.9984, symbol: 'F', gas: false, date: new Date(2020, 9, 9), phone: '123456789012' },
 ];
 
 const additional: ArrayAdditional = {
@@ -64,7 +64,7 @@ const META_DATA: MetaData[] = [
   {key: 'name', order: 1,fieldType: FieldType.Link,
     additional: {
       export: { prepend: "'" },
-    //  FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
+     FilterOptions: { FilterableValues : ['Oxygen', 'Nitrogen','Neon']},
 
     },
     transform: (o: string) => o + ' #'
@@ -74,7 +74,7 @@ const META_DATA: MetaData[] = [
   } },
   {key: 'phone', fieldType: FieldType.PhoneNumber, order:undefined },
   {key: 'moreInfo', fieldType: FieldType.Array, additional},
-  {key:'expression', fieldType: FieldType.Expression,
+  {key:'expression', fieldType: FieldType.Expression, displayName:'Expressify',
     transform: (o: PeriodicElement) => o.symbol + ' my symbol ' + (o.name ??''),
     additional: {
       styles: {color: 'green', flex: '0 0 200px'},
@@ -186,5 +186,9 @@ export class TableBuilderExampleComponent {
 
   selectionEvent(a){
     console.log(a)
+  }
+
+  clearAllFilters(){
+    this.tableContainer.state.clearFilters()
   }
 }

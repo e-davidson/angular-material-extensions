@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
-import { filter, first, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
+import { filter, first, map, scan, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
@@ -82,6 +82,7 @@ import { sortData } from '../../functions/sort-data-function';
         this.store.pipe(
           select(selectors.selectLocalProfileState<PersistedTableState>(this.tableId)),
           filter( state => !!state ),
+          this.cleanStateOnInitialLoad(),
           skipOneWhen(this.OnSaveState),
         )
       );
@@ -152,6 +153,22 @@ import { sortData } from '../../functions/sort-data-function';
     }
     return meta;
   }
+
+  cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => obs.pipe(
+    withLatestFrom(this.tableBuilder.metaData$),
+    map(([state,metas],index)=>{
+      if (index === 0) {
+
+        const filters = Object.values(state.filters).filter(fltr => metas.some(m => m.key === fltr.key)).reduce((obj, filter) => {
+          obj[filter.filterId] = state.filters[filter.filterId];
+          return obj;
+        }, {});
+        const sorted = state.sorted.filter(s => metas.some(m => m.key === s.active));
+        return ({...state,filters,sorted})
+      }
+      return state
+    })
+  )
 }
 
 export interface ColumnInfo {
