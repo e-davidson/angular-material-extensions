@@ -59,7 +59,7 @@ export interface SortDef {
 }
 
 export interface FilterOptions {
-  FilterableValues : string[]
+  filterableValues : string[]
 }
 
 export interface Additional   {
@@ -70,7 +70,7 @@ export interface Additional   {
   useRouterLink?: boolean;
   export?: any;
   dateFormat?: string;
-  FilterOptions?: FilterOptions;
+  filterOptions?: FilterOptions;
   styles?: Dictionary<string>;
   columnPartStyles?: {
     header?: Dictionary<string>,
