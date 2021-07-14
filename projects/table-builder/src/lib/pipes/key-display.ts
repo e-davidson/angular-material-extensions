@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { TableStore } from '../classes/table-store';
-import { spaceCase, SpaceCasePipe } from './space-case.pipes';
+import { spaceCase } from './space-case.pipes';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
