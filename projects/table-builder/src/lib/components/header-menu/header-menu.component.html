@@ -21,7 +21,8 @@
         <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Link || metaData.fieldType === FieldType.String || metaData.fieldType === FieldType.Array || metaData.fieldType === FieldType.Unknown || metaData.fieldType === FieldType.PhoneNumber">
           <mat-form-field stop-propagation class="example-full-width font" style="padding: 0 16px">
             <mat-icon matPrefix class="search-icon">search</mat-icon>
-            <input matInput [placeholder]="myFilterType === FilterType.StringDoesNotContain ? 'Does Not Contain...' : 'Contains...'" name="filterValue" [ngModel]="filter.filterValue" />
+            <mat-label>{{myFilterType === FilterType.StringDoesNotContain ? 'Does Not Contain...' : 'Contains...'}}</mat-label>
+            <input matInput name="filterValue" [ngModel]="filter.filterValue" />
             <span matSuffix [matTooltip]="myFilterType === FilterType.StringDoesNotContain ? 'Contains' : 'Does Not Contain'">
               <button mat-icon-button color="primary" (click)="setStringFilterType()">
                 <mat-icon [ngClass]="{'chosen-icon': myFilterType === FilterType.StringDoesNotContain }">
@@ -34,6 +35,7 @@
 
         <ng-container *ngSwitchCase="metaData.fieldType === FieldType.Number || metaData.fieldType === FieldType.Currency">
           <mat-form-field class="auto-width"  stop-propagation style="padding: 0 16px">
+            <mat-label>{{myFilterType === FilterType.NumberEquals ? 'Equals...' : myFilterType === FilterType.NumberLessThan ? 'Less Than...' : 'More Than...'}}</mat-label>
             <input matInput type='number'  name="filterValue" [ngModel]="filter.filterValue" />
             <span matPrefix>
               <button mat-icon-button disableRipple>
@@ -71,12 +73,12 @@
           <mat-form-field style="padding: 0 16px" class="font auto-width" stop-propagation >
             <span matPrefix>
               <button mat-icon-button disableRipple>
-                <mat-icon (click)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons"
+                <mat-icon (click)="setFilterType(FilterType.DateOnOrAfter)" class="suffix-icons underline"
                 [ngClass]="{'chosen-icon': myFilterType === FilterType.DateOnOrAfter }">
                   arrow_forward_ios</mat-icon>
               </button>
               <button mat-icon-button disableRipple>
-                <mat-icon (click)="setFilterType(FilterType.DateOnOrBefore)" class="suffix-icons"
+                <mat-icon (click)="setFilterType(FilterType.DateOnOrBefore)" class="suffix-icons underline"
                 [ngClass]="{'chosen-icon': myFilterType === FilterType.DateOnOrBefore  }">
                   arrow_back_ios</mat-icon>
               </button>
@@ -86,6 +88,8 @@
                   =</span>
               </button>
             </span>
+            <mat-label>{{myFilterType === FilterType.DateIsOn ? 'On...' : 
+              myFilterType === FilterType.DateOnOrBefore ? 'On or Before...' : 'On or After...'}}</mat-label>
             <input matInput name="filterValue" [ngModel]="filter.filterValue" [matDatepicker]="calendar"
               (click)="calendar.open()"/>
             <mat-datepicker-toggle matSuffix [for]="calendar" preventEnter></mat-datepicker-toggle>

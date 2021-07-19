@@ -51,3 +51,8 @@ mat-icon.chosen-icon.mat-icon.suffix-icons, .chosen-icon{
   font-size: 20px;
   color: green;
 }
+
+mat-icon.mat-icon.suffix-icons.underline{
+  text-decoration: underline 0.1px solid;
+  transform: scale(.7, 1);
+}
