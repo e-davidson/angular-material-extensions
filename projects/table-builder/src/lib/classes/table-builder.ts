@@ -25,7 +25,7 @@ export class TableBuilder<T = any> {
       key,
       fieldType: FieldType.Unknown,
       order: -1
-    }) );
+    }));
   }
 
   cleanVal(val: any, metaData: MetaData): any {
@@ -36,7 +36,12 @@ export class TableBuilder<T = any> {
         return isNaN(num) || val == null ? null : num;
       case FieldType.Date:
         const date = Date.parse(val);
-        return isNaN(date) ? null : new Date(date);
+        if(isNaN(date)){
+          return null;
+        }
+        const d = new Date(date);
+        d.setHours(0,0,0,0);
+        return d;
     }
     return val;
   }
@@ -45,7 +50,7 @@ export class TableBuilder<T = any> {
     const cleaned = metadata.reduce( (prev: T, curr: MetaData) => {
       prev[curr.key] = this.cleanVal(record[curr.key], curr);
       return prev;
-    }, {} )
+    }, {} as T )
     return {...record, ...cleaned};
   }
 }
