@@ -13,7 +13,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { LowerCasePipe } from '@angular/common';
 
 enum Weight {
-  hi, lo, med,
+  hi, loFlow, med,
 }
 
 export interface PeriodicElement {
@@ -30,11 +30,11 @@ export interface PeriodicElement {
 
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H', gas: true , date: new Date(2021, 6, 8, 10 ,4), phone: null,moreInfo: ['hello','world' ] , W: Weight.hi  },
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', gas: true, date: null, phone: undefined , moreInfo: ['can', 'you', 'see', 'me'], W: Weight.lo},
+  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He', gas: true, date: null, phone: undefined , moreInfo: ['can', 'you', 'see', 'me'], W: Weight.loFlow},
   {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li', gas: false, date: new Date(2021, 6, 5, 10 ,4), phone: '       ' , W: Weight.hi},
   {position: undefined, name: 'Beryllium', weight: 9.0122, symbol: 'Be', gas: false, date: new Date(2021, 1, 4, 10 ,4), phone: '2341185656', moreInfo: [] , W: Weight.hi},
   {position: 5, name: '', weight: 9.811, symbol: 'B', gas: false, date: new Date(2021, 6, 3),  phone: '234' , W: Weight.hi},
-  {position: 6, name: undefined, weight: 12.0107, symbol: 'C', gas: false, date: new Date(2021, 6, 6, 10 ,4), phone: '2346783425' , moreInfo: ['hi'] , W: Weight.lo},
+  {position: 6, name: undefined, weight: 12.0107, symbol: 'C', gas: false, date: new Date(2021, 6, 6, 10 ,4), phone: '2346783425' , moreInfo: ['hi'] , W: Weight.loFlow},
   {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N', gas: true, date: new Date(2021, 6, 7, 10 ,4), phone: '23909085656' , W: Weight.hi},
   {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O', gas: false, date: new Date(2021, 6, 1, 10 ,4), phone: '8456782345', W: Weight.hi },
   {position: 9, name: 'Neon', weight: 20.1797, symbol: 'Ne', gas: true, date: undefined, phone: '2341234456' , W: Weight.med},
