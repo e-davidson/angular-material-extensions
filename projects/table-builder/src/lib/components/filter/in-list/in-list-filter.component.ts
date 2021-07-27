@@ -11,7 +11,9 @@ import { FieldType, MetaData } from '../../../interfaces/report-def';
   selector: 'tb-in-list-filter',
   template: `
   <div *ngFor="let item of keyValues$ | async| keyvalue" >
-    <mat-checkbox [checked]='selectedKeys.includes(item.key)' stop-propagation (change)='selectFilterChanged($event, item.key)' >{{item.value}}</mat-checkbox>
+    <mat-checkbox [checked]='selectedKeys.includes(item.key)' stop-propagation (change)='selectFilterChanged($event, item.key)' >
+      {{metaData.fieldType === FieldType.Enum ? (item.value | spaceCase) : item.value}}
+    </mat-checkbox>
   </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +26,7 @@ import { FieldType, MetaData } from '../../../interfaces/report-def';
 export class InListFilterComponent implements ControlValueAccessor {
   constructor(private ref: ChangeDetectorRef, private tableState: TableStore) {}
   value: string[] = [];
+  FieldType = FieldType;
   writeValue(obj: string[]): void {
     this.value = obj;
 

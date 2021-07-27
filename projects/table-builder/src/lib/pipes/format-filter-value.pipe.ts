@@ -6,6 +6,7 @@ import { FieldType } from '../interfaces/report-def';
 import { DatePipe } from '@angular/common';
 import { FilterType } from '../enums/filterTypes';
 import { FilterInfo } from '../classes/filter-info';
+import { spaceCase } from './space-case.pipes';
 
 
 @Pipe({name: 'formatFilterValue'})
@@ -20,7 +21,7 @@ export class FormatFilterValuePipe implements PipeTransform {
         }
         if(value && (filterType === FilterType.In )){
           if(md.fieldType === FieldType.Enum) {
-            return value.map( v => md.additional.enumMap[v]).join(', ') ?? value;
+            return value.map( v => spaceCase(md.additional.enumMap[v])).join(', ') ?? value;
           }
           return value.join(', ') ?? value;
         }
