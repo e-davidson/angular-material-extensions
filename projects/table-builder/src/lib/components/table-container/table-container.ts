@@ -8,7 +8,7 @@ import {
   ChangeDetectionStrategy,
   Inject,
 } from '@angular/core';
-import { Observable, ReplaySubject } from 'rxjs';
+import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
 import { filter, first, map, scan, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
@@ -154,8 +154,8 @@ import { sortData } from '../../functions/sort-data-function';
     return meta;
   }
 
-  cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => obs.pipe(
-    withLatestFrom(this.tableBuilder.metaData$),
+  cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => 
+    combineLatest([obs,this.tableBuilder.metaData$]).pipe(
     map(([state,metas],index)=>{
       if (index === 0) {
 
