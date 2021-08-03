@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
-import { filter, first, map, scan, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, scan, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
@@ -155,8 +155,10 @@ import { sortData } from '../../functions/sort-data-function';
   }
 
   cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => 
-    combineLatest([obs,this.tableBuilder.metaData$]).pipe(
-    map(([state,metas],index)=>{
+    combineLatest([obs.pipe(addTimeStamp()), this.tableBuilder.metaData$]).pipe(
+    distinctUntilChanged(([state],[state2])=>state.index === state2.index),
+    
+    map(([{value:state},metas],index)=>{
       if (index === 0) {
 
         const filters = Object.values(state.filters).filter(fltr => metas.some(m => m.key === fltr.key)).reduce((obj, filter) => {
@@ -168,8 +170,10 @@ import { sortData } from '../../functions/sort-data-function';
       }
       return state
     })
-  )
+  );
+  
 }
+const addTimeStamp = <T>() => (obs:Observable<T>) => obs.pipe(map((t,i) => ({value:t,index:i})));
 
 export interface ColumnInfo {
   metaData: MetaData;
