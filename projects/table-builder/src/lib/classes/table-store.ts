@@ -85,15 +85,15 @@ export class TableStore extends ComponentStore<TableState> {
   }));
 
   readonly setHiddenColumns = this.updater((state, displayCols: {key: string, visible: boolean}[]) => {
-    let hiddenKeys = [...state.hiddenKeys];
-    displayCols.forEach(column => {
-      if (column.visible) {
-        hiddenKeys = hiddenKeys.filter( k => k !== column.key);
-      } else {
-        hiddenKeys.push(column.key);
-      }
-    });
-    return update( state , { hiddenKeys: {$set: hiddenKeys}});
+    
+    var hiddenKeysSet= new Set<string>(
+      [
+        ...displayCols.filter(col => !col.visible).map(col => col.key),
+        ...Object.values(state.metaData).filter(md => md.fieldType === FieldType.Hidden).map(md => md.key)
+      ]
+    );
+    
+    return update( state , { hiddenKeys: {$set: [...hiddenKeysSet]}});
   });
 
 
