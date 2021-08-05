@@ -1,7 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
 import { Subject, Observable, of, ReplaySubject } from 'rxjs';
-import { scan, startWith } from 'rxjs/operators';
+import { delay, map, scan, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType, ArrayAdditional, ArrayStyle } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
@@ -129,7 +129,16 @@ export class TableBuilderExampleComponent {
     this.metaData$.next(META_DATA);
 
     setTimeout(() => {
-      this.tableBuilder = new TableBuilder(all, this.metaData$);
+      this.tableBuilder = new TableBuilder(all.pipe(map(data=>{
+        const d = [...data];
+        for (let index = 0; index < 100; index++) {
+          data.push(...d);
+          
+        }
+        return data;
+      })), this.metaData$
+      // .pipe(delay(5000))
+      );
       //this.isFilterChecked = this.tableContainer.state.getFilter$('test')
       //this.isFilterChecked.subscribe();
     }, 0);

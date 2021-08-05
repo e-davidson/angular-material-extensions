@@ -114,6 +114,7 @@ export class GenericTableComponent implements OnInit {
     this.dataSource.sort = this.sort;
 
     this.dataSource.paginator = this.paginator;
+    this.state.on(this.state.state$.pipe(map(state => state.pageSize),distinct()), pageSize => this.paginator._changePageSize(pageSize));
     this.state.setPageSize(this.paginator.page.pipe(map( e => e.pageSize ), distinct()));
   }
 
