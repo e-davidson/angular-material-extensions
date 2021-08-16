@@ -64,7 +64,7 @@ The meta data has the following properties that can be set or configured.
 | width | string | sets the defualt width in pixels |
 | noExport | boolean | The column will not be exported when download to csv is clicked |
 | noFilter | boolean | Set no filter to remove the filtering capability from the UI for this column. |
-| transform | Function | Use Transform to change the default or customize the output for this column. |
+| transform | Function | Use Transform to change the default or customize the output for this column. If the field type is `Expression` then the object gets passed in to the function. Otherwise it'll pass in the field.|
 | click | Function | Pass a callback to click that will run on click |
 | template | TemplateRef | template allows you to pass a differnt template to over ride the default or customize the look of the column |
 
@@ -82,6 +82,7 @@ The meta data has the following properties that can be set or configured.
 - Boolean: Display check or however it's configured.
 - Phone number: will format as phone number.
 - Expression: Uses the transform field to display.
+- Enum: A map of numbers as keys and strings as values. The enum map is in the enumMap field in the Additional property.
 
 
 ## Additonal Options
@@ -97,4 +98,21 @@ The meta data has the following properties that can be set or configured.
 | dateFormat | Date | sets date formating to using instead of the default |
 | styles | any | sets css to apply to the column cells |
 | columnPartStyles | any | sets css to apply to column part.
+| enumMap | Dictionary | used for Enum Field type to map keys and values.
 
+
+## Filtering
+
+
+
+
+MetaData Props plus additional fields.
+Transform
+Template
+
+Table builder inputs
+
+Custom Cells and Rows
+
+Field type to Filter map.
+Availabe filter types
