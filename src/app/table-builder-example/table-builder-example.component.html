@@ -8,7 +8,7 @@
 </div>
 
 <tb-table-container *ngIf='tableBuilder' (data)='emitter($event)' [SaveState]='true' tableId='test-table-id-123' [tableBuilder]='tableBuilder' [inputFilters]='myFilter' [pageSize]="50" [SelectionColumn]='true' (selection$)="selectionEvent($event)">
-
+  <span class="title">TRIAL TITLE</span>
   <p *customCell="'testCell';let element = element;" [class.makeMeRed]="element?.name && element?.name[0] === 'H'" >Hi {{element.name}}!</p>
 
   <ng-container customCell='date' matColumnDef="date"   >
