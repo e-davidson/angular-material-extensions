@@ -16,10 +16,10 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable } from '@angular/material/table';
-import { Observable } from 'rxjs';
+import { asyncScheduler, merge, Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
-import { tap, map, distinct, pairwise, startWith } from 'rxjs/operators';
+import { tap, map, distinct, delay, distinctUntilKeyChanged } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
@@ -30,7 +30,7 @@ import { previousAndCurrent } from '../../functions/rxjs-operators';
 @Component({
   selector: 'tb-generic-table',
   templateUrl: './generic-table.component.html',
-  styleUrls: ['./generic-table.component.scss'],
+  styleUrls: ['./generic-table.component.scss','../../styles/collapser.styles.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenericTableComponent implements OnInit {
@@ -48,7 +48,6 @@ export class GenericTableComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
   @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
-
   currentColumns: string[];
 
   dataSource: GenericTableDataSource<any>;
@@ -106,6 +105,22 @@ export class GenericTableComponent implements OnInit {
     } );
      
   }
+  collapseFooter = false;
+  ngAfterContentInit(){
+    this.pageData$ = merge(
+       this.paginator.page.pipe(
+      map(
+      pageData => ({
+      currentStart : (pageData.pageIndex * pageData.pageSize) + 1,
+      currentEnd : Math.min(pageData.length , ((pageData.pageIndex + 1) * pageData.pageSize)),
+      total : pageData.length
+    }))),
+    this.data$.pipe(distinctUntilKeyChanged("length"),delay(0,asyncScheduler), map(a => ({currentStart:(this.paginator.pageIndex * this.paginator.pageSize) + 1,
+        currentEnd: Math.min(this.paginator.length , ((this.paginator.pageIndex + 1) * this.paginator.pageSize)),
+        total:this.paginator.length})))
+        );
+  }
+  pageData$: Observable<{currentStart:number,currentEnd:number,total:number}>;
 
   createDataSource() { 
     this.dataSource = new GenericTableDataSource(
@@ -143,7 +158,6 @@ export class GenericTableComponent implements OnInit {
       }
     });
   }
-
   selection : SelectionModel<any> = new SelectionModel<any>(true, []);
   @Output() selection$: Observable<any> = this.selection.changed;
   masterToggleChecked$ = this.selection$.pipe(map(()=>this.selection.hasValue() && this.isAllSelected()));

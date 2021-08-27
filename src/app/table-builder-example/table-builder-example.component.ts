@@ -131,7 +131,7 @@ export class TableBuilderExampleComponent {
     setTimeout(() => {
       this.tableBuilder = new TableBuilder(all.pipe(map(data=>{
         const d = [...data];
-        for (let index = 0; index < 100; index++) {
+        for (let index = 0; index < 20; index++) {
           data.push(...d);
           
         }

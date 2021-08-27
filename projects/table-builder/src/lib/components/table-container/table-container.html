@@ -1,11 +1,11 @@
 <ng-container multiSort >
   <ng-container >
-    <div style="width:100%;">
-      <div class="header-wrapper">
-        <p class="title">
+    <div style="width:100%;" >
+      <div class="header-wrapper" >
+        <div class="title">
           <ng-content select=".title"></ng-content>
-        </p>
-        <div style="display: flex; flex-direction: row;justify-content: flex-end; ">
+        </div>
+        <div [ngClass]="collapseHeader ?'hide': 'flx-row-end'">
           <tb-filter-displayer >
           </tb-filter-displayer>
           <tb-col-displayer></tb-col-displayer>
@@ -53,7 +53,9 @@
             </mat-form-field>
             <button mat-button (click)='setProfileState(addedKey.value); add.next(false);' [disabled]="!addedKey.value">Add</button>
           </div>
+          <mat-icon class="collapse-icon header" (click)="collapseHeader=true" matTooltip="collapse">expand_less</mat-icon>
         </div>
+        <mat-icon class="collapse-icon header" [ngClass]="{'hide' :!collapseHeader}" (click)="collapseHeader=false" matTooltip="expand">expand_more</mat-icon>
       </div>
     </div>
     <div style="clear: both;">

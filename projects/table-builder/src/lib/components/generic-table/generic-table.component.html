@@ -34,5 +34,17 @@
 
 </mat-table>
 
-<mat-paginator class="sticky" [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons (page)="paginatorChange()">
-</mat-paginator>
+<div class="flx-row-end sticky">
+  <div [ngClass]="{'hide' : !collapseFooter, 'page-amounts':true}" *ngIf="pageData$ | async as pageData">
+    {{pageData.currentStart}} - {{pageData.currentEnd}} of {{pageData.total}}
+  </div>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons (page)="paginatorChange()"
+  [ngClass]="{'hide' : collapseFooter}">
+  </mat-paginator>
+  
+  <mat-icon [matTooltip]="collapseFooter ? 'expand' : 'collapse'" class="collapse-icon footer" (click)="collapseFooter =!collapseFooter">
+    {{collapseFooter ? 'expand_more' : 'expand_less'}}
+  </mat-icon>
+  
+</div>
+

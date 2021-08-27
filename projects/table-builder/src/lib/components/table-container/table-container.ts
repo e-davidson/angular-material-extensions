@@ -30,7 +30,7 @@ import { sortData } from '../../functions/sort-data-function';
 @Component({
   selector: 'tb-table-container',
   templateUrl: './table-container.html',
-  styleUrls: ['./table-container.css'],
+  styleUrls: ['./table-container.css','../../styles/collapser.styles.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TableStore,ExportToCsvService]
 }) export class TableContainerComponent<T = any> {
@@ -61,7 +61,7 @@ import { sortData } from '../../functions/sort-data-function';
 
   stateKeys$?: Observable<string[]>;
   currentStateKey$?: Observable<string>;
-
+  collapseHeader = false;
 
   constructor(
     public state: TableStore,
