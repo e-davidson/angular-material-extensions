@@ -9,6 +9,7 @@
 .sticky {
   bottom: 0px;
   position: sticky;
+  border-top: .5px solid rgba(0,0,0,.12);
 }
 
 .page-amounts{
@@ -24,4 +25,12 @@
   justify-content: flex-end;
   align-items: center;
   background-color: white;
+}
+
+:host::ng-deep.mat-paginator-container {
+  min-height: initial !important;
+}
+
+:host::ng-deep.mat-paginator-container .mat-form-field-infix{
+  padding : 0px !important;
 }
