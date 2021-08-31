@@ -67,9 +67,7 @@ export class GenericTableComponent implements OnInit {
     this.injector = Injector.create({ providers: [{provide: MatTable, useFactory: ()=> {return this.table} }], parent: injector});
   }
 
-  paginatorChange(): void {
-    setTimeout(() => this.tableElRef?.nativeElement?.scrollIntoView(), 0);
-  }
+  
 
   trackByFunction = (index, item) => {
     if (!item) {
@@ -87,6 +85,8 @@ export class GenericTableComponent implements OnInit {
       this.initializeRowDefs([...this.rows]);
     }
   }
+
+  
   ngOnInit() {
     if (this.SelectionColumn) {
       this.columns.push('select');
@@ -106,7 +106,14 @@ export class GenericTableComponent implements OnInit {
     } );
      
   }
-
+  paginatorChange() : void {
+    if(!this.ourPageEvent){
+      setTimeout(() => this.tableElRef?.nativeElement?.scrollIntoView(), 0);
+    } else {
+      this.ourPageEvent = false;
+    }
+  }
+  ourPageEvent = false;
   createDataSource() { 
     this.dataSource = new GenericTableDataSource(
       this.data$.pipe(tap((d) => this.selection.clear() ))
@@ -114,6 +121,7 @@ export class GenericTableComponent implements OnInit {
     this.dataSource.sort = this.sort;
 
     this.dataSource.paginator = this.paginator;
+    this.ourPageEvent = true;
     this.state.on(this.state.state$.pipe(map(state => state.pageSize),distinct()), pageSize => this.paginator._changePageSize(pageSize));
     this.state.setPageSize(this.paginator.page.pipe(map( e => e.pageSize ), distinct()));
   }
