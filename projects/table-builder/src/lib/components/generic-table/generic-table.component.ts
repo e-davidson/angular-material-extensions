@@ -19,7 +19,7 @@ import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
-import { tap, map, distinct, pairwise, startWith } from 'rxjs/operators';
+import { tap, map, distinct } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
@@ -67,8 +67,6 @@ export class GenericTableComponent implements OnInit {
     this.injector = Injector.create({ providers: [{provide: MatTable, useFactory: ()=> {return this.table} }], parent: injector});
   }
 
-  
-
   trackByFunction = (index, item) => {
     if (!item) {
       return null;
@@ -86,7 +84,6 @@ export class GenericTableComponent implements OnInit {
     }
   }
 
-  
   ngOnInit() {
     if (this.SelectionColumn) {
       this.columns.push('select');
