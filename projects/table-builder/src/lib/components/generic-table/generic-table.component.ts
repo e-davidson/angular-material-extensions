@@ -102,7 +102,6 @@ export class GenericTableComponent implements OnInit {
     } );
      
   }
-  collapseFooter = false;
   ngAfterViewInit(){
     this.pageData$ = merge(
        this.paginator.page.pipe(
@@ -132,7 +131,6 @@ export class GenericTableComponent implements OnInit {
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
     this.dataSource.sort = this.sort;
-
     this.dataSource.paginator = this.paginator;
     this.ourPageEvent = true;
     this.state.on(this.state.state$.pipe(map(state => state.pageSize),distinct()), pageSize => this.paginator._changePageSize(pageSize));
@@ -195,6 +193,8 @@ export class GenericTableComponent implements OnInit {
         return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
       }
     }));
+
+  collapseFooter$ = this.state.state$.pipe(map(state => state.persistedTableSettings.collapseFooter));
 }
 
 export type direc = 'asc' | 'desc' | boolean;

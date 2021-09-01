@@ -12,6 +12,7 @@ import { Dictionary } from '../interfaces/dictionary';
 import { last, map, tap } from 'rxjs/operators'
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { notNull } from '../functions/rxjs-operators';
+import { GeneralTableSettings, NotPersisitedTableSettings, PesrsistedTableSettings } from './table-builder-general-settings';
 
 @Injectable({
   providedIn: 'root',
@@ -192,7 +193,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly setPageSize = this.updater( (state, pageSize: number)=> ({...state,pageSize}));
 
-  readonly updateState = this.updater<TableState>(this.updateStateFunc);
+  readonly updateState = this.updater<Partial<TableState>>(this.updateStateFunc);
 
   getUserDefinedTableSize$ = this.select(state => state.userDefined.table.width);
   setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDefined: {...state.userDefined,table:{width:widthInpixels}}})) ;
@@ -242,6 +243,33 @@ export class TableStore extends ComponentStore<TableState> {
     return userDefinedOrder;
   }
 
+  toggleCollapseHeader = this.updater((state)=>{
+    const s : TableState =
+      {...state,persistedTableSettings : {...state.persistedTableSettings,collapseHeader : !state.persistedTableSettings.collapseHeader}};
+    return s;
+  })
+
+  toggleCollapseFooter = this.updater((state)=>{
+    const s : TableState =
+      {...state,persistedTableSettings : {...state.persistedTableSettings,collapseFooter : !state.persistedTableSettings.collapseFooter}};
+    return s;
+  })
+
+
+  setTableSettings = this.updater((state,settings:GeneralTableSettings)=>{
+    const s:TableState = {
+      ...state,
+      persistedTableSettings : new PesrsistedTableSettings(settings),
+      notPersisitedTableSettings : new NotPersisitedTableSettings(settings)
+      };
+    return s;
+  });
+
+  tableSettings$ = this.select(state => {
+    const ts : PesrsistedTableSettings & NotPersisitedTableSettings =
+      {...state.persistedTableSettings,...state.notPersisitedTableSettings};
+    return ts;
+  })
 }
 export const orderViewableMetaData = (state:TableState) => orderMetaData(state).filter(a => a.fieldType !== FieldType.Hidden);
 

@@ -11,6 +11,8 @@
 .cancel-button  {
     font-size: 24px;
     font-weight: 700;
+    height: initial;
+    line-height: initial;
 }
 .filter-wrapper{
   margin-top: 1em;

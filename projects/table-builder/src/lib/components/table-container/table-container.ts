@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
-import { distinctUntilChanged, filter, first, map, scan, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
@@ -26,13 +26,14 @@ import { select, Store } from '@ngrx/store';
 import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from '../../ngrx/actions';
 import { PersistedTableState } from '../../classes/TableState';
 import { sortData } from '../../functions/sort-data-function';
+import { WrapperFilterStore } from '../table-container-filter/table-wrapper-filter-store';
 
 @Component({
   selector: 'tb-table-container',
   templateUrl: './table-container.html',
   styleUrls: ['./table-container.css','../../styles/collapser.styles.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TableStore,ExportToCsvService]
+  providers: [TableStore,ExportToCsvService,WrapperFilterStore]
 }) export class TableContainerComponent<T = any> {
   @Input() tableId;
   @Input() SaveState = false;
@@ -61,7 +62,6 @@ import { sortData } from '../../functions/sort-data-function';
 
   stateKeys$?: Observable<string[]>;
   currentStateKey$?: Observable<string>;
-  collapseHeader = false;
 
   constructor(
     public state: TableStore,
@@ -77,6 +77,7 @@ import { sortData } from '../../functions/sort-data-function';
   }
 
   ngOnInit() {
+    this.state.setTableSettings(this.tableBuilder.settings);
     if(this.tableId) {
       this.state.updateState(
         this.store.pipe(
@@ -171,7 +172,8 @@ import { sortData } from '../../functions/sort-data-function';
       return state
     })
   );
-  
+  collapseHeader$ = this.state.state$.pipe(map(state => state.persistedTableSettings.collapseHeader));
+
 }
 const addTimeStamp = <T>() => (obs:Observable<T>) => obs.pipe(map((t,i) => ({value:t,index:i})));
 

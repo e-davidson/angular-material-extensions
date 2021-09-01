@@ -5,9 +5,8 @@ import { FieldType } from '../interfaces/report-def';
 import { TableBuilderConfigToken } from '../classes/TableBuilderConfig';
 import { DatePipe } from '@angular/common';
 import { TestBed } from '@angular/core/testing';
-import { TableStateManager } from '../classes/table-store';
 import { StoreModule } from '@ngrx/store';
-import { tableStateReducer } from '../ngrx/reducer';
+import { storageStateReducer } from '../ngrx/reducer';
 
 describe('MultiSortDirective', () => {
 
@@ -68,7 +67,7 @@ describe('MultiSortDirective', () => {
          TableStateManager,
         ],
         imports: [
-          StoreModule.forRoot({'fullTableState': tableStateReducer}),
+          StoreModule.forRoot({'fullTableState': storageStateReducer}),
         ]
       })
       .compileComponents();

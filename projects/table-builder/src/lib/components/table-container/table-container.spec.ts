@@ -9,7 +9,7 @@ import { FieldType } from '../../interfaces/report-def';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { DateFilterComponent } from '../date-filter/date-filter.component';
 import { TableContainerComponent } from './table-container';
-import { GenFilterDisplayerComponent } from '../gen-filter-displayer/gen-filter-displayer.component';
+import { GenFilterDisplayerComponent } from '../table-container-filter/gen-filter-displayer/gen-filter-displayer.component';
 import { GenericTableComponent } from '../generic-table/generic-table.component';
 import { GenColDisplayerComponent } from '../gen-col-displayer/gen-col-displayer.component';
 import { ColumnTotalPipe } from '../../pipes/column-total.pipe';

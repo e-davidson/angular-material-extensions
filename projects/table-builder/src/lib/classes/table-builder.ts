@@ -1,16 +1,19 @@
-import { Observable } from 'rxjs';
+import { isObservable, Observable, of } from 'rxjs';
 import { MetaData, FieldType, ReportDef } from '../interfaces/report-def';
 import { first, map, switchMap, shareReplay, publishReplay, refCount } from 'rxjs/operators';
 import { mapArray } from '../functions/rxjs-operators';
+import { GeneralTableSettings, TableBuilderSettings } from './table-builder-general-settings';
 
 export class TableBuilder<T = any> {
-  constructor(private data$: Observable<T[]>, public metaData$?: Observable<MetaData<T>[]> ) {
+  constructor(private data$: Observable<T[]>, public metaData$?: Observable<MetaData<T>[]>, settings: TableBuilderSettings | Observable<TableBuilderSettings> = new GeneralTableSettings() ) {
     this.data$ = this.data$.pipe(publishReplay(1),refCount());
     this.metaData$ = this.metaData$ ?
       this.metaData$.pipe(first(),shareReplay()) :
       data$.pipe(first(), map( data => this.createMetaData(data[0]) ),shareReplay() );
+    const s = isObservable(settings) ? settings : of(settings);
+    this.settings = s.pipe(map(sett => new GeneralTableSettings(sett)));
   }
-
+  settings : Observable<GeneralTableSettings>;
   getData$(): Observable<any[]> {
     return this.metaData$.pipe(
       switchMap( metaData => this.data$.pipe(
