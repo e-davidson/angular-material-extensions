@@ -11,7 +11,7 @@ export class TableBuilder<T = any> {
       this.metaData$.pipe(first(),shareReplay()) :
       data$.pipe(first(), map( data => this.createMetaData(data[0]) ),shareReplay() );
     const s = isObservable(settings) ? settings : of(settings);
-    this.settings = s.pipe(map(sett => new GeneralTableSettings(sett)));
+    this.settings = s.pipe(map(sett => new GeneralTableSettings(sett)),shareReplay({refCount:true,bufferSize:1}));
   }
   settings : Observable<GeneralTableSettings>;
   getData$(): Observable<any[]> {
