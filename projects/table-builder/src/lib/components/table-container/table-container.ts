@@ -24,7 +24,7 @@ import { GlobalStorageState } from '../../ngrx/reducer';
 import * as selectors from '../../ngrx/selectors';
 import { select, Store } from '@ngrx/store';
 import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from '../../ngrx/actions';
-import { PersistedTableState, TableState } from '../../classes/TableState';
+import { PersistedTableState } from '../../classes/TableState';
 import { sortData } from '../../functions/sort-data-function';
 import { WrapperFilterStore } from '../table-container-filter/table-wrapper-filter-store';
 import { cloneDeep } from 'lodash';
