@@ -97,6 +97,7 @@ export class TableBuilderExampleComponent {
   newElement$ = new Subject<PeriodicElement>();
   metaData$ = new ReplaySubject<MetaData[]>();
   myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
+  s$ = new Subject();
 
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
 
@@ -138,7 +139,7 @@ export class TableBuilderExampleComponent {
         return data;
       })), this.metaData$,
       // .pipe(delay(5000))
-      of({headerSettings:{collapse:true,hideExport:true,showTitleWhenCollapsed:false}}).pipe(shareReplay({bufferSize:1,refCount:true}))
+      of({headerSettings:{collapse:true,hideExport:true}}).pipe(shareReplay({bufferSize:1,refCount:true}))
       );
       //this.isFilterChecked = this.tableContainer.state.getFilter$('test')
       //this.isFilterChecked.subscribe();

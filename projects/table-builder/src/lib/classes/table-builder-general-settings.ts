@@ -30,10 +30,10 @@ export class TableWrapperFooterSettings {
 }
 
 export class PesrsistedTableSettings {
-  constructor(tableSettings? :GeneralTableSettings){
-    if(tableSettings){
-      this.collapseHeader = tableSettings.headerSettings.collapse;
-      this.collapseFooter = tableSettings.footerSettings.collapse;
+  constructor(tableSettings? :GeneralTableSettings | PesrsistedTableSettings){
+    if (tableSettings){
+      this.collapseHeader = (tableSettings as GeneralTableSettings).headerSettings?.collapse ?? (tableSettings as PesrsistedTableSettings).collapseHeader;
+      this.collapseFooter = (tableSettings as GeneralTableSettings).footerSettings?.collapse ?? (tableSettings as PesrsistedTableSettings).collapseFooter;
     }
   }
   collapseHeader : boolean;

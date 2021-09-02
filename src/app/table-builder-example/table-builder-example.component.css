@@ -5,3 +5,11 @@
 .makeMeBlue {
   color: blue;
 }
+
+.big-title{
+  font-size: x-large;
+}
+
+.small-title{
+  font-size: small;
+}

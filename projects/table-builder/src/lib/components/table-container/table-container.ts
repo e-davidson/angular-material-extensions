@@ -24,9 +24,10 @@ import { GlobalStorageState } from '../../ngrx/reducer';
 import * as selectors from '../../ngrx/selectors';
 import { select, Store } from '@ngrx/store';
 import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from '../../ngrx/actions';
-import { PersistedTableState } from '../../classes/TableState';
+import { PersistedTableState, TableState } from '../../classes/TableState';
 import { sortData } from '../../functions/sort-data-function';
 import { WrapperFilterStore } from '../table-container-filter/table-wrapper-filter-store';
+import { cloneDeep } from 'lodash';
 
 @Component({
   selector: 'tb-table-container',
@@ -57,6 +58,7 @@ import { WrapperFilterStore } from '../table-container-filter/table-wrapper-filt
   @ContentChildren(CustomCellDirective) customCells: QueryList<CustomCellDirective>;
   @Output() OnStateReset = new EventEmitter();
   @Output() OnSaveState = new EventEmitter();
+  @Output() state$ : Observable<PersistedTableState>;
 
   myColumns$: Observable<ColumnInfo[]>;
 
@@ -74,6 +76,8 @@ import { WrapperFilterStore } from '../table-container-filter/table-wrapper-filt
         this.store.dispatch(setLocalProfile({key:this.tableId,value: finalState}));
       }
     });
+    this.state$ = this.state.getSavableState().pipe(map(state =>
+      cloneDeep(state)),shareReplay({refCount:true,bufferSize:1}));
   }
 
   ngOnInit() {

@@ -14,11 +14,6 @@
   align-items: center;
 }
 
-.flx-column{
-  display: flex;
-  flex-direction: column;
-}
-
 .flat-menu{
   line-height: initial;
   height: initial;

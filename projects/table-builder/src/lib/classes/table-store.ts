@@ -28,6 +28,7 @@ export class TableStore extends ComponentStore<TableState> {
       map( s => {
         const savableState = {...s}
         delete savableState.metaData;
+        delete savableState.notPersisitedTableSettings;
         return savableState;
       })
     );
@@ -52,7 +53,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
     return this.select( state => state.metaData[key]  ).pipe(
-      tap(meta => {if(!meta)console.warn(`Meta data with ${key} not found`)}),
+      tap(meta => {if(!meta)console.warn(`Meta data with key ${key} not found`)}),
       notNull())
   }
 
@@ -134,7 +135,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   private addFiltersToState = (state:TableState,filters:FilterInfo[]) : TableState => {
     const filtersObj = filters
-      .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key) || console.warn(`Meta data with ${fltr.key} not found`))
+      .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key) || console.warn(`Meta data with key ${fltr.key} not found`))
       .reduce((filtersObj,filter)=>{
         if (!filter.filterId) {
           filter.filterId = uuid();
@@ -244,15 +245,15 @@ export class TableStore extends ComponentStore<TableState> {
   }
 
   toggleCollapseHeader = this.updater((state)=>{
-    const s : TableState =
-      {...state,persistedTableSettings : {...state.persistedTableSettings,collapseHeader : !state.persistedTableSettings.collapseHeader}};
-    return s;
+    const tableSettings = {...state.persistedTableSettings};
+    tableSettings.collapseHeader = !tableSettings.collapseHeader;
+    return ({...state,persistedTableSettings : new PesrsistedTableSettings(tableSettings)});
   })
 
   toggleCollapseFooter = this.updater((state)=>{
-    const s : TableState =
-      {...state,persistedTableSettings : {...state.persistedTableSettings,collapseFooter : !state.persistedTableSettings.collapseFooter}};
-    return s;
+    const tableSettings = {...state.persistedTableSettings};
+    tableSettings.collapseFooter = !tableSettings.collapseFooter;
+    return ({...state,persistedTableSettings : new PesrsistedTableSettings(tableSettings)});
   })
 
 
