@@ -16,10 +16,10 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable } from '@angular/material/table';
-import { asyncScheduler, merge, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
-import { tap, map, distinct, delay, distinctUntilKeyChanged } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
@@ -102,39 +102,11 @@ export class GenericTableComponent implements OnInit {
     } );
      
   }
-  ngAfterViewInit(){
-    this.pageData$ = merge(
-       this.paginator.page.pipe(
-      map(
-      pageData => ({
-      currentStart : (pageData.pageIndex * pageData.pageSize) + 1,
-      currentEnd : Math.min(pageData.length , ((pageData.pageIndex + 1) * pageData.pageSize)),
-      total : pageData.length
-    }))),
-    this.data$.pipe(distinctUntilKeyChanged("length"),delay(0,asyncScheduler), map(a => ({currentStart:(this.paginator.pageIndex * this.paginator.pageSize) + 1,
-        currentEnd: Math.min(this.paginator.length , ((this.paginator.pageIndex + 1) * this.paginator.pageSize)),
-        total:this.paginator.length})))
-        );
-  }
-  pageData$: Observable<{currentStart:number,currentEnd:number,total:number}>;
-
-  paginatorChange() : void {
-    if(!this.ourPageEvent){
-      setTimeout(() => this.tableElRef?.nativeElement?.scrollIntoView(), 0);
-    } else {
-      this.ourPageEvent = false;
-    }
-  }
-  ourPageEvent = false;
   createDataSource() { 
     this.dataSource = new GenericTableDataSource(
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
     this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    this.ourPageEvent = true;
-    this.state.on(this.state.state$.pipe(map(state => state.pageSize),distinct()), pageSize => this.paginator._changePageSize(pageSize));
-    this.state.setPageSize(this.paginator.page.pipe(map( e => e.pageSize ), distinct()));
   }
 
   myColumns: Dictionary<ColumnBuilderComponent> = {};

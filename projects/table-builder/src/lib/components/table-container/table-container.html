@@ -1,36 +1,36 @@
 <ng-container multiSort >
   <ng-container >
-    <div style="width:100%;" >
-      <div class="header-wrapper" >
-        <div class="title">
-          <ng-content select=".title"  *ngIf="(!(collapseHeader$ | async)) || (state.tableSettings$ | async).showTitleWhenHeaderCollapsed"></ng-content>
-        </div>
-        <div class="flx-row-end">
-          <lib-filter-chips></lib-filter-chips>
-          <ng-container *ngIf="!(collapseHeader$ | async); else allMenu">
-            <ng-container *ngTemplateOutlet="headerMenu"></ng-container>
-            <button mat-icon-button color='primary' [matMenuTriggerFor]="mainMenu" [ngClass]="{'flat-menu':(collapseHeader$ | async)}">
-              <mat-icon>{{(collapseHeader$ | async) ? 'more_horiz' : 'more_vert'}}</mat-icon>
-            </button>
-            <mat-menu #mainMenu='matMenu' ><ng-container *ngTemplateOutlet="headerMenuExtra"></ng-container></mat-menu>
-          </ng-container>
-          <ng-template #allMenu>
-            <button mat-icon-button color='primary' [matMenuTriggerFor]="mainMenu" [ngClass]="{'flat-menu':(collapseHeader$ | async)}">
-              <mat-icon>{{(collapseHeader$ | async) ? 'more_horiz' : 'more_vert'}}</mat-icon>
-            </button>
-            <mat-menu #mainMenu='matMenu' >
-              <div class="flex-column">
-                <ng-container *ngTemplateOutlet="headerMenu"></ng-container>
-              </div>
-              <ng-container *ngTemplateOutlet="headerMenuExtra"></ng-container>
-            </mat-menu>
-          </ng-template>
-          <mat-icon [matTooltip]="(collapseHeader$ | async) ? 'expand' : 'collapse'" class="collapse-icon header" (click)="state.toggleCollapseHeader()">
-            {{(collapseHeader$ | async) ? 'expand_less' : 'expand_more'}}
-          </mat-icon>
-        </div>
+    
+    <div class="header-wrapper" >
+      <div class="title">
+        <ng-content select=".title"  *ngIf="(!(collapseHeader$ | async)) || (state.tableSettings$ | async).showTitleWhenHeaderCollapsed"></ng-content>
+      </div>
+      <div class="flx-row-end">
+        <lib-filter-list></lib-filter-list>
+        <ng-container *ngIf="!(collapseHeader$ | async); else allMenu">
+          <ng-container *ngTemplateOutlet="headerMenu"></ng-container>
+          <button mat-icon-button color='primary' [matMenuTriggerFor]="mainMenu" [ngClass]="{'flat-menu':(collapseHeader$ | async)}">
+            <mat-icon>{{(collapseHeader$ | async) ? 'more_horiz' : 'more_vert'}}</mat-icon>
+          </button>
+          <mat-menu #mainMenu='matMenu' ><ng-container *ngTemplateOutlet="headerMenuExtra"></ng-container></mat-menu>
+        </ng-container>
+        <ng-template #allMenu>
+          <button mat-icon-button color='primary' [matMenuTriggerFor]="mainMenu" [ngClass]="{'flat-menu':(collapseHeader$ | async)}">
+            <mat-icon>{{(collapseHeader$ | async) ? 'more_horiz' : 'more_vert'}}</mat-icon>
+          </button>
+          <mat-menu #mainMenu='matMenu' >
+            <div class="flex-column">
+              <ng-container *ngTemplateOutlet="headerMenu"></ng-container>
+            </div>
+            <ng-container *ngTemplateOutlet="headerMenuExtra"></ng-container>
+          </mat-menu>
+        </ng-template>
+        <mat-icon [matTooltip]="(collapseHeader$ | async) ? 'expand' : 'collapse'" class="collapse-icon header" (click)="state.toggleCollapseHeader()">
+          {{(collapseHeader$ | async) ? 'expand_less' : 'expand_more'}}
+        </mat-icon>
       </div>
     </div>
+    
     <div style="clear: both;">
       <tb-generic-table
       [rows]='customRows'

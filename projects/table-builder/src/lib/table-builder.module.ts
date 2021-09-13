@@ -43,7 +43,8 @@ import { InitializationComponent } from './components/initialization-component/i
 import { TableTemplateService } from './services/table-template-service';
 import { InListFilterComponent } from './components/filter/in-list/in-list-filter.component';
 import { SortMenuComponent } from './components/sort-menu/sort-menu.component';
-import { FilterChipsComponent } from './components/table-container-filter/filter-chips/filter-chips.component';
+import { FilterChipsComponent } from './components/table-container-filter/filter-list/filter-list.component';
+import { PaginatorComponent } from './components/generic-table/paginator.component';
 
 @NgModule({
   imports: [
@@ -58,6 +59,7 @@ import { FilterChipsComponent } from './components/table-container-filter/filter
   ],
     exports: [
         GenericTableComponent,
+        PaginatorComponent,
         TableContainerComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
@@ -74,6 +76,7 @@ import { FilterChipsComponent } from './components/table-container-filter/filter
         ColumnTotalPipe,
         TableContainerComponent,
         GenericTableComponent,
+        PaginatorComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
         GenFilterDisplayerComponent,

@@ -17,6 +17,7 @@ import { TableBuilder } from '../../classes/table-builder';
 import { MultiSortDirective } from '../../directives/multi-sort.directive';
 import { TableBuilderConfigToken } from '../../classes/TableBuilderConfig';
 import { provideMockStore } from '@ngrx/store/testing';
+import { PaginatorComponent } from '../generic-table/paginator.component';
 
 
 const data = [
@@ -72,6 +73,7 @@ describe('table container', () => {
         FilterComponent,
         GenFilterDisplayerComponent,
         GenericTableComponent,
+        PaginatorComponent,
         GenColDisplayerComponent,
         SpaceCasePipe,
         ColumnTotalPipe,

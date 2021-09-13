@@ -5,8 +5,8 @@ import { map } from 'rxjs/operators';
 import { WrapperFilterStore } from '../table-wrapper-filter-store';
 
 @Component({
-  selector: 'lib-filter-chips',
-  templateUrl: './filter-chips.component.html',
+  selector: 'lib-filter-list',
+  templateUrl: './filter-list.component.html',
   styleUrls: ['../gen-filter-displayer/gen-filter-displayer.component.css']
 })
 export class FilterChipsComponent {
