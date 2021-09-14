@@ -3,7 +3,7 @@
     
     <div class="header-wrapper" >
       <div class="title">
-        <ng-content select=".title"  *ngIf="(!(collapseHeader$ | async)) || (state.tableSettings$ | async).showTitleWhenHeaderCollapsed"></ng-content>
+        <ng-content select=".tb-header-title"  *ngIf="(!(collapseHeader$ | async)) || (state.tableSettings$ | async).showTitleWhenHeaderCollapsed"></ng-content>
       </div>
       <div class="flx-row-end">
         <lib-filter-list></lib-filter-list>
