@@ -19,7 +19,7 @@ import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
-import { tap, map, distinct } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
 import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
@@ -30,7 +30,7 @@ import { previousAndCurrent } from '../../functions/rxjs-operators';
 @Component({
   selector: 'tb-generic-table',
   templateUrl: './generic-table.component.html',
-  styleUrls: ['./generic-table.component.scss'],
+  styleUrls: ['./generic-table.component.scss','../../styles/collapser.styles.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenericTableComponent implements OnInit {
@@ -48,7 +48,6 @@ export class GenericTableComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
   @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
-
   currentColumns: string[];
 
   dataSource: GenericTableDataSource<any>;
@@ -103,24 +102,11 @@ export class GenericTableComponent implements OnInit {
     } );
      
   }
-  paginatorChange() : void {
-    if(!this.ourPageEvent){
-      setTimeout(() => this.tableElRef?.nativeElement?.scrollIntoView(), 0);
-    } else {
-      this.ourPageEvent = false;
-    }
-  }
-  ourPageEvent = false;
   createDataSource() { 
     this.dataSource = new GenericTableDataSource(
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
     this.dataSource.sort = this.sort;
-
-    this.dataSource.paginator = this.paginator;
-    this.ourPageEvent = true;
-    this.state.on(this.state.state$.pipe(map(state => state.pageSize),distinct()), pageSize => this.paginator._changePageSize(pageSize));
-    this.state.setPageSize(this.paginator.page.pipe(map( e => e.pageSize ), distinct()));
   }
 
   myColumns: Dictionary<ColumnBuilderComponent> = {};
@@ -148,7 +134,6 @@ export class GenericTableComponent implements OnInit {
       }
     });
   }
-
   selection : SelectionModel<any> = new SelectionModel<any>(true, []);
   @Output() selection$: Observable<any> = this.selection.changed;
   masterToggleChecked$ = this.selection$.pipe(map(()=>this.selection.hasValue() && this.isAllSelected()));
@@ -180,6 +165,8 @@ export class GenericTableComponent implements OnInit {
         return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
       }
     }));
+
+  collapseFooter$ = this.state.state$.pipe(map(state => state.persistedTableSettings.collapseFooter));
 }
 
 export type direc = 'asc' | 'desc' | boolean;

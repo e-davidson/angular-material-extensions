@@ -23,7 +23,7 @@ export class InFilterComponent implements ControlValueAccessor {
     this.value = [undefined];
   }
   writeValue(obj: (string | number)[]): void {
-    if(!obj || obj.length === 0 ) obj  = [undefined];
+    if(!obj || !obj.length) obj  = [undefined];
     this.value = obj;
     this.ref.markForCheck();
   }

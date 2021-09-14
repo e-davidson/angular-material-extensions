@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { GenericTableComponent } from './components/generic-table/generic-table.component';
 import { CustomCellDirective } from './directives/custom-cell-directive';
 import { GenColDisplayerComponent } from './components/gen-col-displayer/gen-col-displayer.component';
-import { GenFilterDisplayerComponent } from './components/gen-filter-displayer/gen-filter-displayer.component';
+import { GenFilterDisplayerComponent } from './components/table-container-filter/gen-filter-displayer/gen-filter-displayer.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -43,6 +43,8 @@ import { InitializationComponent } from './components/initialization-component/i
 import { TableTemplateService } from './services/table-template-service';
 import { InListFilterComponent } from './components/filter/in-list/in-list-filter.component';
 import { SortMenuComponent } from './components/sort-menu/sort-menu.component';
+import { FilterChipsComponent } from './components/table-container-filter/filter-list/filter-list.component';
+import { PaginatorComponent } from './components/generic-table/paginator.component';
 
 @NgModule({
   imports: [
@@ -57,6 +59,7 @@ import { SortMenuComponent } from './components/sort-menu/sort-menu.component';
   ],
     exports: [
         GenericTableComponent,
+        PaginatorComponent,
         TableContainerComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
@@ -73,6 +76,7 @@ import { SortMenuComponent } from './components/sort-menu/sort-menu.component';
         ColumnTotalPipe,
         TableContainerComponent,
         GenericTableComponent,
+        PaginatorComponent,
         CustomCellDirective,
         GenColDisplayerComponent,
         GenFilterDisplayerComponent,
@@ -99,6 +103,7 @@ import { SortMenuComponent } from './components/sort-menu/sort-menu.component';
         InitializationComponent,
         InListFilterComponent,
         SortMenuComponent,
+        FilterChipsComponent,
     ],
     providers : [
       SpaceCasePipe,

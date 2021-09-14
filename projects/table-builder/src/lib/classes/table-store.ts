@@ -12,6 +12,7 @@ import { Dictionary } from '../interfaces/dictionary';
 import { last, map, tap } from 'rxjs/operators'
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { notNull } from '../functions/rxjs-operators';
+import { GeneralTableSettings, NotPersisitedTableSettings, PesrsistedTableSettings } from './table-builder-general-settings';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,7 @@ export class TableStore extends ComponentStore<TableState> {
       map( s => {
         const savableState = {...s}
         delete savableState.metaData;
+        delete savableState.notPersisitedTableSettings;
         return savableState;
       })
     );
@@ -51,7 +53,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   getMetaData$ = (key: string) : Observable<MetaData> => {
     return this.select( state => state.metaData[key]  ).pipe(
-      tap(meta => {if(!meta)console.warn(`Meta data with ${key} not found`)}),
+      tap(meta => {if(!meta)console.warn(`Meta data with key ${key} not found`)}),
       notNull())
   }
 
@@ -133,7 +135,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   private addFiltersToState = (state:TableState,filters:FilterInfo[]) : TableState => {
     const filtersObj = filters
-      .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key) || console.warn(`Meta data with ${fltr.key} not found`))
+      .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key) || console.warn(`Meta data with key ${fltr.key} not found`))
       .reduce((filtersObj,filter)=>{
         if (!filter.filterId) {
           filter.filterId = uuid();
@@ -192,7 +194,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly setPageSize = this.updater( (state, pageSize: number)=> ({...state,pageSize}));
 
-  readonly updateState = this.updater<TableState>(this.updateStateFunc);
+  readonly updateState = this.updater<Partial<TableState>>(this.updateStateFunc);
 
   getUserDefinedTableSize$ = this.select(state => state.userDefined.table.width);
   setTableWidth = this.updater((state,widthInpixels:number) => ({...state,userDefined: {...state.userDefined,table:{width:widthInpixels}}})) ;
@@ -242,6 +244,33 @@ export class TableStore extends ComponentStore<TableState> {
     return userDefinedOrder;
   }
 
+  toggleCollapseHeader = this.updater((state)=>{
+    const tableSettings = {...state.persistedTableSettings};
+    tableSettings.collapseHeader = !tableSettings.collapseHeader;
+    return ({...state,persistedTableSettings : new PesrsistedTableSettings(tableSettings)});
+  })
+
+  toggleCollapseFooter = this.updater((state)=>{
+    const tableSettings = {...state.persistedTableSettings};
+    tableSettings.collapseFooter = !tableSettings.collapseFooter;
+    return ({...state,persistedTableSettings : new PesrsistedTableSettings(tableSettings)});
+  })
+
+
+  setTableSettings = this.updater((state,settings:GeneralTableSettings)=>{
+    const s:TableState = {
+      ...state,
+      persistedTableSettings : new PesrsistedTableSettings(settings),
+      notPersisitedTableSettings : new NotPersisitedTableSettings(settings)
+      };
+    return s;
+  });
+
+  tableSettings$ = this.select(state => {
+    const ts : PesrsistedTableSettings & NotPersisitedTableSettings =
+      {...state.persistedTableSettings,...state.notPersisitedTableSettings};
+    return ts;
+  })
 }
 export const orderViewableMetaData = (state:TableState) => orderMetaData(state).filter(a => a.fieldType !== FieldType.Hidden);
 

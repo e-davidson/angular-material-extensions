@@ -34,5 +34,13 @@
 
 </mat-table>
 
-<mat-paginator class="sticky" [pageSizeOptions]="[5, 10, 20, 50, 100, 500]" showFirstLastButtons (page)="paginatorChange()">
-</mat-paginator>
+<div class="flx-row-end sticky">
+  <tb-paginator [dataSource]="dataSource" [tableElRef]="tableElRef"
+  [data$]="data$"></tb-paginator>
+  
+  <mat-icon [matTooltip]="(collapseFooter$ | async) ? 'expand' : 'collapse'" class="collapse-icon footer" (click)="state.toggleCollapseFooter()">
+    {{(collapseFooter$ | async) ? 'expand_more' : 'expand_less'}}
+  </mat-icon>
+  
+</div>
+

@@ -1,0 +1,26 @@
+<div style="display: flex; flex-direction: row;justify-content: flex-end; ">
+
+  <button class="cancel-button pull-right" *ngIf="(currentFilters$ | async).length" mat-icon-button (click)="clearAll()"
+    matTooltip="Close all Filters">
+    <mat-icon class="cancel-button" color="primary">close</mat-icon>
+  </button>
+  
+
+  <div *ngIf="(currentFilters$ | async).length" class="float">
+    <div class="filter" *ngFor="let filter of (currentFilters$ | async); index as i;">
+      <tb-filter [filter]="filter" (close)="deleteByIndex(i)" > </tb-filter>
+    </div>
+  </div>
+
+  <mat-chip-list>
+    <mat-chip *ngFor="let filter of filters$ | async " (dblclick)="addFilter(filter)"  (removed)="tableState.removeFilter(filter.filterId)">
+      {{ filter.key | keyDisplay | async  }} {{filter.filterType | formatFilterType : filter.filterValue}} {{ filter.filterValue | formatFilterValue: filter.key : filter.filterType  | async }}
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+    <mat-chip *ngIf="(filters$ | async).length >= 2" (removed)="tableState.clearFilters()">
+      Clear All
+      <mat-icon matChipRemove>cancel</mat-icon>
+    </mat-chip>
+  </mat-chip-list>
+  
+</div>

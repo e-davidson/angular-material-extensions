@@ -1,0 +1,8 @@
+<button stop-propagation class="filter-button" mat-icon-button [matMenuTriggerFor]="menu" matTooltip="Add Filter">
+  <mat-icon class="filter-icon" color="primary">filter_list</mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <button class="filter-labels" *ngFor="let md of filterCols$ | async" (click)="addFilter(md)" mat-menu-item>
+    {{md.displayName || (md.key | spaceCase)}}
+  </button>
+</mat-menu>

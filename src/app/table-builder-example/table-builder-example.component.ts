@@ -1,7 +1,7 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { TableBuilder } from '../../../projects/table-builder/src/lib/classes/table-builder';
 import { Subject, Observable, of, ReplaySubject } from 'rxjs';
-import { delay, map, scan, startWith } from 'rxjs/operators';
+import { delay, map, scan, shareReplay, startWith } from 'rxjs/operators';
 import { MetaData, SortDirection, FieldType, ArrayAdditional, ArrayStyle } from '../../../projects/table-builder/src/lib/interfaces/report-def';
 import { combineArrays } from '../../../projects/table-builder/src/lib/functions/rxjs-operators';
 import { Store } from '@ngrx/store';
@@ -97,6 +97,7 @@ export class TableBuilderExampleComponent {
   newElement$ = new Subject<PeriodicElement>();
   metaData$ = new ReplaySubject<MetaData[]>();
   myFilter = new Subject<Array<(val: PeriodicElement) => boolean>>();
+  s$ = new Subject();
 
   @ViewChild(TableContainerComponent) tableContainer: TableContainerComponent;
 
@@ -131,13 +132,14 @@ export class TableBuilderExampleComponent {
     setTimeout(() => {
       this.tableBuilder = new TableBuilder(all.pipe(map(data=>{
         const d = [...data];
-        for (let index = 0; index < 100; index++) {
+        for (let index = 0; index < 20; index++) {
           data.push(...d);
           
         }
         return data;
-      })), this.metaData$
+      })), this.metaData$,
       // .pipe(delay(5000))
+      of({headerSettings:{collapse:true,hideExport:true}}).pipe(shareReplay({bufferSize:1,refCount:true}))
       );
       //this.isFilterChecked = this.tableContainer.state.getFilter$('test')
       //this.isFilterChecked.subscribe();
