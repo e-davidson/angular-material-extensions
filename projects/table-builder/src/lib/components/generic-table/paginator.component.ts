@@ -27,13 +27,13 @@ import { TableStore } from '../../classes/table-store';
 })
 export class PaginatorComponent implements OnInit, AfterViewInit{
   @Input() dataSource : GenericTableDataSource<any>;
-  @Input() state: TableStore;
   @Input() tableElRef : ElementRef
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   currentPageData$: Observable<CurrentPageDetails>;
   collapseFooter$:Observable<boolean>;
   @Input() data$: Observable<any[]>;
 
+  constructor(private state : TableStore){}
   ngOnInit(){
     this.dataSource.paginator = this.paginator;
     this.ourPageEvent = true;

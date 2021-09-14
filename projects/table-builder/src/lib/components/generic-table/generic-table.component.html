@@ -35,7 +35,7 @@
 </mat-table>
 
 <div class="flx-row-end sticky">
-  <tb-paginator [dataSource]="dataSource" [state]="state" [tableElRef]="tableElRef"
+  <tb-paginator [dataSource]="dataSource" [tableElRef]="tableElRef"
   [data$]="data$"></tb-paginator>
   
   <mat-icon [matTooltip]="(collapseFooter$ | async) ? 'expand' : 'collapse'" class="collapse-icon footer" (click)="state.toggleCollapseFooter()">
