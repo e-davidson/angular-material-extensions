@@ -23,7 +23,7 @@
 
       <ng-container matColumnDef="index">
           <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" >#</mat-header-cell>
-          <mat-cell *matCellDef="let i = index;"> {{ (paginator.pageIndex * paginator.pageSize) +  i + 1 }} </mat-cell>
+          <mat-cell *matCellDef="let i = index;"> {{ (tbPaginator.paginator.pageIndex * tbPaginator.paginator.pageSize) +  i + 1 }} </mat-cell>
           <mat-footer-cell *matFooterCellDef></mat-footer-cell>
 
       </ng-container>
@@ -35,7 +35,7 @@
 </mat-table>
 
 <div class="flx-row-end sticky">
-  <tb-paginator [dataSource]="dataSource" [tableElRef]="tableElRef"
+  <tb-paginator [dataSource]="dataSource" [tableElRef]="tableElRef" #tbPaginator
   [data$]="data$"></tb-paginator>
   
   <mat-icon [matTooltip]="(collapseFooter$ | async) ? 'expand' : 'collapse'" class="collapse-icon footer" (click)="state.toggleCollapseFooter()">
