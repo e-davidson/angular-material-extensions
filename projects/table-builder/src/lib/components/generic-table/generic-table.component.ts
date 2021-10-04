@@ -44,8 +44,6 @@ export class GenericTableComponent implements OnInit {
   @Input() columnBuilders: ColumnBuilderComponent[];
 
   @Input() columnInfos: Observable<ColumnInfo[]>;
-
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
   @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
   currentColumns: string[];
