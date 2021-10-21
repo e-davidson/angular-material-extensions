@@ -26,7 +26,7 @@
   </span>
 </ng-template>
 <ng-template #array let-element='element' let-metaData='metaData'>
-  <tb-array-column  [array]='element[metaData.key]'></tb-array-column>
+  <tb-array-column [array]='element[metaData.key]' [metaData]='metaData'></tb-array-column>
 </ng-template>
 <ng-template #expression let-element='element' let-metaData='metaData'>
   <span>{{element | func : metaData.transform }}</span>
