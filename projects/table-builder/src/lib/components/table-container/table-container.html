@@ -1,6 +1,6 @@
 <ng-container multiSort >
   <ng-container >
-    
+
     <div class="header-wrapper" >
       <div class="title">
         <ng-content select=".tb-header-title"  *ngIf="(!(collapseHeader$ | async)) || (state.tableSettings$ | async).showTitleWhenHeaderCollapsed"></ng-content>
@@ -30,7 +30,7 @@
         </mat-icon>
       </div>
     </div>
-    
+
     <div style="clear: both;">
       <tb-generic-table
       [rows]='customRows'
@@ -55,7 +55,7 @@
   </ng-container>
 </ng-template>
 <ng-template #headerMenuExtra>
-  <button mat-menu-item (click)="state.resetState();OnStateReset.next()" >
+  <button mat-menu-item (click)="state.resetState();OnStateReset.next(null)" >
     <mat-icon color="primary">autorenew</mat-icon>
     <span>Reset table</span>
   </button>
@@ -72,7 +72,7 @@
       <span>Choose Profile</span>
     </button>
   </ng-container>
-  
+
   <mat-menu #savedNames='matMenu' panelClass='wide-menu'  >
     <button mat-menu-item clickSubject #add='clickSubject' >
       <mat-icon>add</mat-icon>
