@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { ArrayAdditional, FieldType, MetaData } from '../../interfaces/report-def';
-import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, last, map, shareReplay, switchMap, withLatestFrom } from 'rxjs/operators';
 import { TableBuilder } from '../../classes/table-builder';
 import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
@@ -71,7 +71,7 @@ import { cloneDeep } from 'lodash';
     @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
     private store: Store<{globalStorageState: GlobalStorageState}>
   ) {
-    this.state.onLast( finalState => {
+     this.state.on( this.state.getSavableState().pipe(last()), finalState => {
       if(this.tableId) {
         this.store.dispatch(setLocalProfile({key:this.tableId,value: finalState}));
       }
@@ -113,7 +113,7 @@ import { cloneDeep } from 'lodash';
     this.state.getSavableState().pipe(
       first()
     ).subscribe( tableState => {
-      this.OnSaveState.next();
+      this.OnSaveState.next(null);
       this.store.dispatch(setLocalProfile({ key: this.tableId, value:tableState, persist: true} ));
     });
   }
@@ -159,10 +159,9 @@ import { cloneDeep } from 'lodash';
     return meta;
   }
 
-  cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) => 
+  cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) =>
     combineLatest([obs.pipe(addTimeStamp()), this.tableBuilder.metaData$]).pipe(
     distinctUntilChanged(([state],[state2])=>state.index === state2.index),
-    
     map(([{value:state},metas],index)=>{
       if (index === 0) {
 
