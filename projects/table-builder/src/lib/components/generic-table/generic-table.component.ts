@@ -13,7 +13,6 @@ import {
   ComponentFactory,
   Injector,
 } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatRowDef, MatTable } from '@angular/material/table';
 import { Observable } from 'rxjs';
@@ -21,11 +20,11 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { TableStore } from '../../classes/table-store';
 import { tap, map } from 'rxjs/operators';
 import { ColumnBuilderComponent } from '../column-builder/column-builder.component';
-import { ColumnInfo } from '../table-container/table-container';
 import { Dictionary } from '../../interfaces/dictionary';
 import { GenericTableDataSource } from '../../classes/GenericTableDataSource';
 import { FieldType } from '../../interfaces/report-def';
 import { previousAndCurrent } from '../../functions/rxjs-operators';
+import { ColumnInfo } from '../../interfaces/ColumnInfo';
 
 @Component({
   selector: 'tb-generic-table',
@@ -59,7 +58,6 @@ export class GenericTableComponent implements OnInit {
     private viewContainer: ViewContainerRef,
     injector: Injector,
     ) {
-    
     this.factory = componentFactoryResolver.resolveComponentFactory(ColumnBuilderComponent);
     this.injector = Injector.create({ providers: [{provide: MatTable, useFactory: ()=> {return this.table} }], parent: injector});
   }
@@ -96,11 +94,9 @@ export class GenericTableComponent implements OnInit {
     this.state.on(this.state.displayedColumns$, keys => {
       this.keys = [...this.columns, ...keys];
       this.rowDefArr?.forEach(row => row.columns = this.keys)
-    
     } );
-     
   }
-  createDataSource() { 
+  createDataSource() {
     this.dataSource = new GenericTableDataSource(
       this.data$.pipe(tap((d) => this.selection.clear() ))
     );
@@ -166,5 +162,3 @@ export class GenericTableComponent implements OnInit {
 
   collapseFooter$ = this.state.state$.pipe(map(state => state.persistedTableSettings.collapseFooter));
 }
-
-export type direc = 'asc' | 'desc' | boolean;
