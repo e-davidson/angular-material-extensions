@@ -28,6 +28,7 @@ import { PersistedTableState } from '../../classes/TableState';
 import { sortData } from '../../functions/sort-data-function';
 import { WrapperFilterStore } from '../table-container-filter/table-wrapper-filter-store';
 import { cloneDeep } from 'lodash';
+import { ColumnInfo } from '../../interfaces/ColumnInfo';
 
 @Component({
   selector: 'tb-table-container',
@@ -179,8 +180,3 @@ import { cloneDeep } from 'lodash';
 
 }
 const addTimeStamp = <T>() => (obs:Observable<T>) => obs.pipe(map((t,i) => ({value:t,index:i})));
-
-export interface ColumnInfo {
-  metaData: MetaData;
-  customCell: CustomCellDirective;
-}
