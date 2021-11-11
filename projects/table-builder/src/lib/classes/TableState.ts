@@ -1,7 +1,7 @@
 import { FilterInfo } from './filter-info';
 import { Dictionary } from '../interfaces/dictionary';
 import { Sort } from '@angular/material/sort';
-import { MetaData } from '../..';
+import { MetaData } from '../interfaces/report-def';
 import { NotPersisitedTableSettings, PesrsistedTableSettings } from './table-builder-general-settings';
 
 export interface PersistedTableState {

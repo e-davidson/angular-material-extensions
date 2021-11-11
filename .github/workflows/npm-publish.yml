@@ -1,6 +1,5 @@
 name: npm-publish
 on:
-  workflow_dispatch:
   release:
     types: [published]
 jobs:
@@ -14,9 +13,8 @@ jobs:
       uses: actions/setup-node@master
       with:
         node-version: '14.15'
-    - run: npm i @angular/cli
     - run: npm install
-    - run: ng build mx-table-builder --configuration production
+    - run: node node_modules/@angular/cli/bin/ng build mx-table-builder --configuration production
     - run: echo '//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}' > .npmrc
     - run: npm publish dist/mx-table-builder --access public
       env:
