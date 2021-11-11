@@ -14,7 +14,7 @@ import { TableContainerComponent } from './components/table-container/table-cont
 import { ColumnTotalPipe } from './pipes/column-total.pipe';
 import { MultiSortDirective } from './directives/multi-sort.directive';
 import { ColumnBuilderComponent } from './components/column-builder/column-builder.component';
-import { ModuleWithProviders } from '@angular/compiler/src/core';
+import { ModuleWithProviders } from '@angular/core';
 import { TableBuilderConfig, TableBuilderConfigToken } from './classes/TableBuilderConfig';
 import { NumberFilterComponent } from './components/number-filter/number-filter.component';
 import { StoreModule } from '@ngrx/store';
@@ -114,7 +114,7 @@ import { PaginatorComponent } from './components/generic-table/paginator.compone
     ]
 })
 export class TableBuilderModule {
-  static forRoot(config: TableBuilderConfig): ModuleWithProviders {
+  static forRoot(config: TableBuilderConfig): ModuleWithProviders<TableBuilderModule> {
     return {
       ngModule: TableBuilderModule,
       providers: [
