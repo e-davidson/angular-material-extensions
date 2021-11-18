@@ -20,7 +20,6 @@ import { mapArray, notNull, skipOneWhen } from '../../functions/rxjs-operators';
 import { ExportToCsvService } from '../../services/export-to-csv.service';
 import { ArrayDefaults } from '../../classes/DefaultSettings';
 import { TableBuilderConfig, TableBuilderConfigToken } from '../../classes/TableBuilderConfig';
-import { GlobalStorageState } from '../../ngrx/reducer';
 import * as selectors from '../../ngrx/selectors';
 import { select, Store } from '@ngrx/store';
 import { deleteLocalProfilesState, setLocalProfile, setLocalProfilesState } from '../../ngrx/actions';

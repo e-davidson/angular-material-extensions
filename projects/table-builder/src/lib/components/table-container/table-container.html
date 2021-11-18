@@ -1,5 +1,5 @@
-<ng-container multiSort *ngrxLet="state.tableSettings$ as tableSettings" >
-  <ng-container >
+<ng-container multiSort >
+<ng-container   *ngrxLet="state.tableSettings$; let tableSettings"  >
 
     <div class="header-wrapper" >
       <div class="title">
@@ -45,7 +45,6 @@
       [columnInfos]='myColumns$'>
       </tb-generic-table>
     </div>
-  </ng-container>
 
 
 <ng-template #headerMenu>
@@ -99,5 +98,7 @@
     <button mat-button (click)='setProfileState(addedKey.value); add.next(false);' [disabled]="!addedKey.value">Add</button>
   </div>
 </ng-template>
+
+</ng-container>
 
 </ng-container>
