@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { ComponentStore } from "@ngrx/component-store";
 import { map } from "rxjs/operators";
-import { FilterInfo } from "../../classes/filter-info";
+import { FilterInfo, PartialFilter } from "../../classes/filter-info";
 @Injectable()
-export class WrapperFilterStore  extends ComponentStore<{filterInfo:FilterInfo[]}>{
+export class WrapperFilterStore  extends ComponentStore<{filterInfo:PartialFilter[]}>{
   constructor(){
     super({filterInfo:[]});
   }
@@ -17,7 +17,7 @@ export class WrapperFilterStore  extends ComponentStore<{filterInfo:FilterInfo[]
 
   currentFilters$ = this.state$.pipe(map(state => state.filterInfo));
 
-  addFilter = this.updater((state,filter:FilterInfo<any>)=>{
+  addFilter = this.updater((state,filter:PartialFilter)=>{
     return ({...state,filterInfo:[...state.filterInfo,filter]});
   })
 }

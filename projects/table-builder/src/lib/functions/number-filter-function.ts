@@ -1,5 +1,6 @@
 import { Range, FilterFunc, FilterInfo } from '../classes/filter-info';
 import { FilterType } from '../enums/filterTypes';
+import { Dictionary } from '../interfaces/dictionary';
 import { isNull } from './null-filter-function';
 
 type NumberFilterFunc = FilterFunc<number>
@@ -20,17 +21,17 @@ const numberLessThanFunc:NumberFilterFunc= (filterInfo : FilterInfo<number>) => 
     return val < filterInfo.filterValue;
 }
 
-const  numberBetweenFunc:FilterFunc<Range<number>,number> = (filterInfo : FilterInfo<Range<number>>) => {
+const  numberBetweenFunc:FilterFunc<Range<number>,number> = (filterInfo : FilterInfo) => {
   const startVal = Number(filterInfo.filterValue.Start);
   const endVal = Number(filterInfo.filterValue.End);
   return ((val)=>(val > startVal) && (val < endVal));
 }
 
-export const multipleNumberValuesEqualsFunc:FilterFunc<number[],number> = (filterInfo:FilterInfo<number[]>) => {
-  return ((val)=>filterInfo.filterValue.some((value) => val === value));
+export const multipleNumberValuesEqualsFunc:FilterFunc<number[],number> = (filterInfo:FilterInfo) => {
+  return ((val)=>filterInfo.filterValue.some((value: any) => val === value));
 }
 
-export const NumberFilterFuncs = {
+export const NumberFilterFuncs: Dictionary<FilterFunc<any,any>> = {
     [FilterType.NumberEquals]: numberEqalsFunc,
     [FilterType.NumberNotEqual]: numberNotEqualFunc,
     [FilterType.NumberGreaterThan]: numberGreaterThanFunc,

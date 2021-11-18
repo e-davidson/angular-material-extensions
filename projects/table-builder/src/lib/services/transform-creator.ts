@@ -18,7 +18,7 @@ export class TransformCreator {
     private phonePipe: PhoneNumberPipe,
     @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
   ) {}
-  createTransformer(metaData: MetaData) {
+  createTransformer(metaData: MetaData): ((value: any, ...args: any[]) => any)  {
     if(metaData.transform) {
       if(isPipe(metaData.transform)){
         return metaData.transform.transform;
@@ -26,18 +26,18 @@ export class TransformCreator {
       return metaData.transform
     }
     if (this.config.transformers && this.config.transformers[metaData.fieldType]) {
-      return this.config.transformers[metaData.fieldType];
+      return this.config.transformers[metaData.fieldType]!;
     }
     switch(metaData.fieldType) {
       case FieldType.Date:
         const dateFormat = metaData.additional?.dateFormat ?? this.config.defaultSettings?.dateFormat ?? 'shortDate';
-        return (value) => this.datePipe.transform(value, dateFormat);
+        return (value: any) => this.datePipe.transform(value, dateFormat);
       case FieldType.Currency:
           return this.currencyPipe.transform;
       case FieldType.PhoneNumber:
         return this.phonePipe.transform;
     }
-      return (value) => value;
+      return (value: any) => value;
   }
 
 }

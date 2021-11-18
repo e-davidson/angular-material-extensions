@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FilterType } from '../../enums/filterTypes';
 import { ControlContainer, NgForm } from '@angular/forms';
-import { FilterInfo } from '../../classes/filter-info';
+import { PartialFilter } from '../../classes/filter-info';
 import { FieldType } from '../../interfaces/report-def';
 
 
@@ -14,6 +14,6 @@ import { FieldType } from '../../interfaces/report-def';
 })
 export class NumberFilterComponent {
   FilterType = FilterType; FieldType = FieldType;
-  @Input() CurrentFilterType: FilterType;
-  @Input() info:FilterInfo;
+  @Input() CurrentFilterType!: FilterType;
+  @Input() info!:PartialFilter;
 }

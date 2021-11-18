@@ -5,7 +5,7 @@ import { createFilterFunc, FilterInfo } from './filter-info';
 
 export class DataFilter<T = any> {
 
-  constructor(private filters$?: Observable< Array< (val: any) => boolean>> ) {
+  constructor(private filters$: Observable< Array< (val: any) => boolean>> ) {
   }
 
   filter(data: any[], filters: Array<(val: any) => boolean> ): any[] {

@@ -7,7 +7,6 @@ import { Subscription } from 'rxjs';
 export class AutoFocusDirective implements AfterViewInit {
 
   @Input() autoFocus = true;
-  sub: Subscription;
   constructor(private elementRef: ElementRef) { }
 
   ngAfterViewInit() {

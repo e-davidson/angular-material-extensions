@@ -34,8 +34,8 @@ export class ExportToCsvService<T> {
     return res.join('\n');
   }
 
-  metaToField = (meta: MetaData, row: T) => {
-    let val = row[meta.key];
+  metaToField = (meta: MetaData<T>, row: T) => {
+    let val: any = row[meta.key];
     if (val == null && !meta.transform) return val
     if(meta.transform && meta.fieldType !== FieldType.Expression){
       const transform = meta.transform as any;
@@ -67,7 +67,7 @@ export class ExportToCsvService<T> {
 
   private transform(val: any, dateFormat: any) {
     if (this.config.transformers && this.config.transformers[FieldType.Date]) {
-      return this.config.transformers[FieldType.Date](val);
+      return this.config.transformers[FieldType.Date]!(val);
     }
     return this.datePipe.transform(val, dateFormat);
   }

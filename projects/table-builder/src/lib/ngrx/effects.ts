@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { defaultStorageState, GlobalStorageState} from './reducer';
 import { tap, filter, mergeMap, first, map } from 'rxjs/operators';
 import * as tableActions from './actions';
@@ -13,23 +13,20 @@ export class SaveTableEffects {
   saveLocalProfile$ = createEffect(
     () => this.actions$.pipe(
       ofType(tableActions.setLocalProfile),
-      filter( action => action.persist),
-      mergeMap( action => this.store.pipe(
-        select(selectLocalProfile(action.key)),
-        first(),
-        map( profile => ({action,profile}))
+      filter( action => !!action.persist),
+      concatLatestFrom( (action) =>  this.store.pipe(
+        select(selectLocalProfile(action.key))
       )),
-      tap( (a) => {
+      tap( ([action,profile]) => {
         const globalSavedState: GlobalStorageState = JSON.parse(localStorage.getItem('global-state-storage') ?? JSON.stringify(defaultStorageState) );
-        let profile = a.profile;
         if(!profile) {
-          profile =  {default: 'default', current: 'default', states : {default: a.action.value}};
-          globalSavedState.localProfiles[a.action.key] = profile;
+          profile =  {default: 'default', current: 'default', states : {default: action.value}};
+          globalSavedState.localProfiles[action.key] = profile;
         } {
-          if(!globalSavedState.localProfiles[a.action.key]) {
-            globalSavedState.localProfiles[a.action.key] = {...profile,states: {[profile.current ?? profile.default]: a.action.value}};
+          if(!globalSavedState.localProfiles[action.key]) {
+            globalSavedState.localProfiles[action.key] = {...profile,states: {[profile.current ?? profile.default]: action.value}};
           } else {
-            globalSavedState.localProfiles[a.action.key].states[profile.current ?? profile.default] = a.action.value;
+            globalSavedState.localProfiles[action.key].states[profile.current ?? profile.default] = action.value;
           }
 
         }
@@ -53,5 +50,5 @@ export class SaveTableEffects {
     ), { dispatch: false }
   );
 
-  constructor( private actions$: Actions, private store: Store ) {}
+  constructor( private actions$: Actions, private store: Store<any> ) {}
 }

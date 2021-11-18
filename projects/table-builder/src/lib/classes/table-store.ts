@@ -1,4 +1,4 @@
-import { FieldType, MetaData } from '../interfaces/report-def';
+import { FieldType, MetaData, SortDef } from '../interfaces/report-def';
 import { v4 as uuid } from 'uuid';
 import { Observable } from 'rxjs';
 import { defaultTableState, PersistedTableState, TableState } from './TableState';
@@ -26,10 +26,10 @@ export class TableStore extends ComponentStore<TableState> {
   getSavableState() : Observable<PersistedTableState> {
     return  this.state$.pipe(
       map( s => {
-        const savableState = {...s}
+        const savableState = {...s} as Partial<TableState>
         delete savableState.metaData;
         delete savableState.notPersisitedTableSettings;
-        return savableState;
+        return savableState as PersistedTableState;
       })
     );
   }
@@ -59,7 +59,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   getUserDefinedWidth$ = (key:string) => this.select(state => state.userDefined.widths[key]);
   getUserDefinedWidths$ = this.select(state => state.userDefined.widths);
-  
+
   private displayedColumns =  (state:TableState) => orderMetaData(state).map(md => md.key)
     .filter(key => !state.hiddenKeys.includes(key) && state.metaData[key].fieldType !== FieldType.Hidden);
   readonly displayedColumns$ = this.select(this.displayedColumns);
@@ -87,14 +87,14 @@ export class TableStore extends ComponentStore<TableState> {
   }));
 
   readonly setHiddenColumns = this.updater((state, displayCols: {key: string, visible: boolean}[]) => {
-    
+
     var hiddenKeysSet= new Set<string>(
       [
         ...displayCols.filter(col => !col.visible).map(col => col.key),
         ...Object.values(state.metaData).filter(md => md.fieldType === FieldType.Hidden).map(md => md.key)
       ]
     );
-    
+
     return update( state , { hiddenKeys: {$set: [...hiddenKeysSet]}});
   });
 
@@ -112,7 +112,7 @@ export class TableStore extends ComponentStore<TableState> {
     const mdsArr = orderViewableMetaData(state);
     moveItemInArray(mdsArr,oldOrder,newOrder);
 
-    const userDefinedOrder = mdsArr.reduce((aggregate,current,index) => {
+    const userDefinedOrder = mdsArr.reduce((aggregate: any,current,index) => {
       aggregate[current.key] = index;
       return aggregate
     },{});
@@ -122,7 +122,7 @@ export class TableStore extends ComponentStore<TableState> {
 
   readonly filters$ = this.select(state => state.filters );
 
-  readonly getFilter$ = (filterId) : Observable<FilterInfo | undefined> => {
+  readonly getFilter$ = (filterId: string) : Observable<FilterInfo | undefined> => {
     return this.select( state => state.filters[filterId] );
   }
   readonly addFilter = this.updater( (state, filter: FilterInfo) => {
@@ -136,7 +136,7 @@ export class TableStore extends ComponentStore<TableState> {
   private addFiltersToState = (state:TableState,filters:FilterInfo[]) : TableState => {
     const filtersObj = filters
       .filter(fltr => Object.keys(state.metaData).some(key => key === fltr.key) || console.warn(`Meta data with key ${fltr.key} not found`))
-      .reduce((filtersObj,filter)=>{
+      .reduce((filtersObj: {[k: string]: any},filter)=>{
         if (!filter.filterId) {
           filter.filterId = uuid();
         }
@@ -164,7 +164,7 @@ export class TableStore extends ComponentStore<TableState> {
   readonly sorted$ = this.select(state => state.sorted);
 
   createPreSort = (metaDatas: Dictionary<MetaData>): Sort[] => {
-    return Object.values(metaDatas).filter(( metaData ) => metaData.preSort)
+    return Object.values(metaDatas).filter(( metaData ) : metaData is MetaData & {preSort: SortDef} => !!metaData.preSort)
     .sort(({  preSort: ps1  }, { preSort: ps2 } ) => (ps1.precedence || Number.MAX_VALUE) - ( ps2.precedence || Number.MAX_VALUE))
     .map(( {key, preSort} ) => ({ active: key, direction: preSort.direction }))
   }
@@ -279,5 +279,5 @@ export const orderMetaData = (state:TableState) => {
   return userOrderArr.length ?
    Object.values(state.metaData).sort((a,b)=> state.userDefined.order[a.key] - state.userDefined.order[b.key])
    :
-   Object.values(state.metaData).sort((a,b)=> a.order - b.order)
+   Object.values(state.metaData).sort((a,b)=> a.order! - b.order!)
 }

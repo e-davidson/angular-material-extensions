@@ -7,15 +7,15 @@ import { Observable, Subscription } from 'rxjs';
   providers: [{ provide: MatDialogRef, useValue: null }]
 })
 export class DialogDirective implements OnDestroy {
-  dialogRef: MatDialogRef<any, any>;
-  subscription: Subscription;
+  dialogRef?: MatDialogRef<any, any>;
+  subscription?: Subscription;
 
   constructor(
     private templateRef: TemplateRef<any>,
     private dialog: MatDialog
   ) { }
 
-  @Input() appDialogConfig: MatDialogConfig;
+  @Input() appDialogConfig?: MatDialogConfig;
   @Input('appDialog') set state(open_close: Observable<boolean>) {
       if (this.subscription) {
         this.subscription.unsubscribe();
@@ -27,7 +27,7 @@ export class DialogDirective implements OnDestroy {
     if (open && !this.dialogRef) {
       this.dialogRef = this.dialog.open(this.templateRef, this.appDialogConfig);
       const sub = this.dialogRef.afterClosed().subscribe(() => {
-        this.dialogRef = null;
+        this.dialogRef = undefined;
         sub.unsubscribe();
       });
     } else if (!open && this.dialogRef) {

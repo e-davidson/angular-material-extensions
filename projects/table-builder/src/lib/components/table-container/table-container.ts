@@ -16,7 +16,7 @@ import { MatRowDef } from '@angular/material/table';
 import { CustomCellDirective } from '../../directives';
 import {  TableStore } from '../../classes/table-store';
 import { DataFilter } from '../../classes/data-filter';
-import { mapArray, skipOneWhen } from '../../functions/rxjs-operators';
+import { mapArray, notNull, skipOneWhen } from '../../functions/rxjs-operators';
 import { ExportToCsvService } from '../../services/export-to-csv.service';
 import { ArrayDefaults } from '../../classes/DefaultSettings';
 import { TableBuilderConfig, TableBuilderConfigToken } from '../../classes/TableBuilderConfig';
@@ -37,17 +37,17 @@ import { ColumnInfo } from '../../interfaces/ColumnInfo';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TableStore,ExportToCsvService,WrapperFilterStore]
 }) export class TableContainerComponent<T = any> {
-  @Input() tableId;
+  @Input() tableId!: string;
   @Input() SaveState = false;
-  @Input() tableBuilder: TableBuilder;
+  @Input() tableBuilder!: TableBuilder;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
-  @Input() trackBy: string;
+  @Input() trackBy!: string;
   @Input() isSticky = true;
   @Input() set pageSize(value: number) {
     this.state.setPageSize(value);
   }
-  @Input() inputFilters: Observable<Array<(val: T) => boolean>>;
+  @Input() inputFilters!: Observable<Array<(val: T) => boolean>>;
   @Output() selection$ = new EventEmitter();
   dataSubject = new ReplaySubject<Observable<T[]>>(1);
   @Output() data = this.dataSubject.pipe(
@@ -55,22 +55,22 @@ import { ColumnInfo } from '../../interfaces/ColumnInfo';
     shareReplay({refCount: true, bufferSize: 1 })
   );
 
-  @ContentChildren(MatRowDef) customRows: QueryList<MatRowDef<any>>;
-  @ContentChildren(CustomCellDirective) customCells: QueryList<CustomCellDirective>;
+  @ContentChildren(MatRowDef) customRows!: QueryList<MatRowDef<any>>;
+  @ContentChildren(CustomCellDirective) customCells!: QueryList<CustomCellDirective>;
   @Output() OnStateReset = new EventEmitter();
   @Output() OnSaveState = new EventEmitter();
   @Output() state$ : Observable<PersistedTableState>;
 
-  myColumns$: Observable<ColumnInfo[]>;
+  myColumns$!: Observable<ColumnInfo[]>;
 
-  stateKeys$?: Observable<string[]>;
+  stateKeys$?: Observable<string[] | null>;
   currentStateKey$?: Observable<string>;
 
   constructor(
     public state: TableStore,
     public exportToCsvService: ExportToCsvService<T>,
     @Inject(TableBuilderConfigToken) private config: TableBuilderConfig,
-    private store: Store<{globalStorageState: GlobalStorageState}>
+    private store: Store<any>
   ) {
      this.state.on( this.state.getSavableState().pipe(last()), finalState => {
       if(this.tableId) {
@@ -86,8 +86,8 @@ import { ColumnInfo } from '../../interfaces/ColumnInfo';
     if(this.tableId) {
       this.state.updateState(
         this.store.pipe(
-          select(selectors.selectLocalProfileState<PersistedTableState>(this.tableId)),
-          filter( state => !!state ),
+          select(selectors.selectLocalProfileState<any>(this.tableId) ),
+          notNull(),
           this.cleanStateOnInitialLoad(),
           skipOneWhen(this.OnSaveState),
         )
@@ -135,7 +135,7 @@ import { ColumnInfo } from '../../interfaces/ColumnInfo';
 
   InitializeColumns() {
     const customCellMap = new Map(this.customCells.map(cc => [cc.customCell,cc]));
-    this.state.setMetaData(this.tableBuilder.metaData$.pipe(
+    this.state.setMetaData(this.tableBuilder.metaData$!.pipe(
       first(),
       map((mds) => {
         mds = mds.map(this.mapMetaDatas);
@@ -147,7 +147,7 @@ import { ColumnInfo } from '../../interfaces/ColumnInfo';
     ));
 
     this.myColumns$ = this.state.metaDataArray$.pipe(
-      mapArray( metaData => ({metaData, customCell: customCellMap.get(metaData.key)}))
+      mapArray( metaData => ({metaData, customCell: customCellMap.get(metaData.key)!}))
     );
   }
   mapMetaDatas = (meta : MetaData<T>) => {
@@ -160,14 +160,14 @@ import { ColumnInfo } from '../../interfaces/ColumnInfo';
     return meta;
   }
 
-  cleanStateOnInitialLoad = ()=> (obs:Observable<PersistedTableState>) =>
-    combineLatest([obs.pipe(addTimeStamp()), this.tableBuilder.metaData$]).pipe(
+  cleanStateOnInitialLoad = () => (obs:Observable<PersistedTableState>) =>
+    combineLatest([obs.pipe(addTimeStamp()) , this.tableBuilder.metaData$!]).pipe(
     distinctUntilChanged(([state],[state2])=>state.index === state2.index),
     map(([{value:state},metas],index)=>{
       if (index === 0) {
 
-        const filters = Object.values(state.filters).filter(fltr => metas.some(m => m.key === fltr.key)).reduce((obj, filter) => {
-          obj[filter.filterId] = state.filters[filter.filterId];
+        const filters = Object.values(state.filters).filter(fltr => metas.some(m => m.key === fltr.key)).reduce((obj: any, filter) => {
+          obj[filter.filterId!] = state.filters[filter.filterId!];
           return obj;
         }, {});
         const sorted = state.sorted.filter(s => metas.some(m => m.key === s.active));

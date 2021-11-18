@@ -36,8 +36,8 @@ export class PesrsistedTableSettings {
       this.collapseFooter = (tableSettings as GeneralTableSettings).footerSettings?.collapse ?? (tableSettings as PesrsistedTableSettings).collapseFooter;
     }
   }
-  collapseHeader : boolean;
-  collapseFooter : boolean;
+  collapseHeader = false;
+  collapseFooter = false;
 }
 
 export class NotPersisitedTableSettings {

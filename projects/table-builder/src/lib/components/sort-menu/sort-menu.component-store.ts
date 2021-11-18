@@ -29,13 +29,13 @@ export class SortMenuComponentStore extends ComponentStore<ComponenStoreState> {
         notNull(),
         map(
         meta => sort.map(s => {
-          return ({...s,displayName:meta[s.active]?.displayName} as SortWithName)})
+          return ({...s, displayName: meta[s.active]?.displayName} as SortWithName)})
       )))
     );
     const notSorted = this.tableState.metaDataArray$.pipe(mergeMap(
       metas => this.tableState.sorted$.pipe(
         map(s => metas.filter(meta=> !s.some(s=>s.active=== meta.key))
-          .map(meta=>({active:meta.key,direction:null,displayName : meta.displayName} as SortWithName)))
+          .map(meta=>({active:meta.key,displayName : meta.displayName} as SortWithName)))
       )
     ));
     this.set(combineLatest([

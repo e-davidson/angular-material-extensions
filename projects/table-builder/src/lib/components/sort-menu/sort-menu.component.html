@@ -50,7 +50,7 @@
           <!-- Menu Item Headers -->
           <span *ngIf="sorted.length > 1 && i === 0 " class="description" class="sort-header">First By</span>
           <span *ngIf="sorted.length > 1 && i !== 0 " class="description"  class="sort-header">Then By</span>
-          
+
           <!-- Menu Item -->
           <div mat-menu-item   cdkDrag class="menu-item">
             <div class="sort-item">
@@ -67,7 +67,7 @@
                   arrow_upward
                   </mat-icon>
                 </button>
-          
+
                 <button class="up-down-button" stop-propagation
                 (click)="setDirection({active:sort.active,direction:SortDirection.desc,displayName:sort.displayName})">
                   <mat-icon [ngClass]="sort.direction === SortDirection.asc ? 'light-arrow' : 'dark-arrow'" class="up-down-icon">

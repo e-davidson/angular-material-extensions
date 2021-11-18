@@ -1,5 +1,5 @@
 import { flatten } from 'lodash';
-import { Observable, combineLatest, Subscription } from 'rxjs';
+import { Observable, combineLatest, Subscription, MonoTypeOperatorFunction, OperatorFunction } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 
 export const mapArray = <T, U>(mapFunc: (src: T) => U ) => (source: Observable<T[]>) =>
@@ -8,20 +8,23 @@ export const mapArray = <T, U>(mapFunc: (src: T) => U ) => (source: Observable<T
 export  const filterArray = <T>(filterFunc: (src: T) => boolean ) => (source: Observable<T[]>) =>
   source.pipe( map( src => src.filter(filterFunc) ) );
 
-export const onWait = <T>(val: T) => (source: Observable<T>) => {
-  return new Observable<T>(subscriber => {
-    let emitted = false;
-    setTimeout(() => {
-      if(!emitted) {
-        subscriber.next(val);
-      }
-    }, 0);
-    source.subscribe({
-      next(x) { emitted = true; subscriber.next(x) },
-      error(err) { emitted = true; subscriber.error(err) },
-      complete() { emitted = true; subscriber.complete(); }
+export function onWait<T,V extends T>(val: V) : MonoTypeOperatorFunction<T> {
+  return (source: Observable<T>) => {
+    return new Observable<T>(subscriber => {
+      let emitted = false;
+      setTimeout(() => {
+        if(!emitted) {
+          subscriber.next(val);
+        }
+      }, 0);
+      source.subscribe({
+        next(x) { emitted = true; subscriber.next(x) },
+        error(err) { emitted = true; subscriber.error(err) },
+        complete() { emitted = true; subscriber.complete(); }
+      });
     });
-  });
+  }
+
 }
 
 export const combineArrays = <T>(sources: Observable<T[]>[]): Observable<T[]> => {
@@ -74,8 +77,15 @@ export function skipOneWhen( skipper: Observable<any> ) {
   }
 }
 
-export const previousAndCurrent = <T>(startingValue : T) => (obs : Observable<T>) => 
-  obs.pipe(startWith(startingValue), pairwise());
-export const notNull = <T>() => (obs:Observable<T>)=>obs.pipe(
-  filter(data => data != null)
-)
+export function previousAndCurrent<T>(startingValue : T) : OperatorFunction<T, [T, T]> {
+  return (source: Observable<T>) => {
+    return source.pipe(startWith(startingValue), pairwise());
+  }
+}
+
+export function notNull<T>(): OperatorFunction<(T | null | undefined), T> {
+  return  (source: Observable<T | null | undefined>) => {
+    return  source.pipe(filter( (o: T | null | undefined): o is T => !!o) )
+  }
+}
+
