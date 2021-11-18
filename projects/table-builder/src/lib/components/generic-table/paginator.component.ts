@@ -26,12 +26,12 @@ import { TableStore } from '../../classes/table-store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaginatorComponent implements OnInit, AfterViewInit{
-  @Input() dataSource : GenericTableDataSource<any>;
-  @Input() tableElRef : ElementRef
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  currentPageData$: Observable<CurrentPageDetails>;
-  collapseFooter$:Observable<boolean>;
-  @Input() data$: Observable<any[]>;
+  @Input() dataSource! : GenericTableDataSource<any>;
+  @Input() tableElRef! : ElementRef
+  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
+  currentPageData$!: Observable<CurrentPageDetails>;
+  collapseFooter$!:Observable<boolean>;
+  @Input() data$!: Observable<any[]>;
 
   constructor(private state : TableStore){}
   ngOnInit(){
@@ -47,7 +47,7 @@ export class PaginatorComponent implements OnInit, AfterViewInit{
       this.paginator.page.pipe(map(mapPaginationEventToCurrentPageDetails)),
       this.data$.pipe(
         distinctUntilKeyChanged("length"),
-        delayToAllowForProperUpdate, 
+        delayToAllowForProperUpdate,
         map(updateCurrentPageDetailsOnDataLengthChange(this.paginator)))
     );
   }
@@ -60,7 +60,7 @@ export class PaginatorComponent implements OnInit, AfterViewInit{
     }
   }
   ourPageEvent = false;
-  
+
 }
 
 const mapPaginationEventToCurrentPageDetails = (pageData: PageEvent):CurrentPageDetails => ({

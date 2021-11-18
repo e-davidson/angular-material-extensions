@@ -1,9 +1,11 @@
 <ng-container multiSort >
-  <ng-container >
+<ng-container   *ngrxLet="state.tableSettings$; let tableSettings"  >
 
     <div class="header-wrapper" >
       <div class="title">
-        <ng-content select=".tb-header-title"  *ngIf="(!(collapseHeader$ | async)) || (state.tableSettings$ | async).showTitleWhenHeaderCollapsed"></ng-content>
+        <ng-content select=".tb-header-title"  *ngIf="(!(collapseHeader$ | async)) || tableSettings.showTitleWhenHeaderCollapsed">
+
+        </ng-content>
       </div>
       <div class="flx-row-end">
         <lib-filter-list></lib-filter-list>
@@ -43,11 +45,10 @@
       [columnInfos]='myColumns$'>
       </tb-generic-table>
     </div>
-  </ng-container>
-</ng-container>
+
 
 <ng-template #headerMenu>
-  <ng-container *ngIf="state.tableSettings$ | async as tableSettings">
+  <ng-container>
     <tb-filter-displayer *ngIf="!tableSettings.hideFilter">
     </tb-filter-displayer>
     <tb-col-displayer  *ngIf="!tableSettings.hideColumnSettings"></tb-col-displayer>
@@ -59,7 +60,7 @@
     <mat-icon color="primary">autorenew</mat-icon>
     <span>Reset table</span>
   </button>
-  <button mat-menu-item (click)="exportToCsv()"  *ngIf="!(state.tableSettings$ | async).hideExport">
+  <button mat-menu-item (click)="exportToCsv()"  *ngIf="!tableSettings.hideExport">
     <mat-icon color="primary">file_download</mat-icon>
     <span>Export Table</span>
   </button>
@@ -97,3 +98,7 @@
     <button mat-button (click)='setProfileState(addedKey.value); add.next(false);' [disabled]="!addedKey.value">Add</button>
   </div>
 </ng-template>
+
+</ng-container>
+
+</ng-container>

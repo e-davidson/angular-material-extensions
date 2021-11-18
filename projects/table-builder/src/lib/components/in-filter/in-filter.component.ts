@@ -16,14 +16,14 @@ import { FieldType } from '../../interfaces/report-def';
 })
 export class InFilterComponent implements ControlValueAccessor {
   FieldType = FieldType;
-  @Input() type : FieldType;
-  value: (string | number)[] = [undefined];
+  @Input() type! : FieldType;
+  value: any[] = [undefined];
 
   constructor(private ref: ChangeDetectorRef) {
     this.value = [undefined];
   }
-  writeValue(obj: (string | number)[]): void {
-    if(!obj || !obj.length) obj  = [undefined];
+  writeValue(obj: any[]): void {
+    if(!obj?.length) obj  = [undefined];
     this.value = obj;
     this.ref.markForCheck();
   }
@@ -41,7 +41,7 @@ export class InFilterComponent implements ControlValueAccessor {
   }
 
   addInput(){
-    this.value = [...this.value,undefined];
+    this.value = [...this.value];
     this.ref.markForCheck();
     this.onChange(this.value);
   }

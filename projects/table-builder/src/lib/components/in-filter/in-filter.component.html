@@ -2,12 +2,12 @@
     <div *ngFor="let val of value; index as i">
       <input *ngIf="type === FieldType.Number || type === FieldType.Currency"
         [ngModel]="val" (ngModelChange)="onValueChange(i,$event)"
-        [readonly]="i+1 < value?.length" type="number" [ngModelOptions]="{standalone:true}" [autoFocus]="i === value?.length - 1"/>
+        [readonly]="i+1 < value.length" type="number" [ngModelOptions]="{standalone:true}" [autoFocus]="i === value.length - 1"/>
       <input *ngIf="type !== FieldType.Number && type !== FieldType.Currency"
         [ngModel]="val" (ngModelChange)="onValueChange(i,$event)"
-        [readonly]="i+1 < value?.length" type="string" [ngModelOptions]="{standalone:true}"
-        #input [autoFocus]="i === value?.length - 1" />
-      <button [disabled]="value?.length <= 1" (click)="removeInput(i)">-</button>
-      <button *ngIf="i === value?.length - 1" [disabled]="val == undefined || val === ''" (click)="addInput()">+</button>
+        [readonly]="i+1 < value.length" type="string" [ngModelOptions]="{standalone:true}"
+        #input [autoFocus]="i === value.length - 1" />
+      <button [disabled]="value.length <= 1" (click)="removeInput(i)">-</button>
+      <button *ngIf="i === value.length - 1" [disabled]="val == undefined || val === ''" (click)="addInput()">+</button>
     </div>
 </div>

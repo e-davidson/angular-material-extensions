@@ -1,4 +1,4 @@
-export class DisplayCol {
+export interface DisplayCol {
     key: string;
     displayName?: string;
     isVisible: boolean;

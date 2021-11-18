@@ -14,16 +14,16 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class HeaderMenuComponent {
   FieldType = FieldType;
   FilterType = FilterType;
-  myFilterType: FilterType;
+  myFilterType!: FilterType;
   myFilterValue: any;
 
-  @Input() filter: FilterInfo;
+  @Input() filter!: Partial<FilterInfo>;
 
-  @Input() metaData: MetaData;
-  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+  @Input() metaData!: MetaData;
+  @ViewChild(MatMenuTrigger) trigger!: MatMenuTrigger;
   constructor( public tableState: TableStore) {}
 
-  hideField(key) {
+  hideField(key: string) {
     this.tableState.hideColumn(key);
   }
 

@@ -22,9 +22,9 @@ import { TableBuilderConfigToken, TableBuilderConfig } from '../classes/TableBui
 })
 export class ArrayColumnComponent {
   ArrayStyle = ArrayStyle;
-  additional: ArrayAdditional;
-  @Input() array: any[];
-  @Input() metaData: MetaData;
+  additional!: ArrayAdditional;
+  @Input() array!: any[];
+  @Input() metaData!: MetaData;
 
   constructor( @Inject(TableBuilderConfigToken) private config: TableBuilderConfig
     ) {

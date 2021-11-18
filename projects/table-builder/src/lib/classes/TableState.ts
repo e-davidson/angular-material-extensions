@@ -13,8 +13,8 @@ export interface PersistedTableState {
   persistedTableSettings : PesrsistedTableSettings;
 }
 
-export interface TableState extends PersistedTableState {
-  metaData?: Dictionary<MetaData>;
+export interface TableState extends Required<PersistedTableState> {
+  metaData: Dictionary<MetaData>;
   notPersisitedTableSettings : NotPersisitedTableSettings;
 }
 
@@ -26,4 +26,5 @@ export const defaultTableState: TableState = {
   userDefined:{order:{},widths:{},table:{}},
   persistedTableSettings : new PesrsistedTableSettings(),
   notPersisitedTableSettings : new NotPersisitedTableSettings(),
+  pageSize: 10,
 };

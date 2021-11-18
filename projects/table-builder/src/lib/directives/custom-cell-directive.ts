@@ -11,12 +11,12 @@ import { SortDef, MetaData, FieldType } from '../interfaces/report-def';
     selector: '[customCell]',
 })
 export class CustomCellDirective implements AfterContentInit {
-    @Input() customCell: string;
-    @Input() displayName: string;
-    @Input() preSort: SortDef;
+    @Input() customCell!: string;
+    @Input() displayName?: string;
+    @Input() preSort?: SortDef;
     @Input() TemplateRef: TemplateRef<any>;
-    @Input() customCellOrder: number;
-    @Input() customCellWidth: string;
+    @Input() customCellOrder?: number;
+    @Input() customCellWidth?: string;
     constructor(
       @Optional()  private templateRef: TemplateRef<any>,
       @Optional() public columnDef: CdkColumnDef
@@ -35,7 +35,7 @@ export class CustomCellDirective implements AfterContentInit {
         displayName: this.displayName ?? metaData?.displayName,
         preSort: this.preSort ?? metaData?.preSort,
         fieldType: metaData?.fieldType ??  FieldType.Unknown,
-        order: this.customCellOrder ?? metaData?.order,
+        order: this.customCellOrder ?? metaData?.order ?? 0,
         _internalNotUserDefined: !(!!metaData),
         width: this.customCellWidth ?? metaData?.width,
         customCell: true,

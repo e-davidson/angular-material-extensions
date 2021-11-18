@@ -3,8 +3,8 @@
     <ng-container matColumnDef="select">
 
         <mat-header-cell *matHeaderCellDef class="f-mat-header-cell" style="flex: 0 0 30px;" >
-          <mat-checkbox (change)="$event ? masterToggle() : null"
-                        [checked]="masterToggleChecked$ | async"
+          <mat-checkbox *ngrxLet="masterToggleChecked$ as masterToggleChecked" (change)="$event ? masterToggle() : null"
+                        [checked]="masterToggleChecked"
                         [indeterminate]="masterToggleIndeterminate$ | async">
           </mat-checkbox>
         </mat-header-cell>
@@ -37,10 +37,10 @@
 <div class="flx-row-end sticky">
   <tb-paginator [dataSource]="dataSource" [tableElRef]="tableElRef" #tbPaginator
   [data$]="data$"></tb-paginator>
-  
+
   <mat-icon [matTooltip]="(collapseFooter$ | async) ? 'expand' : 'collapse'" class="collapse-icon footer" (click)="state.toggleCollapseFooter()">
     {{(collapseFooter$ | async) ? 'expand_more' : 'expand_less'}}
   </mat-icon>
-  
+
 </div>
 

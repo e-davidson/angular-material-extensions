@@ -3,6 +3,7 @@ import { TableStore } from '../../../classes/table-store';
 import { FilterInfo } from '../../../classes/filter-info';
 import { map } from 'rxjs/operators';
 import { WrapperFilterStore } from '../table-wrapper-filter-store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'lib-filter-list',
@@ -14,7 +15,7 @@ export class FilterChipsComponent {
   constructor( public tableState: TableStore, private filterStore : WrapperFilterStore) {
   }
 
-    filters$ = this.tableState.filters$.pipe(map( filters => Object.values(filters)));
+    filters$: Observable<FilterInfo<any>[]> = this.tableState.filters$.pipe(map( filters => Object.values(filters)));
 
     deleteByIndex(index: number) {
       this.filterStore.deleteByIndex(index);

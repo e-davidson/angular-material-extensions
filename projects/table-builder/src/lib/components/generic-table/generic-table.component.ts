@@ -23,7 +23,7 @@ import { ColumnBuilderComponent } from '../column-builder/column-builder.compone
 import { Dictionary } from '../../interfaces/dictionary';
 import { GenericTableDataSource } from '../../classes/GenericTableDataSource';
 import { FieldType } from '../../interfaces/report-def';
-import { previousAndCurrent } from '../../functions/rxjs-operators';
+import { notNull, previousAndCurrent } from '../../functions/rxjs-operators';
 import { ColumnInfo } from '../../interfaces/ColumnInfo';
 
 @Component({
@@ -34,20 +34,20 @@ import { ColumnInfo } from '../../interfaces/ColumnInfo';
 })
 export class GenericTableComponent implements OnInit {
 
-  @Input() data$: Observable<any[]>;
+  @Input() data$!: Observable<any[]>;
   @Input() IndexColumn = false;
   @Input() SelectionColumn = false;
-  @Input() trackBy: string;
-  @Input() rows: QueryList<MatRowDef<any>>;
+  @Input() trackBy!: string;
+  @Input() rows!: QueryList<MatRowDef<any>>;
   @Input() isSticky = false;
-  @Input() columnBuilders: ColumnBuilderComponent[];
+  @Input() columnBuilders!: ColumnBuilderComponent[];
 
-  @Input() columnInfos: Observable<ColumnInfo[]>;
-  @ViewChild(MatTable, { static: true }) table: MatTable<any>;
-  @ViewChild('table', {read: ElementRef}) tableElRef: ElementRef;
-  currentColumns: string[];
+  @Input() columnInfos!: Observable<ColumnInfo[]>;
+  @ViewChild(MatTable, { static: true }) table!: MatTable<any>;
+  @ViewChild('table', {read: ElementRef}) tableElRef!: ElementRef;
+  currentColumns!: string[];
 
-  dataSource: GenericTableDataSource<any>;
+  dataSource!: GenericTableDataSource<any>;
   keys: string [] = [];
   factory: ComponentFactory<ColumnBuilderComponent> ;
   injector: Injector;
@@ -62,7 +62,7 @@ export class GenericTableComponent implements OnInit {
     this.injector = Injector.create({ providers: [{provide: MatTable, useFactory: ()=> {return this.table} }], parent: injector});
   }
 
-  trackByFunction = (index, item) => {
+  trackByFunction = (index:number, item: any) => {
     if (!item) {
       return null;
     }
@@ -145,7 +145,10 @@ export class GenericTableComponent implements OnInit {
       this.selection.select(...this.dataSource.data);
   }
 
+  defVal: number | undefined = 0;
+
   tableWidth = this.state.getUserDefinedTableSize$.pipe(
+    notNull(),
     previousAndCurrent(0),
     map(([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
       if( currentUserDefinedWidth ){
@@ -158,7 +161,9 @@ export class GenericTableComponent implements OnInit {
       function wasReset(){
         return previousUserDefinedWidth >=0 && currentUserDefinedWidth == null;
       }
-    }));
+    })
+
+    );
 
   collapseFooter$ = this.state.state$.pipe(map(state => state.persistedTableSettings.collapseFooter));
 }

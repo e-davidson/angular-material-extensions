@@ -7,9 +7,9 @@ import { TableStore } from "../classes/table-store";
   selector: "[resizeColumn]",
 })
 export class ResizeColumnDirective implements OnInit{
-  @Input("resizeColumn") resizable: boolean;
+  @Input("resizeColumn") resizable!: boolean;
 
-  @Input() key: string;
+  @Input() key!: string;
   constructor(private renderer: Renderer2, private el: ElementRef, public store: TableStore,) { }
 
   ngOnInit(){
@@ -94,7 +94,7 @@ export class ResizeColumnDirective implements OnInit{
     return ({newTableWidth,newColumnWidth})
   }
   getElementWidth = (elem:HTMLElement) => (+(globalThis.getComputedStyle(elem).getPropertyValue('width').replace('px','')))
-  
+
 }
 interface MouseDowmData{
   startPageX:number,

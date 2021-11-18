@@ -2,7 +2,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Observable, Subscription } from 'rxjs';
 
 export class MatTableObservableDataSource<T> extends  MatTableDataSource<T> {
-  subscription: Subscription;
+  subscription?: Subscription;
   constructor(private dataSrc: Observable<T[]>) {
     super([]);
   }
@@ -16,7 +16,7 @@ export class MatTableObservableDataSource<T> extends  MatTableDataSource<T> {
   disconnect() {
     if (this.subscription) {
       this.subscription.unsubscribe();
-      this.subscription = null;
+      this.subscription = undefined;
     }
     super.disconnect();
   }

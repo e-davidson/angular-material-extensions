@@ -45,23 +45,24 @@ export class InListFilterComponent implements ControlValueAccessor {
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
-  @Input() key: string;
+  @Input() key!: string;
 
-  keyValues$ : Observable<Dictionary<string>>;
+  keyValues$! : Observable<Dictionary<string>>;
   selectedKeys : string[] = [];
-  metaData: MetaData;
+  metaData!: MetaData;
 
   ngOnInit() {
     this.keyValues$ = this.tableState.getMetaData$(this.key).pipe(
       tap(metaData => this.metaData = metaData),
       map( metaData => {
         if(metaData.additional?.filterOptions?.filterableValues ) {
-          return  metaData.additional.filterOptions.filterableValues.reduce( (prev, cur)=> { prev[cur] = cur; return prev }, {});
+          return  metaData.additional.filterOptions.filterableValues.reduce( (prev: any, cur)=> { prev[cur] = cur; return prev }, {});
         } else {
           if(metaData.fieldType === FieldType.Enum ) {
-            return metaData.additional.enumMap;
+            return metaData.additional!.enumMap;
           }
         }
+        return {};
       })
     );
   }

@@ -1,6 +1,7 @@
 import { Dictionary } from './dictionary';
 import { PipeTransform, TemplateRef } from '@angular/core';
 
+
 export enum FieldType {
     Unknown = 0,
     Date = 1,

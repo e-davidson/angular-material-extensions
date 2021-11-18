@@ -9,27 +9,30 @@ export const selectCurrentGlobalProfile = createSelector(selectGlobalStorageStat
 
 export const selectLocalProfile = <T>(key:string) =>  createSelector(selectGlobalStorageState, state => state.localProfiles[key]);
 
-export const selectLocalProfileState = <T>(key:string) =>  createSelector(
-  selectLocalProfile(key),
-  (profile: Profile<T>) => {
-    if(profile) {
-      return  profile.states[profile.current ?? profile.default];
-    }
-    return null;
-});
+export function selectLocalProfileState<T>(key:string) {
+  return createSelector<{ globalStorageState: GlobalStorageState }, any[], T>
+  (
+    selectLocalProfile(key),
+    (profile: Profile<T>) => {
+      if(profile) {
+        return  profile.states[profile.current ?? profile.default];
+      }
+      return null;
+  });
+}
 
-export const selectLocalProfileCurrentKey = <T>(key:string) =>  createSelector(
+export const selectLocalProfileCurrentKey =  (key:string) =>  createSelector (
   selectLocalProfile(key),
-  (profile: Profile<T>) => {
+  (profile: Profile ) => {
     if(profile) {
       return  profile.current ?? profile.default;
     }
     return 'default';
 });
 
-export const selectLocalProfileKeys = <T>(key:string) =>  createSelector(
+export const selectLocalProfileKeys = (key:string) =>  createSelector(
   selectLocalProfile(key),
-  (profile: Profile<T>) => {
+  (profile: Profile) => {
     if(profile) {
       return  Object.keys(profile.states).filter( key => key);
     }

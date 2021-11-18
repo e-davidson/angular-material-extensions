@@ -6,10 +6,21 @@ import { CustomCellDirective } from '../../directives';
 import { FilterInfo } from '../../classes/filter-info';
 import { TransformCreator } from '../../services/transform-creator';
 import { TableStore } from '../../classes/table-store';
-import { map, pairwise, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { TableTemplateService } from '../../services/table-template-service';
 import { Dictionary } from '../../interfaces/dictionary';
-import { previousAndCurrent } from '../../functions/rxjs-operators';
+import { notNull, previousAndCurrent } from '../../functions/rxjs-operators';
+
+interface widthStyle {
+    flex?: string;
+    maxWidth?: string;
+}
+
+interface allStyles {
+  body: widthStyle;
+  header: widthStyle;
+  footer: widthStyle;
+}
 
 @Component({
   selector: 'tb-column-builder',
@@ -19,17 +30,17 @@ import { previousAndCurrent } from '../../functions/rxjs-operators';
 })
 export class ColumnBuilderComponent implements OnInit {
   FieldType = FieldType;
-  filter: FilterInfo;
-  @Input() metaData: MetaData
-  @Input() customCell: CustomCellDirective;
-  @Input() data$: Observable<any[]>;
+  filter!: Partial<FilterInfo>;
+  @Input() metaData!: MetaData
+  @Input() customCell!: CustomCellDirective;
+  @Input() data$!: Observable<any[]>;
 
-  @ViewChild(MatColumnDef) columnDef: MatColumnDef;
-  outerTemplate: TemplateRef<any>;
-  innerTemplate: TemplateRef<any>;
-  transform: (o: any, ...args: any[])=> any ;
+  @ViewChild(MatColumnDef) columnDef!: MatColumnDef;
+  outerTemplate!: TemplateRef<any>;
+  innerTemplate!: TemplateRef<any>;
+  transform!: (o: any, ...args: any[])=> any ;
 
-  @ViewChild('body') bodyTemplate: TemplateRef<any>;
+  @ViewChild('body') bodyTemplate!: TemplateRef<any>;
 
 
   constructor(
@@ -55,9 +66,9 @@ export class ColumnBuilderComponent implements OnInit {
       previousAndCurrent(0),
       map(this.mapWidth),
     );
-    const fullMetaStyles = this.metaData.additional?.styles;
-    this.styles$= width$.pipe(map(width => {
-      const styles = {
+    const fullMetaStyles = this.metaData.additional?.styles ?? {};
+    this.styles$ = width$.pipe(map(width => {
+      const styles: allStyles = {
         header : {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.header, ...width},
         footer: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.footer, ...width},
         body: {...fullMetaStyles,...this.metaData.additional?.columnPartStyles?.body, ...width},
@@ -73,14 +84,14 @@ export class ColumnBuilderComponent implements OnInit {
     this.table.addColumnDef(this.columnDef);
   }
 
-  cellClicked(element, key) {
+  cellClicked(element: any, key: string) {
     if(this.metaData.click) {
       this.metaData.click(element,key);
     }
   }
 
-  mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) => {
- 
+  mapWidth = ([previousUserDefinedWidth, currentUserDefinedWidth] : [number, number]) : widthStyle => {
+
     if( currentUserDefinedWidth ){
       return ({flex:`0 0 ${currentUserDefinedWidth}px`, maxWidth:'none'});
     } if( wasReset() ){
@@ -92,6 +103,6 @@ export class ColumnBuilderComponent implements OnInit {
     }
   }
 
-  styles$:Observable<{body:Dictionary<string>,header:Dictionary<string>,footer:Dictionary<string>}>
+  styles$!:Observable<allStyles>
 
 }

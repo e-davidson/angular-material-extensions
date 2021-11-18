@@ -38,7 +38,7 @@ export class SortMenuComponent implements OnInit{
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      
+
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
@@ -58,7 +58,7 @@ export class SortMenuComponent implements OnInit{
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
-      event.container.data[event.currentIndex] = {...event.container.data[event.currentIndex],direction:null};
+      event.container.data[event.currentIndex] = {...event.container.data[event.currentIndex]};
 
       this.store.setNotSorted(event.container.data);
       this.store.setSorted(event.previousContainer.data);

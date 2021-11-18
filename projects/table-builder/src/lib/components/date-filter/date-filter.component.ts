@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { FilterInfo } from '../../classes/filter-info';
+import { FilterInfo, PartialFilter } from '../../classes/filter-info';
 import { FilterType } from '../../enums/filterTypes';
 import { ControlContainer, NgForm } from '@angular/forms';
 
@@ -11,6 +11,6 @@ import { ControlContainer, NgForm } from '@angular/forms';
 })
 export class DateFilterComponent {
     FilterType = FilterType;
-    @Input() info: FilterInfo;
-    @Input() CurrentFilterType: FilterType;
+    @Input() info!: PartialFilter;
+    @Input() CurrentFilterType!: FilterType;
 }
